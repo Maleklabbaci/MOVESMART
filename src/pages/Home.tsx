@@ -33,12 +33,14 @@ export default function Home() {
           <p className="text-lg md:text-xl text-gray-100 mb-10">
             {t('heroSubtitle', 'Uncover a world of unique homes and unforgettable experiences')}
           </p>
-          <Link 
-            to="/listings"
-            className="inline-block bg-white text-black px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition shadow-lg"
-          >
-            {t('heroCta', 'Book today')}
-          </Link>
+
+          
+        <Link 
+  to="/contact"
+  className="inline-block bg-white text-black px-8 py-3.5 rounded-full font-bold text-base hover:bg-black hover:text-white transition shadow-lg"
+>
+  {t('heroCta', 'Book today')}
+</Link>
         </div>
 
         {/* Wave */}
