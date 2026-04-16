@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Bed, Bath, Square, ChevronDown, ChevronLeft, ChevronRight, Share2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useListings } from '../context/ListingsContext';
+import { listings } from '../data/listings';
 
 interface ListingCardProps {
   key?: React.Key;
@@ -47,7 +47,7 @@ const ListingCard = ({ listing }: ListingCardProps) => {
   return (
     <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300">
       <div className="relative h-60 w-full overflow-hidden">
-        <img src={listing.images[currentIndex]} alt={listing.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+        <img src={listing.images[currentIndex]} alt={listing.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" loading="lazy" />
         <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-gray-900 shadow-sm">
           {listing.type}
         </div>
@@ -93,14 +93,18 @@ const ListingCard = ({ listing }: ListingCardProps) => {
 };
 
 export default function Listings() {
-  const { listings } = useListings();
   const [searchTerm, setSearchTerm] = useState('');
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
   const [sortBy, setSortBy] = useState('default');
 
-  const filteredListings = listings.filter(listing =>
-    listing.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    listing.location.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredListings = listings.filter(listing => {
+    const matchesSearch = listing.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          listing.location.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesMinPrice = minPrice === '' || listing.price >= Number(minPrice);
+    const matchesMaxPrice = maxPrice === '' || listing.price <= Number(maxPrice);
+    return matchesSearch && matchesMinPrice && matchesMaxPrice;
+  });
 
   const sortedListings = [...filteredListings].sort((a, b) => {
     switch (sortBy) {
@@ -124,6 +128,20 @@ export default function Listings() {
             className="flex-grow p-4 md:p-6 text-base md:text-lg border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none shadow-sm"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <input
+            type="number"
+            placeholder="Min Price"
+            className="w-full md:w-40 p-4 md:p-6 text-base md:text-lg border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none shadow-sm"
+            value={minPrice}
+            onChange={(e) => setMinPrice(e.target.value)}
+          />
+          <input
+            type="number"
+            placeholder="Max Price"
+            className="w-full md:w-40 p-4 md:p-6 text-base md:text-lg border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none shadow-sm"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(e.target.value)}
           />
           <div className="relative">
             <select

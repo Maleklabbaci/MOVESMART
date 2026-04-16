@@ -1,10 +1,9 @@
 import { Briefcase, Users, Bed, Bath, Square } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useListings } from '../context/ListingsContext';
+import { listings } from '../data/listings';
 import { companyInfo } from '../constants';
 
 export default function Home() {
-  const { listings } = useListings();
   const featuredListings = listings.slice(0, 3);
 
   return (
@@ -59,8 +58,8 @@ export default function Home() {
           </div>
           
           <div className="grid grid-cols-1 gap-4 md:gap-6">
-            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=800&auto=format&fit=crop" alt="Stay 1" className="rounded-3xl w-full h-64 md:h-80 object-cover" referrerPolicy="no-referrer" />
-            <img src="https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?q=80&w=800&auto=format&fit=crop" alt="Stay 2" className="rounded-3xl w-full h-64 md:h-80 object-cover" referrerPolicy="no-referrer" />
+            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=800&auto=format&fit=crop" alt="Stay 1" className="rounded-3xl w-full h-64 md:h-80 object-cover" referrerPolicy="no-referrer" loading="lazy" />
+            <img src="https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?q=80&w=800&auto=format&fit=crop" alt="Stay 2" className="rounded-3xl w-full h-64 md:h-80 object-cover" referrerPolicy="no-referrer" loading="lazy" />
           </div>
         </div>
       </section>
@@ -73,7 +72,7 @@ export default function Home() {
             {featuredListings.map((listing) => (
               <div key={listing.id} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300">
                 <div className="relative h-60 w-full overflow-hidden">
-                  <img src={listing.images[0]} alt={listing.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                  <img src={listing.images[0]} alt={listing.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" loading="lazy" />
                   <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-gray-900 shadow-sm">
                     {listing.type}
                   </div>

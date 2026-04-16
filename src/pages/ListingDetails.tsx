@@ -1,9 +1,8 @@
 import { useParams, Link } from 'react-router-dom';
-import { useListings } from '../context/ListingsContext';
+import { listings } from '../data/listings';
 import { Bed, Bath, Square, ChevronLeft, Share2 } from 'lucide-react';
 
 export default function ListingDetails() {
-  const { listings } = useListings();
   const { id } = useParams<{ id: string }>();
   const listing = listings.find((l) => l.id === parseInt(id || '0'));
 
