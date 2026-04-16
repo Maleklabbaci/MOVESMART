@@ -92,11 +92,11 @@ function Header() {
       <div className="flex items-center gap-4">
         <LanguageSelector transparent={transparent} />
 
-<Link 
+<Link
   to="/contact"
   className={`px-6 py-2.5 text-sm font-semibold rounded-full transition
-    ${transparent 
-      ? 'bg-white text-black hover:bg-gray-100' 
+    ${transparent
+      ? 'bg-white text-black hover:bg-gray-100'
       : 'bg-black text-white hover:bg-gray-800'}`}
 >
   Get Started
