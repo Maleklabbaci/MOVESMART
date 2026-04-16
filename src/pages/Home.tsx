@@ -10,7 +10,7 @@ export default function Home() {
   const featuredListings = listings.slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 pt-20">
+<div className="min-h-screen bg-white text-gray-900">
       
       {/* HERO */}
       <section className="relative min-h-screen flex items-center justify-center text-white text-center px-6">
