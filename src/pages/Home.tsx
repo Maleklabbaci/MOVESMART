@@ -1,9 +1,107 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Bed, Bath, Square, MapPin, ArrowRight, Phone, Check, Building, Star } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Bed, Bath, Square, MapPin, ArrowRight, Phone, Check, Building, Star, Menu, X } from 'lucide-react';
 import { listings } from '../data/listings';
 import { companyInfo } from '../constants';
 import { useTranslation } from 'react-i18next';
+
+function Header() {
+  const location = useLocation();
+  const isHome = location.pathname === '/';
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { i18n, t } = useTranslation();
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const isTransparent = isHome && !isScrolled;
+
+  const toggleLang = () => i18n.changeLanguage(i18n.language === 'en' ? 'fr' : 'en');
+
+  return (
+    <header className={`fixed top-0 left-0 right-0 z-50 h-20 transition-all duration-300 ${
+      isTransparent ? 'bg-transparent' : 'bg-white shadow-md'
+    }`}>
+      <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+        
+        {/* Logo - LEFT */}
+        <Link to="/" className="flex items-center flex-shrink-0">
+          <img 
+            src="https://i.ibb.co/60PJ8PVw/aass.png" 
+            alt={companyInfo.brand} 
+            className={`h-8 md:h-10 w-auto transition-all duration-300 ${
+              isTransparent ? '' : 'brightness-0'
+            }`}
+          />
+        </Link>
+
+        {/* Navigation - CENTERED */}
+        <nav className={`hidden md:flex items-center gap-8 text-sm font-semibold tracking-wider uppercase absolute left-1/2 transform -translate-x-1/2 ${
+          isTransparent ? 'text-white' : 'text-gray-900'
+        }`}>
+          <Link to="/" className="hover:text-amber-500 transition-colors">{t('home', 'Accueil')}</Link>
+          <Link to="/listings" className="hover:text-amber-500 transition-colors">{t('listings', 'Biens')}</Link>
+          <Link to="/about" className="hover:text-amber-500 transition-colors">{t('about', 'À Propos')}</Link>
+          <Link to="/contact" className="hover:text-amber-500 transition-colors">{t('contact', 'Contact')}</Link>
+        </nav>
+
+        {/* Right Side - Button + Lang */}
+        <div className="flex items-center gap-4 flex-shrink-0">
+          <button 
+            onClick={toggleLang}
+            className={`hidden md:block text-xs font-semibold tracking-wider uppercase px-3 py-1.5 rounded border transition-colors ${
+              isTransparent 
+                ? 'border-white/40 text-white hover:bg-white/10' 
+                : 'border-gray-300 text-gray-900 hover:bg-gray-100'
+            }`}
+          >
+            {i18n.language === 'en' ? 'FR' : 'EN'}
+          </button>
+          
+          <Link 
+            to="/contact"
+            className={`hidden md:inline-flex items-center gap-2 px-6 py-2.5 text-xs font-semibold tracking-wider uppercase transition-all duration-300 ${
+              isTransparent 
+                ? 'bg-amber-500 text-black hover:bg-amber-400' 
+                : 'bg-gray-900 text-white hover:bg-amber-500 hover:text-black'
+            }`}
+          >
+            {t('getStarted', 'Contact')}
+          </Link>
+
+          {/* Mobile Menu Button */}
+          <button 
+            className={`md:hidden p-2 ${isTransparent ? 'text-white' : 'text-gray-900'}`}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden absolute top-20 left-0 right-0 bg-white shadow-lg border-t">
+          <nav className="flex flex-col p-6 gap-4">
+            <Link to="/" onClick={() => setMobileMenuOpen(false)} className="text-sm font-semibold text-gray-900 uppercase tracking-wider hover:text-amber-600">Accueil</Link>
+            <Link to="/listings" onClick={() => setMobileMenuOpen(false)} className="text-sm font-semibold text-gray-900 uppercase tracking-wider hover:text-amber-600">Biens</Link>
+            <Link to="/about" onClick={() => setMobileMenuOpen(false)} className="text-sm font-semibold text-gray-900 uppercase tracking-wider hover:text-amber-600">À Propos</Link>
+            <Link to="/contact" onClick={() => setMobileMenuOpen(false)} className="text-sm font-semibold text-gray-900 uppercase tracking-wider hover:text-amber-600">Contact</Link>
+            <div className="pt-4 border-t flex items-center gap-4">
+              <button onClick={toggleLang} className="text-xs font-semibold text-gray-900 uppercase">
+                {i18n.language === 'en' ? 'FR' : 'EN'}
+              </button>
+            </div>
+          </nav>
+        </div>
+      )}
+    </header>
+  );
+}
 
 export default function Home() {
   const { t } = useTranslation();
@@ -11,6 +109,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
+      <Header />
       
       {/* ==================== HERO ==================== */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -24,7 +123,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" />
         </div>
 
-        <div className="relative z-10 max-w-5xl mx-auto text-center px-6">
+        <div className="relative z-10 max-w-5xl mx-auto text-center px-6 pt-20">
           <div className="inline-flex items-center gap-2 mb-8">
             <div className="h-px w-12 bg-amber-500" />
             <span className="text-amber-500 text-xs tracking-[0.3em] uppercase font-medium">MoveSmart Consultancy</span>
@@ -86,8 +185,7 @@ export default function Home() {
                 </p>
                 <p>
                   Nous offrons un service complet : recherche personnalisée, accompagnement 
-                  juridique, obtention du visa résidence et gestion locative. Votre investissement 
-                  est entre des mains expertes.
+                  juridique, obtention du visa résidence et gestion locative.
                 </p>
               </div>
               
@@ -126,7 +224,7 @@ export default function Home() {
                   </div>
                   <span className="text-sm font-semibold text-gray-900">5.0/5</span>
                 </div>
-                <p className="text-xs text-gray-600 leading-relaxed">"Service exceptionnel et accompagnement professionnel du début à la fin."</p>
+                <p className="text-xs text-gray-600 leading-relaxed">"Service exceptionnel et accompagnement professionnel."</p>
               </div>
             </div>
           </div>
@@ -149,10 +247,10 @@ export default function Home() {
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { icon: Building, title: "Recherche de biens", desc: "Sélection personnalisée selon vos critères d'investissement et votre budget." },
-              { icon: MapPin, title: "Visa résidence", desc: "Accompagnement complet pour l'obtention du Golden Visa 10 ans." },
-              { icon: Check, title: "Gestion locative", desc: "Optimisation du rendement et gestion professionnelle de vos locataires." },
-              { icon: Phone, title: "Suivi juridique", desc: "Vérification des titres de propriété et accompagnement notarial." },
+              { icon: Building, title: "Recherche de biens", desc: "Sélection personnalisée selon vos critères d'investissement." },
+              { icon: MapPin, title: "Visa résidence", desc: "Accompagnement complet pour le Golden Visa 10 ans." },
+              { icon: Check, title: "Gestion locative", desc: "Optimisation du rendement et gestion professionnelle." },
+              { icon: Phone, title: "Suivi juridique", desc: "Vérification des titres et accompagnement notarial." },
             ].map((service, index) => (
               <div key={index} className="bg-white p-8 hover:shadow-xl transition-all duration-300 border border-gray-100 group">
                 <div className="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-amber-500 transition-colors duration-300">
@@ -211,23 +309,13 @@ export default function Home() {
                   {listing.title}
                 </h3>
                 <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
-                  <span className="flex items-center gap-1">
-                    <Bed className="w-4 h-4" /> {listing.beds}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Bath className="w-4 h-4" /> {listing.baths}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Square className="w-4 h-4" /> {listing.area}
-                  </span>
+                  <span className="flex items-center gap-1"><Bed className="w-4 h-4" /> {listing.beds}</span>
+                  <span className="flex items-center gap-1"><Bath className="w-4 h-4" /> {listing.baths}</span>
+                  <span className="flex items-center gap-1"><Square className="w-4 h-4" /> {listing.area}</span>
                 </div>
                 <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                  <div className="text-xl font-bold text-gray-900">
-                    AED {listing.price.toLocaleString()}
-                  </div>
-                  <div className="text-xs text-amber-600 font-semibold uppercase tracking-wider">
-                    Voir détails
-                  </div>
+                  <div className="text-xl font-bold text-gray-900">AED {listing.price.toLocaleString()}</div>
+                  <div className="text-xs text-amber-600 font-semibold uppercase tracking-wider">Voir détails</div>
                 </div>
               </Link>
             ))}
@@ -254,24 +342,15 @@ export default function Home() {
           
           <p className="text-gray-400 text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
             Notre équipe d'experts est à votre disposition pour étudier vos opportunités 
-            d'investissement à Dubai et vous accompagner à chaque étape.
+            d'investissement à Dubai.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              to="/contact"
-              className="inline-flex items-center justify-center gap-2 bg-amber-500 text-black px-10 py-4 text-sm font-semibold tracking-widest uppercase hover:bg-amber-400 transition-all duration-300"
-            >
+            <Link to="/contact" className="inline-flex items-center justify-center gap-2 bg-amber-500 text-black px-10 py-4 text-sm font-semibold tracking-widest uppercase hover:bg-amber-400 transition-all duration-300">
               Prendre Rendez-vous
             </Link>
-            <a
-              href={`https://wa.me/${companyInfo.whatsapp.replace(/\D/g, '')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 bg-transparent text-white border border-white/30 px-10 py-4 text-sm font-semibold tracking-widest uppercase hover:bg-white/10 transition-all duration-300"
-            >
-              <Phone className="w-4 h-4" />
-              WhatsApp
+            <a href={`https://wa.me/${companyInfo.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 bg-transparent text-white border border-white/30 px-10 py-4 text-sm font-semibold tracking-widest uppercase hover:bg-white/10 transition-all duration-300">
+              <Phone className="w-4 h-4" /> WhatsApp
             </a>
           </div>
         </div>
@@ -283,15 +362,11 @@ export default function Home() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
             <div className="lg:col-span-2">
               <h3 className="text-lg font-bold text-gray-900 mb-4">{companyInfo.name}</h3>
-              <p className="text-gray-600 leading-relaxed mb-6 max-w-md text-sm">
-                {companyInfo.description}
-              </p>
+              <p className="text-gray-600 leading-relaxed mb-6 max-w-md text-sm">{companyInfo.description}</p>
               <div className="flex items-center gap-2 text-sm text-gray-600">
-                <MapPin className="w-4 h-4" />
-                <span>{companyInfo.location}</span>
+                <MapPin className="w-4 h-4" /> <span>{companyInfo.location}</span>
               </div>
             </div>
-            
             <div>
               <h4 className="text-xs font-semibold text-gray-900 uppercase tracking-widest mb-6">Navigation</h4>
               <ul className="space-y-3 text-sm text-gray-600">
@@ -301,22 +376,15 @@ export default function Home() {
                 <li><Link to="/contact" className="hover:text-amber-600 transition">Contact</Link></li>
               </ul>
             </div>
-            
             <div>
               <h4 className="text-xs font-semibold text-gray-900 uppercase tracking-widest mb-6">Contact</h4>
               <ul className="space-y-3 text-sm text-gray-600">
-                <li className="flex items-center gap-2">
-                  <Phone className="w-4 h-4" />
-                  <span>{companyInfo.whatsapp}</span>
-                </li>
+                <li className="flex items-center gap-2"><Phone className="w-4 h-4" /> <span>{companyInfo.whatsapp}</span></li>
               </ul>
             </div>
           </div>
-          
           <div className="pt-8 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-gray-500">
-              © 2026 {companyInfo.brand}. Tous droits réservés.
-            </p>
+            <p className="text-xs text-gray-500">© 2026 {companyInfo.brand}. Tous droits réservés.</p>
             <div className="flex gap-6 text-xs text-gray-500">
               <a href="#" className="hover:text-gray-900 transition">Mentions légales</a>
               <a href="#" className="hover:text-gray-900 transition">Politique de confidentialité</a>
