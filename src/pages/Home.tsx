@@ -34,8 +34,7 @@ export default function Home() {
             {t('heroSubtitle', 'Uncover a world of unique homes and unforgettable experiences')}
           </p>
 
-          
-     <Link
+         <Link 
   to="/contact"
   className="inline-block bg-white text-black px-8 md:px-10 py-3 md:py-4 rounded-full font-bold text-lg
              hover:bg-black hover:text-white transition-colors duration-200 shadow-lg"
