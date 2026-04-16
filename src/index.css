@@ -131,7 +131,7 @@ header img {
 
 @media (min-width: 768px) {
   header img {
-    height: 32px !important;
-    max-height: 32px !important;
+    height: 40px !important;
+    max-height: 40px !important;
   }
 }
