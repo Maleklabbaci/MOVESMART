@@ -37,9 +37,11 @@ export default function Home() {
     </p>
 
     {/* Bouton HERO : blanc/noir puis hover noir/blanc */}
-   <Link 
+ <Link
   to="/contact"
-  className="inline-block bg-white text-black px-8 sm:px-10 py-3 sm:py-4 rounded-full font-bold text-base sm:text-lg hover:bg-yellow-400 transition shadow-lg"
+  className="inline-block px-10 py-4 rounded-full font-bold text-lg shadow-lg transition-colors duration-200
+             bg-white !text-black hover:bg-black hover:!text-white
+             focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
 >
   {t('heroCta', 'Book today')}
 </Link>
