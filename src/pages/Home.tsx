@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Bed, Bath, Square, MapPin, ArrowRight, Phone, Check, Building } from 'lucide-react';
+import { Bed, Bath, Square, MapPin, ArrowRight, Phone, Check, Building, Star } from 'lucide-react';
 import { listings } from '../data/listings';
 import { companyInfo } from '../constants';
 import { useTranslation } from 'react-i18next';
@@ -21,39 +21,46 @@ export default function Home() {
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" />
         </div>
 
         <div className="relative z-10 max-w-5xl mx-auto text-center px-6">
-          <p className="text-amber-400 text-xs sm:text-sm tracking-[0.25em] uppercase mb-6 font-medium">
-            MoveSmart Consultancy
-          </p>
+          <div className="inline-flex items-center gap-2 mb-8">
+            <div className="h-px w-12 bg-amber-500" />
+            <span className="text-amber-500 text-xs tracking-[0.3em] uppercase font-medium">MoveSmart Consultancy</span>
+            <div className="h-px w-12 bg-amber-500" />
+          </div>
+          
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-            L'Excellence Immobilière<br />
-            <span className="text-amber-400">à Dubai</span>
+            L'Art de Vivre<br />
+            <span className="text-amber-500">à Dubai</span>
           </h1>
-          <p className="text-base sm:text-lg text-gray-200 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-            Accompagnement premium pour investisseurs internationaux. 
-            Acquisition, visa résidence et gestion de patrimoine.
+          
+          <p className="text-base sm:text-lg text-gray-300 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
+            Découvrez une sélection exclusive de propriétés de luxe. 
+            Investissement immobilier, visa résidence et accompagnement premium.
           </p>
+          
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/listings"
-              className="inline-flex items-center justify-center gap-2 bg-amber-500 text-black px-8 py-4 text-sm font-semibold tracking-wider hover:bg-amber-400 transition-colors duration-300"
+              className="inline-flex items-center justify-center gap-2 bg-amber-500 text-black px-10 py-4 text-sm font-semibold tracking-widest uppercase hover:bg-amber-400 transition-all duration-300"
             >
-              DÉCOUVRIR LES BIENS
+              Nos Propriétés
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               to="/contact"
-              className="inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-sm text-white border border-white/30 px-8 py-4 text-sm font-semibold tracking-wider hover:bg-white/20 transition-colors duration-300"
+              className="inline-flex items-center justify-center gap-2 bg-transparent text-white border border-white/40 px-10 py-4 text-sm font-semibold tracking-widest uppercase hover:bg-white/10 transition-all duration-300"
             >
-              CONSULTATION
+              Contact
             </Link>
           </div>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0">
+          <div className="h-20 bg-gradient-to-t from-white to-transparent" />
+        </div>
       </section>
 
       {/* ==================== INTRO ==================== */}
@@ -61,36 +68,41 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div>
-              <p className="text-amber-600 text-xs tracking-[0.2em] uppercase mb-4 font-semibold">
-                À Propos
-              </p>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-px w-8 bg-amber-500" />
+                <span className="text-amber-600 text-xs tracking-[0.2em] uppercase font-semibold">À Propos</span>
+              </div>
+              
               <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6 leading-tight">
-                Votre Partenaire de Confiance à Dubai
+                Votre Partenaire Immobilier<br />à Dubai
               </h2>
+              
               <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>
                   MoveSmart accompagne les investisseurs internationaux dans l'acquisition 
-                  de biens immobiliers de prestige à Dubai. Notre expertise du marché local 
-                  et notre réseau exclusif vous donnent accès aux opportunités les plus prometteuses.
+                  de biens immobiliers d'exception à Dubai. Notre connaissance approfondie 
+                  du marché et notre réseau exclusif vous ouvrent les portes des résidences 
+                  les plus prestigieuses.
                 </p>
                 <p>
-                  De la sélection du bien à l'obtention du visa résidence, nous assurons 
-                  un accompagnement personnalisé et transparent à chaque étape.
+                  Nous offrons un service complet : recherche personnalisée, accompagnement 
+                  juridique, obtention du visa résidence et gestion locative. Votre investissement 
+                  est entre des mains expertes.
                 </p>
               </div>
               
               <div className="mt-10 grid grid-cols-3 gap-8 pt-8 border-t border-gray-200">
                 <div>
                   <div className="text-3xl font-bold text-gray-900 mb-1">500+</div>
-                  <div className="text-xs text-gray-500 uppercase tracking-wide">Biens vendus</div>
+                  <div className="text-xs text-gray-500 uppercase tracking-wider">Biens vendus</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold text-gray-900 mb-1">40+</div>
-                  <div className="text-xs text-gray-500 uppercase tracking-wide">Nationalités</div>
+                  <div className="text-xs text-gray-500 uppercase tracking-wider">Nationalités</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold text-gray-900 mb-1">10 ans</div>
-                  <div className="text-xs text-gray-500 uppercase tracking-wide">D'expérience</div>
+                  <div className="text-xs text-gray-500 uppercase tracking-wider">D'expertise</div>
                 </div>
               </div>
             </div>
@@ -99,20 +111,22 @@ export default function Home() {
               <div className="aspect-[4/5] overflow-hidden bg-gray-100">
                 <img 
                   src="https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?q=80&w=800&auto=format&fit=crop" 
-                  alt="Luxury Interior Dubai" 
+                  alt="Luxury Interior" 
                   className="w-full h-full object-cover"
                   referrerPolicy="no-referrer"
                   loading="lazy"
                 />
               </div>
-              <div className="absolute -bottom-6 -left-6 bg-white p-6 shadow-xl max-w-xs hidden sm:block border border-gray-100">
+              <div className="absolute -bottom-8 -left-8 bg-white p-6 shadow-2xl max-w-xs hidden sm:block border border-gray-100">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
-                    <Check className="w-5 h-5 text-amber-600" />
+                  <div className="flex">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 text-amber-500 fill-amber-500" />
+                    ))}
                   </div>
-                  <span className="font-semibold text-gray-900 text-sm">Accompagnement Premium</span>
+                  <span className="text-sm font-semibold text-gray-900">5.0/5</span>
                 </div>
-                <p className="text-xs text-gray-600 leading-relaxed">De la visite à la remise des clés, nous gérons chaque détail.</p>
+                <p className="text-xs text-gray-600 leading-relaxed">"Service exceptionnel et accompagnement professionnel du début à la fin."</p>
               </div>
             </div>
           </div>
@@ -123,11 +137,13 @@ export default function Home() {
       <section className="py-24 sm:py-32 px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-amber-600 text-xs tracking-[0.2em] uppercase mb-4 font-semibold">
-              Nos Services
-            </p>
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <div className="h-px w-8 bg-amber-500" />
+              <span className="text-amber-600 text-xs tracking-[0.2em] uppercase font-semibold">Nos Services</span>
+              <div className="h-px w-8 bg-amber-500" />
+            </div>
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-              Un Accompagnement Sur Mesure
+              Une Expertise Complète
             </h2>
           </div>
           
@@ -138,8 +154,10 @@ export default function Home() {
               { icon: Check, title: "Gestion locative", desc: "Optimisation du rendement et gestion professionnelle de vos locataires." },
               { icon: Phone, title: "Suivi juridique", desc: "Vérification des titres de propriété et accompagnement notarial." },
             ].map((service, index) => (
-              <div key={index} className="bg-white p-8 hover:shadow-lg transition-shadow duration-300 border border-gray-100">
-                <service.icon className="w-8 h-8 text-amber-600 mb-6" />
+              <div key={index} className="bg-white p-8 hover:shadow-xl transition-all duration-300 border border-gray-100 group">
+                <div className="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-amber-500 transition-colors duration-300">
+                  <service.icon className="w-6 h-6 text-amber-600 group-hover:text-white transition-colors duration-300" />
+                </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">{service.title}</h3>
                 <p className="text-gray-600 leading-relaxed text-sm">{service.desc}</p>
               </div>
@@ -153,18 +171,19 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-16 gap-4">
             <div>
-              <p className="text-amber-600 text-xs tracking-[0.2em] uppercase mb-4 font-semibold">
-                Sélection Exclusive
-              </p>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-px w-8 bg-amber-500" />
+                <span className="text-amber-600 text-xs tracking-[0.2em] uppercase font-semibold">Sélection Exclusive</span>
+              </div>
               <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-                Biens en Vedette
+                Propriétés en Vedette
               </h2>
             </div>
             <Link 
               to="/listings" 
               className="inline-flex items-center gap-2 text-sm font-semibold text-gray-900 hover:text-amber-600 transition-colors group"
             >
-              Voir tous les biens
+              Voir toutes les propriétés
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
@@ -172,7 +191,7 @@ export default function Home() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {featuredListings.map((listing) => (
               <Link to={`/listings/${listing.id}`} key={listing.id} className="group">
-                <div className="overflow-hidden mb-4 bg-gray-100">
+                <div className="overflow-hidden mb-4 bg-gray-100 relative">
                   <img 
                     src={listing.images[0]} 
                     alt={listing.title} 
@@ -180,15 +199,18 @@ export default function Home() {
                     referrerPolicy="no-referrer"
                     loading="lazy"
                   />
+                  <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm px-3 py-1.5">
+                    <span className="text-xs font-semibold text-gray-900 uppercase tracking-wider">{listing.type}</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-gray-500 mb-2 uppercase tracking-wide">
+                <div className="flex items-center gap-2 text-xs text-gray-500 mb-2 uppercase tracking-wider">
                   <MapPin className="w-3 h-3" />
                   <span>{listing.location}</span>
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-amber-600 transition-colors">
                   {listing.title}
                 </h3>
-                <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
+                <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
                   <span className="flex items-center gap-1">
                     <Bed className="w-4 h-4" /> {listing.beds}
                   </span>
@@ -199,8 +221,13 @@ export default function Home() {
                     <Square className="w-4 h-4" /> {listing.area}
                   </span>
                 </div>
-                <div className="text-lg font-semibold text-gray-900">
-                  AED {listing.price.toLocaleString()}
+                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                  <div className="text-xl font-bold text-gray-900">
+                    AED {listing.price.toLocaleString()}
+                  </div>
+                  <div className="text-xs text-amber-600 font-semibold uppercase tracking-wider">
+                    Voir détails
+                  </div>
                 </div>
               </Link>
             ))}
@@ -209,33 +236,42 @@ export default function Home() {
       </section>
 
       {/* ==================== CTA ==================== */}
-      <section className="py-24 sm:py-32 px-6 bg-gray-900 text-white">
-        <div className="max-w-4xl mx-auto text-center">
-          <p className="text-amber-400 text-xs tracking-[0.2em] uppercase mb-4 font-semibold">
-            Contact
-          </p>
+      <section className="py-24 sm:py-32 px-6 bg-gray-900 text-white relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-500 via-transparent to-transparent" />
+        </div>
+        
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="h-px w-8 bg-amber-500" />
+            <span className="text-amber-500 text-xs tracking-[0.2em] uppercase font-semibold">Contact</span>
+            <div className="h-px w-8 bg-amber-500" />
+          </div>
+          
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-8">
-            Discutons de Votre Projet
+            Commencez Votre Investissement
           </h2>
+          
           <p className="text-gray-400 text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
             Notre équipe d'experts est à votre disposition pour étudier vos opportunités 
-            d'investissement à Dubai et vous accompagner dans chaque étape.
+            d'investissement à Dubai et vous accompagner à chaque étape.
           </p>
+          
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/contact"
-              className="inline-flex items-center justify-center gap-2 bg-amber-500 text-black px-8 py-4 text-sm font-semibold tracking-wider hover:bg-amber-400 transition-colors duration-300"
+              className="inline-flex items-center justify-center gap-2 bg-amber-500 text-black px-10 py-4 text-sm font-semibold tracking-widest uppercase hover:bg-amber-400 transition-all duration-300"
             >
-              NOUS CONTACTER
+              Prendre Rendez-vous
             </Link>
             <a
               href={`https://wa.me/${companyInfo.whatsapp.replace(/\D/g, '')}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-sm text-white border border-white/30 px-8 py-4 text-sm font-semibold tracking-wider hover:bg-white/20 transition-colors duration-300"
+              className="inline-flex items-center justify-center gap-2 bg-transparent text-white border border-white/30 px-10 py-4 text-sm font-semibold tracking-widest uppercase hover:bg-white/10 transition-all duration-300"
             >
               <Phone className="w-4 h-4" />
-              WHATSAPP
+              WhatsApp
             </a>
           </div>
         </div>
@@ -246,7 +282,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
             <div className="lg:col-span-2">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">{companyInfo.name}</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-4">{companyInfo.name}</h3>
               <p className="text-gray-600 leading-relaxed mb-6 max-w-md text-sm">
                 {companyInfo.description}
               </p>
@@ -257,17 +293,17 @@ export default function Home() {
             </div>
             
             <div>
-              <h4 className="text-xs font-semibold text-gray-900 uppercase tracking-wider mb-4">Navigation</h4>
+              <h4 className="text-xs font-semibold text-gray-900 uppercase tracking-widest mb-6">Navigation</h4>
               <ul className="space-y-3 text-sm text-gray-600">
                 <li><Link to="/" className="hover:text-amber-600 transition">Accueil</Link></li>
-                <li><Link to="/listings" className="hover:text-amber-600 transition">Biens</Link></li>
+                <li><Link to="/listings" className="hover:text-amber-600 transition">Propriétés</Link></li>
                 <li><Link to="/about" className="hover:text-amber-600 transition">À Propos</Link></li>
                 <li><Link to="/contact" className="hover:text-amber-600 transition">Contact</Link></li>
               </ul>
             </div>
             
             <div>
-              <h4 className="text-xs font-semibold text-gray-900 uppercase tracking-wider mb-4">Contact</h4>
+              <h4 className="text-xs font-semibold text-gray-900 uppercase tracking-widest mb-6">Contact</h4>
               <ul className="space-y-3 text-sm text-gray-600">
                 <li className="flex items-center gap-2">
                   <Phone className="w-4 h-4" />
