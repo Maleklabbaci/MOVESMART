@@ -12,39 +12,47 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white text-gray-900">
       
-      {/* HERO */}
-      <section className="relative h-screen flex items-center justify-center text-white text-center px-6">
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.pexels.com/photos/4531667/pexels-photo-4531667.jpeg" 
-            alt="Dubai" 
-            className="w-full h-full object-cover"
-            referrerPolicy="no-referrer"
-          />
-          <div className="absolute inset-0 bg-black/45" />
-        </div>
-        
-        <div className="relative z-10 max-w-3xl">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-            {t('heroTitle', 'Discover your ideal luxury home in Dubai')}
-          </h1>
-          <p className="text-base sm:text-lg md:text-xl text-gray-100 mb-10 px-4">
-            {t('heroSubtitle', 'Uncover a world of unique homes and unforgettable experiences')}
-          </p>
-          <Link 
-            to="/contact"
-            className="inline-block bg-white text-black px-8 sm:px-10 py-3 sm:py-4 rounded-full font-bold text-base sm:text-lg hover:bg-black hover:text-white transition shadow-lg"
-          >
-            {t('heroCta', 'Book today')}
-          </Link>
-        </div>
+   {/* HERO */}
+<section className="relative min-h-[100svh] md:min-h-screen flex items-center justify-center text-white text-center px-6 overflow-hidden">
+  {/* BG (ne bloque pas les clics) */}
+  <div className="absolute inset-0 z-0 pointer-events-none">
+    <img
+      src="https://images.pexels.com/photos/4531667/pexels-photo-4531667.jpeg"
+      alt="Dubai"
+      className="w-full h-full object-cover"
+      referrerPolicy="no-referrer"
+    />
+    {/* Plus sombre en haut => menu blanc lisible */}
+    <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/55 to-black/25" />
+  </div>
 
-        <div className="absolute bottom-0 left-0 right-0 z-10">
-          <svg viewBox="0 0 1440 60" fill="white" className="w-full h-auto">
-            <path d="M0 60L60 50C120 40 240 30 360 28C480 26 600 32 720 36C840 40 960 42 1080 46C1200 50 1320 54 1380 56L1440 58V60H0Z" />
-          </svg>
-        </div>
-      </section>
+  {/* Content (on descend sous le header) */}
+  <div className="relative z-10 max-w-3xl mx-auto pt-20">
+    <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+      {t('heroTitle', 'Discover your ideal luxury home in Dubai')}
+    </h1>
+
+    <p className="text-lg md:text-xl text-gray-100 mb-10">
+      {t('heroSubtitle', 'Uncover a world of unique homes and unforgettable experiences')}
+    </p>
+
+    {/* Bouton HERO : blanc/noir puis hover noir/blanc */}
+    <Link
+      to="/contact"
+      className="inline-block bg-white text-black px-10 py-4 rounded-full font-bold text-lg shadow-lg
+                 hover:bg-black hover:text-white transition-colors duration-200"
+    >
+      {t('heroCta', 'Book today')}
+    </Link>
+  </div>
+
+  {/* Wave */}
+  <div className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none translate-y-[1px]">
+    <svg viewBox="0 0 1440 60" fill="white" className="w-full h-auto">
+      <path d="M0 60L60 50C120 40 240 30 360 28C480 26 600 32 720 36C840 40 960 42 1080 46C1200 50 1320 54 1380 56L1440 58V60H0Z" />
+    </svg>
+  </div>
+</section>
 
       {/* CONTENT */}
       <section className="max-w-6xl mx-auto px-6 py-16 md:py-24">
