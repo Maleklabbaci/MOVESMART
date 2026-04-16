@@ -123,3 +123,15 @@ button {
 .animate-slide-up {
   animation: slideUp 0.3s ease-in-out;
 }
+/* Force petit logo */
+header img {
+  height: 24px !important;
+  max-height: 24px !important;
+}
+
+@media (min-width: 768px) {
+  header img {
+    height: 32px !important;
+    max-height: 32px !important;
+  }
+}
