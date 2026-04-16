@@ -37,14 +37,12 @@ export default function Home() {
     </p>
 
     {/* Bouton HERO : blanc/noir puis hover noir/blanc */}
-    <Link
-      to="/contact"
-      className="inline-block bg-white text-black px-10 py-4 rounded-full font-bold text-lg shadow-lg
-                 hover:bg-black hover:text-white transition-colors duration-200"
-    >
-      {t('heroCta', 'Book today')}
-    </Link>
-  </div>
+   <Link 
+  to="/contact"
+  className="inline-block bg-white text-black px-8 sm:px-10 py-3 sm:py-4 rounded-full font-bold text-base sm:text-lg hover:bg-yellow-400 transition shadow-lg"
+>
+  {t('heroCta', 'Book today')}
+</Link>
 
   {/* Wave */}
   <div className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none translate-y-[1px]">
