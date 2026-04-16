@@ -25,15 +25,16 @@ function LanguageSelector({ transparent }) {
 
   return (
     <div className="relative">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`px-4 py-2 rounded-lg font-medium transition text-sm
-          ${transparent 
-            ? 'text-white hover:opacity-70' 
-            : 'border border-gray-300 bg-black text-white hover:bg-gray-800'}`}
-      >
-        {current.label}
-      </button>
+    <button
+  onClick={() => setIsOpen(!isOpen)}
+  className={`px-4 py-2 rounded-lg font-medium transition text-sm
+    ${transparent 
+      ? 'text-white hover:opacity-70' 
+      : 'text-black hover:bg-gray-100'}`}
+>
+  {current.label}
+</button>
+
 
       {isOpen && (
         <div className="absolute right-0 mt-2 w-24 bg-white border rounded-lg shadow-lg z-50 py-1">
@@ -73,11 +74,11 @@ function Header() {
       ${transparent ? 'bg-transparent' : 'bg-white shadow-md border-b border-gray-100'}`}>
 
       <Link to="/" className="flex items-center">
-        <img 
-          src="https://i.ibb.co/60PJ8PVw/aass.png" 
-          alt={companyInfo.brand} 
-          className="h-9 md:h-11 w-auto"
-        />
+       <img
+  src="https://i.ibb.co/60PJ8PVw/aass.png"
+  alt={companyInfo.brand}
+  className={`h-9 md:h-11 w-auto transition duration-300 ${transparent ? '' : 'brightness-0'}`}
+/>
       </Link>
 
       <nav className={`hidden md:flex items-center gap-10 text-sm font-medium absolute left-1/2 -translate-x-1/2
