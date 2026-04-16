@@ -15,13 +15,15 @@ export default function Home() {
 {/* HERO */}
 <section className="relative min-h-[100svh] md:min-h-screen flex items-center justify-center text-white text-center px-4 sm:px-6">
   {/* BG */}
-  <div className="absolute inset-0 z-0 pointer-events-none">
-    <img
-      src="https://images.pexels.com/photos/4531667/pexels-photo-4531667.jpeg"
-      alt="Dubai"
-      className="w-full h-full object-cover"
-      referrerPolicy="no-referrer"
-    />
+<div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+  <img
+    src="https://images.pexels.com/photos/4531667/pexels-photo-4531667.jpeg"
+    alt="Dubai"
+    referrerPolicy="no-referrer"
+    className="absolute inset-0 w-full h-full object-cover object-center"
+  />
+  <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/55 to-black/25" />
+</div>
     {/* Gradient plus clair sur mobile */}
     <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/20 sm:from-black/85 sm:via-black/55 sm:to-black/25" />
   </div>
