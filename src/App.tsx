@@ -91,13 +91,14 @@ function Header() {
 
       <div className="flex items-center gap-4">
         <LanguageSelector transparent={transparent} />
-
+        
 <Link
   to="/contact"
-  className={`px-6 py-2.5 text-sm font-semibold rounded-full transition
+  className={`px-6 py-2.5 text-sm font-semibold rounded-full transition-colors
     ${transparent
-      ? 'bg-white text-black hover:bg-gray-100'
-      : 'bg-black text-white hover:bg-gray-800'}`}
+      ? 'bg-white !text-black hover:bg-gray-100'
+      : 'bg-black !text-white hover:bg-gray-800'}`}
+  style={{ color: transparent ? '#000' : '#fff' }}
 >
   Get Started
 </Link>
