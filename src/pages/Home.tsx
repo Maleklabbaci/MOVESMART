@@ -35,13 +35,13 @@ export default function Home() {
           </p>
 
           
-        <Link 
+     <Link
   to="/contact"
-  className="inline-block bg-white text-black px-8 py-3.5 rounded-full font-bold text-base hover:bg-black hover:text-white transition shadow-lg"
+  className="inline-block bg-white text-black px-8 md:px-10 py-3 md:py-4 rounded-full font-bold text-lg
+             hover:bg-black hover:text-white transition-colors duration-200 shadow-lg"
 >
   {t('heroCta', 'Book today')}
 </Link>
-        </div>
 
         {/* Wave */}
         <div className="absolute bottom-0 left-0 right-0 z-10">
