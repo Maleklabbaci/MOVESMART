@@ -74,21 +74,18 @@ button {
 
 /* Mobile optimization */
 @media (max-width: 768px) {
-  /* Prevent zoom on input focus iOS */
   input,
   select,
   textarea {
     font-size: 16px;
   }
 
-  /* Better touch targets */
   button,
   a {
     min-height: 44px;
     min-width: 44px;
   }
 
-  /* Prevent bounce scroll */
   body {
     overscroll-behavior: none;
   }
@@ -104,12 +101,8 @@ button {
 
 /* Animations */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slideUp {
@@ -130,18 +123,3 @@ button {
 .animate-slide-up {
   animation: slideUp 0.3s ease-in-out;
 }
-/* Logo Size - Ajustement final */
-header img,
-nav img {
-  height: 36px !important;      /* Mobile */
-  max-height: 36px !important;
-}
-
-@media (min-width: 768px) {
-  header img,
-  nav img {
-    height: 44px !important;    /* Desktop - plus visible */
-    max-height: 44px !important;
-  }
-}
-
