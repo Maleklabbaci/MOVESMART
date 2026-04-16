@@ -75,13 +75,12 @@ function Header() {
       ${transparent ? 'text-white' : 'bg-white text-gray-900 shadow-sm border-b'}`}>
 
       {/* Logo - Taille réduite */}
-      <Link to="/" className="flex items-center">
-        <img 
-          src="https://i.ibb.co/60PJ8PVw/aass.png" 
-          alt="MoveSmart Invest"
-          className="h-9 md:h-11 w-auto"   // ← Logo plus petit
-        />
-      </Link>
+     <img 
+  src="https://i.ibb.co/60PJ8PVw/aass.png" 
+  alt={companyInfo.brand} 
+  className={`h-8 md:h-10 w-auto transition-all ${!transparent ? 'brightness-0' : ''}`}
+/>
+      
 
       {/* Desktop Navigation */}
       <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
