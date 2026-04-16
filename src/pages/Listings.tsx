@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Bed, Bath, Square, ChevronDown, ChevronLeft, ChevronRight, Share2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { listings } from '../data/listings';
+import { useListings } from '../context/ListingsContext';
 
 interface ListingCardProps {
   key?: React.Key;
@@ -93,6 +93,7 @@ const ListingCard = ({ listing }: ListingCardProps) => {
 };
 
 export default function Listings() {
+  const { listings } = useListings();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('default');
 

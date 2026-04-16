@@ -1,9 +1,10 @@
 import { Briefcase, Users, Bed, Bath, Square } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { listings } from '../data/listings';
+import { useListings } from '../context/ListingsContext';
 import { companyInfo } from '../constants';
 
 export default function Home() {
+  const { listings } = useListings();
   const featuredListings = listings.slice(0, 3);
 
   return (
