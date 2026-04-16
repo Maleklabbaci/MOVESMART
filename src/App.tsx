@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ChevronDown, Menu, X } from 'lucide-react';
@@ -11,6 +11,7 @@ import ListingDetails from './pages/ListingDetails';
 import Admin from './pages/Admin';
 import WhatsAppButton from './components/WhatsAppButton';
 import MobileNav from './components/MobileNav';
+import { companyInfo } from './constants';
 
 function LanguageSelector() {
   const { i18n } = useTranslation();
@@ -58,11 +59,11 @@ function LanguageSelector() {
 function Header() {
   const location = useLocation();
   const isHome = location.pathname === '/';
-  const [isScrolled, setIsScrolled] = React.useState(false);
-  const [mobileMenu, setMobileMenu] = React.useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenu, setMobileMenu] = useState(false);
   const { t } = useTranslation();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 30);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -74,15 +75,14 @@ function Header() {
     <header className={`fixed top-0 left-0 right-0 z-50 h-16 md:h-20 transition-all duration-300 px-4 md:px-8 flex items-center justify-between
       ${transparent ? 'text-white' : 'bg-white text-gray-900 shadow-sm border-b'}`}>
 
-      {/* Logo - Taille réduite */}
-     <img 
-  src="https://i.ibb.co/60PJ8PVw/aass.png" 
-  alt={companyInfo.brand} 
-  className={`h-8 md:h-10 w-auto transition-all ${!transparent ? 'brightness-0' : ''}`}
-/>
-      
+      <Link to="/" className="flex items-center">
+        <img 
+          src="https://i.ibb.co/60PJ8PVw/aass.png" 
+          alt={companyInfo.brand} 
+          className="h-8 md:h-10 w-auto"
+        />
+      </Link>
 
-      {/* Desktop Navigation */}
       <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
         <Link to="/" className="hover:opacity-70 transition">{t('home')}</Link>
         <Link to="/listings" className="hover:opacity-70 transition">{t('listings')}</Link>
@@ -90,7 +90,6 @@ function Header() {
         <Link to="/contact" className="hover:opacity-70 transition">{t('contact')}</Link>
       </nav>
 
-      {/* Right side */}
       <div className="flex items-center gap-4">
         <LanguageSelector />
 
@@ -102,11 +101,7 @@ function Header() {
           Get Started
         </Link>
 
-        {/* Mobile menu button */}
-        <button 
-          className="md:hidden p-2"
-          onClick={() => setMobileMenu(!mobileMenu)}
-        >
+        <button className="md:hidden p-2" onClick={() => setMobileMenu(!mobileMenu)}>
           {mobileMenu ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
@@ -119,7 +114,6 @@ export default function App() {
     <BrowserRouter>
       <div className="min-h-screen bg-white">
         <Header />
-        
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/listings" element={<Listings />} />
@@ -128,7 +122,6 @@ export default function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/admin" element={<Admin />} />
         </Routes>
-
         <WhatsAppButton />
         <MobileNav />
       </div>
