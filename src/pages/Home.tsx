@@ -13,13 +13,13 @@ export default function Home() {
     <div className="min-h-screen bg-white text-gray-900">
       
 {/* HERO */}
-<section className="relative min-h-[100svh] md:min-h-screen flex items-center justify-center text-white text-center px-6 overflow-hidden">
+<section className="relative min-h-[100svh] h-[100svh] md:min-h-screen flex items-center justify-center text-white text-center px-6 overflow-hidden">
   {/* BG (ne bloque pas les clics) */}
-<div className="absolute inset-0 z-0 pointer-events-none bg-black sm:bg-transparent">
+  <div className="absolute inset-0 z-0 pointer-events-none bg-black sm:bg-transparent">
     <img
       src="https://images.pexels.com/photos/4531667/pexels-photo-4531667.jpeg"
       alt="Dubai"
-      className="w-full h-full object-cover"
+      className="w-full h-full object-cover object-[50%_25%] sm:object-center"
       referrerPolicy="no-referrer"
     />
     {/* Plus sombre en haut => menu blanc lisible */}
@@ -28,25 +28,24 @@ export default function Home() {
 
   {/* Content (on descend sous le header) */}
   <div className="relative z-10 max-w-3xl mx-auto pt-20">
-    <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+    <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 leading-tight">
       {t('heroTitle', 'Discover your ideal luxury home in Dubai')}
     </h1>
 
-    <p className="text-lg md:text-xl text-gray-100 mb-10">
+    <p className="text-base sm:text-lg md:text-xl text-gray-100 mb-10">
       {t('heroSubtitle', 'Uncover a world of unique homes and unforgettable experiences')}
     </p>
 
     {/* Bouton HERO */}
     <Link
       to="/contact"
-      className="inline-block px-10 py-4 rounded-full font-bold text-lg shadow-lg transition-colors duration-200
+      className="inline-block px-8 sm:px-10 py-3.5 sm:py-4 rounded-full font-bold text-base sm:text-lg shadow-lg transition-colors duration-200
                  bg-white !text-black hover:bg-black hover:!text-white
                  focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
     >
       {t('heroCta', 'Book today')}
     </Link>
   </div>
-  {/* ✅ </div> AJOUTÉ ICI POUR FERMER LE CONTENT */}
 
   {/* Wave */}
   <div className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none translate-y-[1px]">
@@ -56,6 +55,7 @@ export default function Home() {
   </div>
 </section>
 
+      
       {/* CONTENT */}
       <section className="max-w-6xl mx-auto px-6 py-16 md:py-24">
         <div className="grid md:grid-cols-2 gap-12 items-center">
