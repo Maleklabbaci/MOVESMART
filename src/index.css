@@ -130,3 +130,21 @@ button {
 .animate-slide-up {
   animation: slideUp 0.3s ease-in-out;
 }
+/* Force logo size - IMPORTANT */
+header img,
+.header img,
+nav img {
+  height: 32px !important;     /* Mobile */
+  max-height: 32px !important;
+  width: auto !important;
+}
+
+@media (min-width: 768px) {
+  header img,
+  .header img,
+  nav img {
+    height: 38px !important;   /* Desktop */
+    max-height: 38px !important;
+  }
+}
+
