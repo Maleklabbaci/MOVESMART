@@ -13,34 +13,34 @@ export default function Home() {
     <div className="min-h-screen bg-white text-gray-900">
       
 {/* HERO */}
-<section className="relative min-h-[100svh] h-[100svh] md:min-h-screen flex items-center justify-center text-white text-center px-6 overflow-hidden">
-  {/* BG (ne bloque pas les clics) */}
-  <div className="absolute inset-0 z-0 pointer-events-none bg-black sm:bg-transparent">
+<section className="relative min-h-[100svh] md:min-h-screen flex items-center justify-center text-white text-center px-4 sm:px-6">
+  {/* BG */}
+  <div className="absolute inset-0 z-0 pointer-events-none">
     <img
       src="https://images.pexels.com/photos/4531667/pexels-photo-4531667.jpeg"
       alt="Dubai"
-      className="w-full h-full object-cover object-[50%_25%] sm:object-center"
+      className="w-full h-full object-cover"
       referrerPolicy="no-referrer"
     />
-    {/* Plus sombre en haut => menu blanc lisible */}
-    <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/55 to-black/25" />
+    {/* Gradient plus clair sur mobile */}
+    <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/20 sm:from-black/85 sm:via-black/55 sm:to-black/25" />
   </div>
 
-  {/* Content (on descend sous le header) */}
-  <div className="relative z-10 max-w-3xl mx-auto pt-20">
-    <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 leading-tight">
+  {/* Content */}
+  <div className="relative z-10 max-w-3xl mx-auto pt-16 sm:pt-20 px-4">
+    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
       {t('heroTitle', 'Discover your ideal luxury home in Dubai')}
     </h1>
 
-    <p className="text-base sm:text-lg md:text-xl text-gray-100 mb-10">
+    <p className="text-sm sm:text-base md:text-lg text-gray-100 mb-6 sm:mb-8">
       {t('heroSubtitle', 'Uncover a world of unique homes and unforgettable experiences')}
     </p>
 
     {/* Bouton HERO */}
     <Link
       to="/contact"
-      className="inline-block px-8 sm:px-10 py-3.5 sm:py-4 rounded-full font-bold text-base sm:text-lg shadow-lg transition-colors duration-200
-                 bg-white !text-black hover:bg-black hover:!text-white
+      className="inline-block px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-bold text-sm sm:text-base shadow-lg transition-colors duration-200
+                 bg-white text-black hover:bg-black hover:text-white
                  focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
     >
       {t('heroCta', 'Book today')}
@@ -48,13 +48,12 @@ export default function Home() {
   </div>
 
   {/* Wave */}
-  <div className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none translate-y-[1px]">
+  <div className="absolute bottom-0 left-0 right-0 z-10">
     <svg viewBox="0 0 1440 60" fill="white" className="w-full h-auto">
       <path d="M0 60L60 50C120 40 240 30 360 28C480 26 600 32 720 36C840 40 960 42 1080 46C1200 50 1320 54 1380 56L1440 58V60H0Z" />
     </svg>
   </div>
 </section>
-
       
       {/* CONTENT */}
       <section className="max-w-6xl mx-auto px-6 py-16 md:py-24">
