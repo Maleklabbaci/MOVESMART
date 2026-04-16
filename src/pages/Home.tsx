@@ -11,41 +11,41 @@ export default function Home() {
   return (
     <div className="bg-white text-gray-900">
       
-      {/* HERO */}
-      <section className="relative min-h-screen flex items-center justify-center text-white text-center">
-        {/* BG */}
-        <div className="absolute inset-0">
-          <img 
-            src="https://images.pexels.com/photos/4531667/pexels-photo-4531667.jpeg" 
-            alt="Dubai" 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/45" />
-        </div>
-        
-        {/* Content - CENTRÉ */}
-        <div className="relative z-10 px-6 max-w-3xl mx-auto">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-6">
-            {t('heroTitle', 'Discover your ideal luxury home in Dubai')}
-          </h1>
-          <p className="text-base sm:text-lg md:text-xl text-gray-200 mb-10 max-w-2xl mx-auto">
-            {t('heroSubtitle', 'Uncover a world of unique homes and unforgettable experiences')}
-          </p>
-          <Link 
-            to="/contact"
-            className="inline-block bg-white text-black px-8 py-3.5 rounded-full font-bold text-base hover:bg-gray-100 transition shadow-lg"
-          >
-            {t('heroCta', 'Book today')}
-          </Link>
-        </div>
+  {/* Hero Section */}
+<section className="relative min-h-screen flex flex-col items-center justify-center text-center text-white px-4">
+  <div className="absolute inset-0">
+    <img 
+      src="https://images.pexels.com/photos/4531667/pexels-photo-4531667.jpeg" 
+      alt="Luxury Dubai Real Estate" 
+      className="w-full h-full object-cover"
+      referrerPolicy="no-referrer"
+    />
+    <div className="absolute inset-0 bg-black/40" />
+  </div>
+  
+  <div className="relative z-10 max-w-2xl mx-auto px-4">
+    <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-6">
+      Discover your ideal<br className="hidden sm:block" /> luxury home in Dubai
+    </h1>
+    <p className="text-base sm:text-lg md:text-xl mb-10 text-gray-200">
+      Uncover a world of unique homes and unforgettable experiences
+    </p>
+    <Link 
+      to="/contact"
+      className="inline-block bg-white text-black px-8 py-4 rounded-full font-bold text-base hover:bg-gray-100 transition"
+    >
+      Book today
+    </Link>
+  </div>
 
-        {/* Wave */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 60" fill="white" className="w-full">
-            <path d="M0 60L60 50C120 40 240 30 360 28C480 26 600 32 720 36C840 40 960 42 1080 46C1200 50 1320 54 1380 56L1440 58V60H0Z" />
-          </svg>
-        </div>
-      </section>
+  {/* Wave - NOIR pour être visible */}
+  <div className="absolute bottom-0 left-0 right-0 z-10">
+    <svg viewBox="0 0 1440 60" className="w-full" fill="#ffffff">
+      <path d="M0 60L60 52C120 44 240 36 360 34C480 32 600 36 720 39C840 42 960 44 1080 47C1200 50 1320 54 1380 56L1440 58V60H0Z" />
+    </svg>
+  </div>
+</section>
+      
 
       {/* CONTENT */}
       <section className="max-w-6xl mx-auto px-6 py-16 md:py-24">
