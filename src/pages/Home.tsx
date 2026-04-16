@@ -26,21 +26,23 @@ function Header() {
     <header className={`fixed top-0 left-0 right-0 z-50 h-20 transition-all duration-300 ${
       isTransparent ? 'bg-transparent' : 'bg-white shadow-md'
     }`}>
-      <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 h-full flex items-center">
         
-        {/* Logo - LEFT */}
-        <Link to="/" className="flex items-center flex-shrink-0">
-          <img 
-            src="https://i.ibb.co/60PJ8PVw/aass.png" 
-            alt={companyInfo.brand} 
-            className={`h-8 md:h-10 w-auto transition-all duration-300 ${
-              isTransparent ? '' : 'brightness-0'
-            }`}
-          />
-        </Link>
+        {/* Logo - LEFT (flex-shrink-0 pour ne pas rétrécir) */}
+        <div className="flex-shrink-0">
+          <Link to="/">
+            <img 
+              src="https://i.ibb.co/60PJ8PVw/aass.png" 
+              alt={companyInfo.brand} 
+              className={`h-8 md:h-10 w-auto transition-all duration-300 ${
+                isTransparent ? '' : 'brightness-0'
+              }`}
+            />
+          </Link>
+        </div>
 
-        {/* Navigation - CENTERED */}
-        <nav className={`hidden md:flex items-center gap-8 text-sm font-semibold tracking-wider uppercase absolute left-1/2 transform -translate-x-1/2 ${
+        {/* Navigation - CENTERED (flex-1 prend l'espace restant, justify-center centre) */}
+        <nav className={`flex-1 flex items-center justify-center gap-8 text-sm font-semibold tracking-wider uppercase ${
           isTransparent ? 'text-white' : 'text-gray-900'
         }`}>
           <Link to="/" className="hover:text-amber-500 transition-colors">{t('home', 'Accueil')}</Link>
@@ -49,8 +51,8 @@ function Header() {
           <Link to="/contact" className="hover:text-amber-500 transition-colors">{t('contact', 'Contact')}</Link>
         </nav>
 
-        {/* Right Side - Button + Lang */}
-        <div className="flex items-center gap-4 flex-shrink-0">
+        {/* Right Side - Button + Lang (flex-shrink-0 pour ne pas rétrécir) */}
+        <div className="flex-shrink-0 flex items-center gap-4">
           <button 
             onClick={toggleLang}
             className={`hidden md:block text-xs font-semibold tracking-wider uppercase px-3 py-1.5 rounded border transition-colors ${
