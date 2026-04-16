@@ -10,11 +10,10 @@ export default function Home() {
   const featuredListings = listings.slice(0, 3);
 
   return (
-<div className="min-h-screen bg-white text-gray-900">
+    <div className="min-h-screen bg-white text-gray-900">
       
       {/* HERO */}
-      <section className="relative min-h-screen flex items-center justify-center text-white text-center px-6">
-        {/* BG */}
+      <section className="relative h-screen flex items-center justify-center text-white text-center px-6">
         <div className="absolute inset-0 z-0">
           <img 
             src="https://images.pexels.com/photos/4531667/pexels-photo-4531667.jpeg" 
@@ -25,7 +24,6 @@ export default function Home() {
           <div className="absolute inset-0 bg-black/45" />
         </div>
         
-        {/* Content */}
         <div className="relative z-10 max-w-3xl">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
             {t('heroTitle', 'Discover your ideal luxury home in Dubai')}
@@ -33,16 +31,14 @@ export default function Home() {
           <p className="text-lg md:text-xl text-gray-100 mb-10">
             {t('heroSubtitle', 'Uncover a world of unique homes and unforgettable experiences')}
           </p>
+          <Link 
+            to="/contact"
+            className="inline-block bg-white text-black px-10 py-4 rounded-full font-bold text-lg hover:bg-black hover:text-white transition shadow-lg"
+          >
+            {t('heroCta', 'Book today')}
+          </Link>
+        </div>
 
-         <Link 
-  to="/contact"
-  className="inline-block bg-white text-black px-8 md:px-10 py-3 md:py-4 rounded-full font-bold text-lg
-             hover:bg-black hover:text-white transition-colors duration-200 shadow-lg"
->
-  {t('heroCta', 'Book today')}
-</Link>
-
-        {/* Wave */}
         <div className="absolute bottom-0 left-0 right-0 z-10">
           <svg viewBox="0 0 1440 60" fill="white" className="w-full h-auto">
             <path d="M0 60L60 50C120 40 240 30 360 28C480 26 600 32 720 36C840 40 960 42 1080 46C1200 50 1320 54 1380 56L1440 58V60H0Z" />
