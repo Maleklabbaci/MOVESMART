@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white text-gray-900">
       
-   {/* HERO */}
+ {/* HERO */}
 <section className="relative min-h-[100svh] md:min-h-screen flex items-center justify-center text-white text-center px-6 overflow-hidden">
   {/* BG (ne bloque pas les clics) */}
   <div className="absolute inset-0 z-0 pointer-events-none">
@@ -36,15 +36,17 @@ export default function Home() {
       {t('heroSubtitle', 'Uncover a world of unique homes and unforgettable experiences')}
     </p>
 
-    {/* Bouton HERO : blanc/noir puis hover noir/blanc */}
- <Link
-  to="/contact"
-  className="inline-block px-10 py-4 rounded-full font-bold text-lg shadow-lg transition-colors duration-200
-             bg-white !text-black hover:bg-black hover:!text-white
-             focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
->
-  {t('heroCta', 'Book today')}
-</Link>
+    {/* Bouton HERO */}
+    <Link
+      to="/contact"
+      className="inline-block px-10 py-4 rounded-full font-bold text-lg shadow-lg transition-colors duration-200
+                 bg-white !text-black hover:bg-black hover:!text-white
+                 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+    >
+      {t('heroCta', 'Book today')}
+    </Link>
+  </div>
+  {/* ✅ </div> AJOUTÉ ICI POUR FERMER LE CONTENT */}
 
   {/* Wave */}
   <div className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none translate-y-[1px]">
