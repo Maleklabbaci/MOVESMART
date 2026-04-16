@@ -25,16 +25,15 @@ function LanguageSelector({ transparent }) {
 
   return (
     <div className="relative">
-    <button
-  onClick={() => setIsOpen(!isOpen)}
-  className={`px-4 py-2 rounded-lg font-medium transition text-sm
-    ${transparent 
-      ? 'text-white hover:opacity-70' 
-      : 'text-black hover:bg-gray-100'}`}
->
-  {current.label}
-</button>
-
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className={`px-4 py-2 rounded-lg font-medium transition text-sm
+          ${transparent 
+            ? 'text-white hover:bg-white/10' 
+            : 'text-black hover:bg-gray-100'}`}
+      >
+        {current.label}
+      </button>
 
       {isOpen && (
         <div className="absolute right-0 mt-2 w-24 bg-white border rounded-lg shadow-lg z-50 py-1">
@@ -62,7 +61,9 @@ function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -73,14 +74,18 @@ function Header() {
     <header className={`fixed top-0 left-0 right-0 z-50 h-20 transition-all duration-300 px-6 md:px-10 flex items-center justify-between
       ${transparent ? 'bg-transparent' : 'bg-white shadow-md border-b border-gray-100'}`}>
 
+      {/* Logo */}
       <Link to="/" className="flex items-center">
-       <img
-  src="https://i.ibb.co/60PJ8PVw/aass.png"
-  alt={companyInfo.brand}
-  className={`h-9 md:h-11 w-auto transition duration-300 ${transparent ? '' : 'brightness-0'}`}
-/>
+        <img 
+          src="https://i.ibb.co/60PJ8PVw/aass.png" 
+          alt={companyInfo.brand} 
+          className={`h-9 md:h-11 w-auto transition-all duration-300 ${
+            transparent ? '' : 'brightness-0'
+          }`}
+        />
       </Link>
 
+      {/* Navigation */}
       <nav className={`hidden md:flex items-center gap-10 text-sm font-medium absolute left-1/2 -translate-x-1/2
         ${transparent ? 'text-white' : 'text-gray-900'}`}>
         <Link to="/" className="hover:opacity-70 transition">Home</Link>
@@ -89,20 +94,19 @@ function Header() {
         <Link to="/contact" className="hover:opacity-70 transition">Contact</Link>
       </nav>
 
+      {/* Right side */}
       <div className="flex items-center gap-4">
         <LanguageSelector transparent={transparent} />
-        
-<Link
-  to="/contact"
-  className={`px-6 py-2.5 text-sm font-semibold rounded-full transition-colors
-    ${transparent
-      ? 'bg-white !text-black hover:bg-gray-100'
-      : 'bg-black !text-white hover:bg-gray-800'}`}
-  style={{ color: transparent ? '#000' : '#fff' }}
->
-  Get Started
-</Link>
-        
+
+        <Link 
+          to="/contact"
+          className={`px-6 py-2.5 text-sm font-semibold rounded-full transition
+            ${transparent 
+              ? 'bg-white text-black hover:bg-gray-100' 
+              : 'bg-black text-white hover:bg-gray-800'}`}
+        >
+          Get Started
+        </Link>
       </div>
     </header>
   );
