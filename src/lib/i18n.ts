@@ -1,55 +1,132 @@
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
 
-i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    resources: {
-      en: {
-        translation: {
-          home: 'Home',
-          listings: 'Listings',
-          about: 'About Us',
-          contact: 'Contact',
-          getStarted: 'Get started',
-          search: 'Search by location or property name...',
-          minPrice: 'Min Price',
-          maxPrice: 'Max Price',
-          sortBy: 'Sort by',
-          priceLow: 'Price: Low to High',
-          priceHigh: 'Price: High to Low',
-          beds: 'Beds (Most)',
-          area: 'Area (Largest)',
-          viewDetails: 'View Details',
-          noListings: 'No listings found matching your search.',
-        },
-      },
-      fr: {
-        translation: {
-          home: 'Accueil',
-          listings: 'Annonces',
-          about: 'À propos',
-          contact: 'Contact',
-          getStarted: 'Commencer',
-          search: 'Rechercher par lieu ou nom...',
-          minPrice: 'Prix Min',
-          maxPrice: 'Prix Max',
-          sortBy: 'Trier par',
-          priceLow: 'Prix: Croissant',
-          priceHigh: 'Prix: Décroissant',
-          beds: 'Lits (Plus)',
-          area: 'Surface (Plus grand)',
-          viewDetails: 'Voir détails',
-          noListings: 'Aucune annonce trouvée.',
-        },
-      },
-    },
-    fallbackLng: 'en',
-    interpolation: {
-      escapeValue: false,
-    },
-  });
+/* Safe Area Support for iPhone Notch */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
 
-export default i18n;
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Font optimization */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "kern" 1;
+}
+
+/* Images optimization */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Link default styles */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Button reset */
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* Focus visible for accessibility */
+*:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  /* Prevent zoom on input focus iOS */
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  /* Better touch targets */
+  button,
+  a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Prevent bounce scroll */
+  body {
+    overscroll-behavior: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  * {
+    background: transparent !important;
+    color: #000 !important;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-in-out;
+}
