@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Menu, X } from 'lucide-react';
 
 import Home from './pages/Home';
 import Listings from './pages/Listings';
@@ -30,8 +29,8 @@ function LanguageSelector({ transparent }) {
         onClick={() => setIsOpen(!isOpen)}
         className={`px-4 py-2 rounded-lg border font-medium transition text-sm
           ${transparent 
-            ? 'border-white/50 bg-white text-black' 
-            : 'border-gray-300 bg-black text-white'}`}
+            ? 'border-white/60 text-white bg-transparent hover:bg-white/10' 
+            : 'border-gray-300 bg-black text-white hover:bg-gray-800'}`}
       >
         {current.label}
       </button>
@@ -45,7 +44,7 @@ function LanguageSelector({ transparent }) {
                 i18n.changeLanguage(lang.code);
                 setIsOpen(false);
               }}
-              className="w-full text-left px-4 py-2.5 hover:bg-gray-100 text-sm font-medium"
+              className="w-full text-left px-4 py-2.5 hover:bg-gray-100 text-sm font-medium text-black"
             >
               {lang.label}
             </button>
@@ -71,7 +70,7 @@ function Header() {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 h-20 transition-all duration-300 px-6 md:px-10 flex items-center justify-between
-      ${transparent ? 'bg-transparent text-white' : 'bg-white text-gray-900 shadow-md border-b'}`}>
+      ${transparent ? 'bg-transparent' : 'bg-white shadow-md border-b border-gray-100'}`}>
 
       {/* Logo */}
       <Link to="/" className="flex items-center">
@@ -83,7 +82,8 @@ function Header() {
       </Link>
 
       {/* Navigation centrée */}
-      <nav className="hidden md:flex items-center gap-10 text-sm font-medium absolute left-1/2 -translate-x-1/2">
+      <nav className={`hidden md:flex items-center gap-10 text-sm font-medium absolute left-1/2 -translate-x-1/2
+        ${transparent ? 'text-white' : 'text-gray-900'}`}>
         <Link to="/" className="hover:opacity-70 transition">Home</Link>
         <Link to="/listings" className="hover:opacity-70 transition">Listings</Link>
         <Link to="/about" className="hover:opacity-70 transition">About</Link>
@@ -98,7 +98,7 @@ function Header() {
           to="/contact"
           className={`px-6 py-2.5 text-sm font-semibold rounded-full transition
             ${transparent 
-              ? 'bg-white text-black hover:bg-gray-100' 
+              ? 'bg-transparent border border-white text-white hover:bg-white/10' 
               : 'bg-black text-white hover:bg-gray-800'}`}
         >
           Get Started
