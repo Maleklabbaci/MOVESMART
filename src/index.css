@@ -52,6 +52,29 @@ img {
   display: block;
 }
 
+/* Image lazy loading fallback */
+img[loading="lazy"] {
+  background-color: #f3f4f6;
+  min-height: 200px;
+  background-image: linear-gradient(
+    90deg,
+    #f3f4f6 0%,
+    #e5e7eb 50%,
+    #f3f4f6 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
 /* Link default styles */
 a {
   color: inherit;
@@ -123,6 +146,7 @@ button {
 .animate-slide-up {
   animation: slideUp 0.3s ease-in-out;
 }
+
 /* Force petit logo */
 header img {
   height: 24px !important;
