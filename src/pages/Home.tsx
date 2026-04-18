@@ -10,7 +10,7 @@ export default function Home() {
   const featuredListings = listings.slice(0, 3);
 
   return (
-<div className="min-h-screen pt-20">
+<div className="min-h-screen">
       
       {/* ==================== HERO ==================== */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -51,7 +51,7 @@ export default function Home() {
             </Link>
             <Link
               to="/contact"
-              className="inline-flex items-center justify-center gap-2 bg-transparent text-white border border-white/40 px-10 py-4 text-sm font-semibold tracking-widest uppercase hover:bg-white/10 transition-all duration-300"
+              className="inline-flex items-center justify-center gap-2 bg-transparent text-white border-2 border-white px-10 py-4 text-sm font-semibold tracking-widest uppercase hover:bg-white hover:text-black transition-all duration-300"
             >
               Contact
             </Link>
