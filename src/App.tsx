@@ -58,7 +58,7 @@ function LanguageSelector({ transparent }: { transparent: boolean }) {
 function Header() {
   const location = useLocation();
   const isHome = location.pathname === '/';
-  const [scrolled, setScrolled] = useState(false);
+  const [scrolled, setScrolled] = useState(() => typeof window !== 'undefined' ? window.scrollY > 50 : false);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -69,7 +69,7 @@ function Header() {
   }, []);
 
   const transparent = isHome && !scrolled;
-  const linkClass = `hover:opacity-75 transition ${transparent ? 'text-white' : 'text-gray-900'}`;
+  const linkClass = `hover:opacity-75 transition font-medium ${transparent ? 'text-white' : 'text-gray-900'}`;
 
   return (
     <header
@@ -90,7 +90,7 @@ function Header() {
         </div>
 
         {/* CENTER */}
-        <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-10 text-sm font-medium">
+        <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-10 text-sm">
           <Link to="/" className={linkClass}>{t('home')}</Link>
           <Link to="/listings" className={linkClass}>{t('listings')}</Link>
           <Link to="/about" className={linkClass}>{t('about')}</Link>
@@ -103,10 +103,13 @@ function Header() {
 
           <Link
             to="/contact"
-            className={`px-6 py-2.5 text-sm font-semibold rounded-full border-2 transition-colors
-              ${transparent ? 'border-white text-white hover:bg-white hover:text-black' : 'bg-black text-white border-black hover:bg-gray-800'}`}
+            className={`px-6 py-2.5 text-sm font-semibold rounded-full border-2 transition-all duration-300
+              ${transparent
+                ? 'border-white text-white hover:bg-white hover:text-black'
+                : 'bg-black text-white border-black hover:bg-gray-800'
+              }`}
           >
-            {t('getStarted', 'Get Started')}
+            {t('getStarted', 'Commencer')}
           </Link>
         </div>
       </div>
