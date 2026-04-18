@@ -29,7 +29,7 @@ function LanguageSelector({ transparent }: { transparent: boolean }) {
         type="button"
         onClick={() => setOpen((v) => !v)}
         className={`px-4 py-2 rounded-lg text-sm font-semibold transition
-          ${transparent ? 'bg-white text-black hover:bg-gray-100' : 'bg-white text-black border border-gray-200 hover:bg-gray-50'}`}
+          ${transparent ? 'text-white hover:opacity-75' : 'bg-white text-black border border-gray-200 hover:bg-gray-50'}`}
       >
         {current.label}
       </button>
@@ -83,7 +83,7 @@ function Header() {
             <img
               src="https://i.ibb.co/60PJ8PVw/aass.png"
               alt={companyInfo.brand}
-              className={`h-9 md:h-11 w-auto transition duration-300 ${transparent ? '' : 'brightness-0'}`}
+              className={`h-9 md:h-11 w-auto transition duration-300 ${transparent ? 'brightness-0 invert' : 'brightness-0'}`}
               referrerPolicy="no-referrer"
             />
           </Link>
@@ -103,9 +103,8 @@ function Header() {
 
           <Link
             to="/contact"
-            className={`px-6 py-2.5 text-sm font-semibold rounded-full transition-colors
-              ${transparent ? 'bg-white !text-black hover:bg-gray-100' : 'bg-black !text-white hover:bg-gray-800'}`}
-            style={{ color: transparent ? '#000' : '#fff' }}
+            className={`px-6 py-2.5 text-sm font-semibold rounded-full border-2 transition-colors
+              ${transparent ? 'border-white text-white hover:bg-white hover:text-black' : 'bg-black text-white border-black hover:bg-gray-800'}`}
           >
             {t('getStarted', 'Get Started')}
           </Link>
