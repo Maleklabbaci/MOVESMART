@@ -7,41 +7,41 @@ export default function Contact() {
   const position: [number, number] = [25.2048, 55.2708]; // Dubai coordinates
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 font-sans pt-32 pb-20 px-10">
+    <div className="min-h-screen bg-white text-gray-900 font-sans pt-24 md:pt-32 pb-20 px-6 md:px-10">
       <div className="max-w-6xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
+        <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-start">
           <div>
-            <h1 className="text-6xl font-extrabold tracking-tighter mb-8">Get in touch</h1>
-            <p className="text-xl text-gray-600 mb-12 leading-relaxed">
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter mb-6 md:mb-8">Get in touch</h1>
+            <p className="text-lg md:text-xl text-gray-600 mb-8 md:mb-12 leading-relaxed">
               Ready to start your journey in Dubai? Our team of experts is here to guide you through every step of your investment and relocation process.
             </p>
             
-            <div className="space-y-8 mb-12">
-              <div className="flex items-start gap-4">
-                <MapPin className="w-8 h-8 text-black mt-1" />
+            <div className="space-y-6 md:space-y-8 mb-8 md:mb-12">
+              <div className="flex items-start gap-3 md:gap-4">
+                <MapPin className="w-6 md:w-8 h-6 md:h-8 text-black mt-1 flex-shrink-0" />
                 <div>
-                  <h4 className="font-bold text-lg">Our Office</h4>
-                  <p className="text-gray-600">{companyInfo.location}</p>
+                  <h4 className="font-bold text-base md:text-lg">Our Office</h4>
+                  <p className="text-sm md:text-base text-gray-600">{companyInfo.location}</p>
                 </div>
               </div>
-              <div className="flex items-start gap-4">
-                <Phone className="w-8 h-8 text-black mt-1" />
+              <div className="flex items-start gap-3 md:gap-4">
+                <Phone className="w-6 md:w-8 h-6 md:h-8 text-black mt-1 flex-shrink-0" />
                 <div>
-                  <h4 className="font-bold text-lg">WhatsApp</h4>
-                  <p className="text-gray-600">{companyInfo.whatsapp}</p>
+                  <h4 className="font-bold text-base md:text-lg">WhatsApp</h4>
+                  <p className="text-sm md:text-base text-gray-600">{companyInfo.whatsapp}</p>
                 </div>
               </div>
-              <div className="flex items-start gap-4">
-                <Mail className="w-8 h-8 text-black mt-1" />
+              <div className="flex items-start gap-3 md:gap-4">
+                <Mail className="w-6 md:w-8 h-6 md:h-8 text-black mt-1 flex-shrink-0" />
                 <div>
-                  <h4 className="font-bold text-lg">Email Support</h4>
-                  <p className="text-gray-600">contact@movesmartinvest.com</p>
+                  <h4 className="font-bold text-base md:text-lg">Email Support</h4>
+                  <p className="text-sm md:text-base text-gray-600">contact@movesmartinvest.com</p>
                 </div>
               </div>
             </div>
 
             {/* Interactive Map */}
-            <div className="rounded-3xl h-80 overflow-hidden shadow-sm border border-gray-100">
+            <div className="rounded-3xl h-64 md:h-80 overflow-hidden shadow-sm border border-gray-100">
               <MapContainer center={position} zoom={13} style={{ height: '100%', width: '100%' }}>
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -56,23 +56,23 @@ export default function Contact() {
             </div>
           </div>
 
-          <div className="bg-gray-50 p-10 rounded-3xl border border-gray-100 shadow-sm">
-            <h3 className="text-3xl font-bold mb-8">Send us a message</h3>
-            <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-              <div className="grid grid-cols-2 gap-6">
-                <input type="text" placeholder="First Name" className="w-full p-5 border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none bg-white transition-all focus:border-black" />
-                <input type="text" placeholder="Last Name" className="w-full p-5 border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none bg-white transition-all focus:border-black" />
+          <div className="bg-gray-50 p-6 md:p-10 rounded-3xl border border-gray-100 shadow-sm">
+            <h3 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8">Send us a message</h3>
+            <form className="space-y-4 md:space-y-6" onSubmit={(e) => e.preventDefault()}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                <input type="text" placeholder="First Name" className="w-full px-4 md:px-5 py-3 md:py-5 border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none bg-white transition-all focus:border-black text-sm md:text-base" />
+                <input type="text" placeholder="Last Name" className="w-full px-4 md:px-5 py-3 md:py-5 border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none bg-white transition-all focus:border-black text-sm md:text-base" />
               </div>
-              <input type="email" placeholder="Email Address" className="w-full p-5 border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none bg-white transition-all focus:border-black" />
-              <select className="w-full p-5 border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none bg-white text-gray-500 transition-all focus:border-black">
+              <input type="email" placeholder="Email Address" className="w-full px-4 md:px-5 py-3 md:py-5 border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none bg-white transition-all focus:border-black text-sm md:text-base" />
+              <select className="w-full px-4 md:px-5 py-3 md:py-5 border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none bg-white text-gray-500 transition-all focus:border-black text-sm md:text-base">
                 <option>Select Inquiry Type</option>
                 <option>Real Estate Investment</option>
                 <option>Company Formation</option>
                 <option>Visa Services</option>
                 <option>General Inquiry</option>
               </select>
-              <textarea placeholder="How can we help you?" className="w-full p-5 border border-gray-200 rounded-3xl focus:ring-2 focus:ring-black outline-none bg-white transition-all focus:border-black" rows={6}></textarea>
-              <button className="w-full bg-black text-white px-10 py-5 rounded-full font-bold hover:bg-gray-800 transition text-lg shadow-lg hover:shadow-xl">Send Message</button>
+              <textarea placeholder="How can we help you?" className="w-full px-4 md:px-5 py-3 md:py-5 border border-gray-200 rounded-3xl focus:ring-2 focus:ring-black outline-none bg-white transition-all focus:border-black text-sm md:text-base" rows={6}></textarea>
+              <button className="w-full bg-black text-white px-10 py-3 md:py-5 rounded-full font-bold hover:bg-gray-800 transition text-base md:text-lg shadow-lg hover:shadow-xl">Send Message</button>
             </form>
           </div>
         </div>

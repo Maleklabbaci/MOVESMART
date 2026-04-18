@@ -46,7 +46,7 @@ const ListingCard = ({ listing }: ListingCardProps) => {
 
   return (
     <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300">
-      <div className="relative h-60 w-full overflow-hidden">
+      <div className="relative h-60 w-full overflow-hidden bg-gray-100">
         <img src={listing.images[currentIndex]} alt={listing.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" loading="lazy" />
         <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-gray-900 shadow-sm">
           {listing.type}
@@ -66,25 +66,25 @@ const ListingCard = ({ listing }: ListingCardProps) => {
         )}
       </div>
       <div className="p-6">
-        <h4 className="font-bold text-xl mb-1">{listing.title}</h4>
-        <p className="text-sm text-gray-500 mb-4">{listing.location}</p>
-        <div className="font-bold text-2xl mb-6">AED {listing.price.toLocaleString()}</div>
+        <h4 className="font-bold text-lg md:text-xl mb-1">{listing.title}</h4>
+        <p className="text-xs md:text-sm text-gray-500 mb-4">{listing.location}</p>
+        <div className="font-bold text-xl md:text-2xl mb-6">AED {listing.price.toLocaleString()}</div>
         
-        <div className="flex items-center justify-between pt-6 border-t border-gray-100 text-gray-600 mb-6">
+        <div className="flex items-center justify-between pt-6 border-t border-gray-100 text-gray-600 mb-6 gap-2 flex-wrap">
           <div className="flex items-center gap-2">
             <Bed className="w-5 h-5" />
-            <span className="text-sm font-medium">{listing.beds} Beds</span>
+            <span className="text-xs md:text-sm font-medium">{listing.beds}</span>
           </div>
           <div className="flex items-center gap-2">
             <Bath className="w-5 h-5" />
-            <span className="text-sm font-medium">{listing.baths} Baths</span>
+            <span className="text-xs md:text-sm font-medium">{listing.baths}</span>
           </div>
           <div className="flex items-center gap-2">
             <Square className="w-5 h-5" />
-            <span className="text-sm font-medium">{listing.area.toLocaleString()} sqft</span>
+            <span className="text-xs md:text-sm font-medium">{listing.area.toLocaleString()}</span>
           </div>
         </div>
-        <Link to={`/listings/${listing.id}`} className="block w-full text-center bg-black text-white py-3 rounded-full font-bold hover:bg-gray-800 transition">
+        <Link to={`/listings/${listing.id}`} className="block w-full text-center bg-black text-white py-3 rounded-full font-bold hover:bg-gray-800 transition text-sm md:text-base">
           View Details
         </Link>
       </div>
@@ -119,53 +119,55 @@ export default function Listings() {
   return (
     <div className="min-h-screen bg-white text-gray-900 font-sans pt-24 pb-16 px-6 md:px-10">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter mb-8 md:mb-10">Our Listings</h1>
+        <h1 className="text-3xl md:text-6xl font-extrabold tracking-tighter mb-6 md:mb-10">Our Listings</h1>
         
-        <div className="flex flex-col gap-4 mb-8 md:flex-row md:mb-12">
+        <div className="flex flex-col gap-3 md:gap-4 mb-8 md:mb-12">
           <input
             type="text"
             placeholder="Search by location or property name..."
-            className="flex-grow p-4 md:p-6 text-base md:text-lg border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none shadow-sm"
+            className="w-full px-4 md:px-6 py-3 md:py-4 text-sm md:text-base border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none shadow-sm"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <input
-            type="number"
-            placeholder="Min Price"
-            className="w-full md:w-40 p-4 md:p-6 text-base md:text-lg border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none shadow-sm"
-            value={minPrice}
-            onChange={(e) => setMinPrice(e.target.value)}
-          />
-          <input
-            type="number"
-            placeholder="Max Price"
-            className="w-full md:w-40 p-4 md:p-6 text-base md:text-lg border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none shadow-sm"
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(e.target.value)}
-          />
-          <div className="relative">
-            <select
-              className="appearance-none w-full p-4 md:p-6 pl-6 pr-12 text-base md:text-lg border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none shadow-sm bg-white cursor-pointer"
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-            >
-              <option value="default">Sort by</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
-              <option value="beds">Beds (Most)</option>
-              <option value="area">Area (Largest)</option>
-            </select>
-            <ChevronDown className="absolute right-6 top-5 md:top-7 w-5 h-5 md:w-6 md:h-6 text-gray-400 pointer-events-none" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+            <input
+              type="number"
+              placeholder="Min Price"
+              className="w-full px-4 md:px-6 py-3 md:py-4 text-sm md:text-base border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none shadow-sm"
+              value={minPrice}
+              onChange={(e) => setMinPrice(e.target.value)}
+            />
+            <input
+              type="number"
+              placeholder="Max Price"
+              className="w-full px-4 md:px-6 py-3 md:py-4 text-sm md:text-base border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none shadow-sm"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+            />
+            <div className="relative">
+              <select
+                className="appearance-none w-full px-4 md:px-6 py-3 md:py-4 pl-4 pr-10 text-sm md:text-base border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none shadow-sm bg-white cursor-pointer"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+              >
+                <option value="default">Sort by</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="beds">Beds (Most)</option>
+                <option value="area">Area (Largest)</option>
+              </select>
+              <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-gray-400 pointer-events-none" />
+            </div>
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {sortedListings.map((listing) => (
             <ListingCard key={listing.id} listing={listing} />
           ))}
         </div>
         {sortedListings.length === 0 && (
-          <p className="text-center text-gray-500 text-lg md:text-xl mt-10">No listings found matching your search.</p>
+          <p className="text-center text-gray-500 text-base md:text-lg mt-10">No listings found matching your search.</p>
         )}
       </div>
     </div>
