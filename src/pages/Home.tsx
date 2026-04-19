@@ -10,7 +10,7 @@ export default function Home() {
   const featuredListings = listings.slice(0, 3);
 
   return (
-<div className="min-h-screen">
+<div className="min-h-screen pt-20">
       
       {/* ==================== HERO ==================== */}
       <section className="relative h-[calc(100svh-64px)] sm:h-screen flex items-center justify-center overflow-hidden">
@@ -25,7 +25,7 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 max-w-5xl mx-auto text-center px-6">
-          <div className="inline-flex items-center gap-2 mb-4 sm:mb-8">
+          <div className="inline-flex items-center gap-2 mb-3 sm:mb-8">
             <div className="h-px w-12 bg-amber-500" />
             <span className="text-amber-500 text-xs tracking-[0.3em] uppercase font-medium">MoveSmart Consultancy</span>
             <div className="h-px w-12 bg-amber-500" />
@@ -36,7 +36,7 @@ export default function Home() {
             <span className="text-amber-500">à Dubai</span>
           </h1>
           
-          <p className="text-base sm:text-lg text-gray-300 max-w-2xl mx-auto font-light leading-relaxed mb-6 sm:mb-10">
+          <p className="text-base sm:text-lg text-gray-300 mb-5 sm:mb-10 max-w-2xl mx-auto font-light leading-relaxed">
             Découvrez une sélection exclusive de propriétés de luxe. 
             Investissement immobilier, visa résidence et accompagnement premium.
           </p>
@@ -44,14 +44,14 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/listings"
-              className="inline-flex items-center justify-center gap-2 bg-amber-500 text-black px-6 sm:px-10 py-4 text-sm font-semibold tracking-widest uppercase hover:bg-amber-400 transition-all duration-300"
+              className="inline-flex items-center justify-center gap-2 bg-amber-500 text-black px-5 sm:px-10 py-3 sm:py-4 text-sm font-semibold tracking-widest uppercase hover:bg-amber-400 transition-all duration-300"
             >
               Nos Propriétés
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               to="/contact"
-              className="inline-flex items-center justify-center gap-2 bg-transparent text-white border-2 border-white px-6 sm:px-10 py-4 text-sm font-semibold tracking-widest uppercase hover:bg-white hover:text-black transition-all duration-300"
+              className="inline-flex items-center justify-center gap-2 bg-transparent text-white border-2 border-white px-5 sm:px-10 py-3 sm:py-4 text-sm font-semibold tracking-widest uppercase hover:bg-white hover:text-black transition-all duration-300"
             >
               Contact
             </Link>
@@ -247,7 +247,7 @@ export default function Home() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/contact" className="inline-flex items-center justify-center gap-2 bg-amber-500 text-black px-6 sm:px-10 py-4 text-sm font-semibold tracking-widest uppercase hover:bg-amber-400 transition-all duration-300">
+            <Link to="/contact" className="inline-flex items-center justify-center gap-2 bg-amber-500 text-black px-5 sm:px-10 py-3 sm:py-4 text-sm font-semibold tracking-widest uppercase hover:bg-amber-400 transition-all duration-300">
               Prendre Rendez-vous
             </Link>
             <a href={`https://wa.me/${companyInfo.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 bg-transparent text-white border border-white/30 px-10 py-4 text-sm font-semibold tracking-widest uppercase hover:bg-white/10 transition-all duration-300">
