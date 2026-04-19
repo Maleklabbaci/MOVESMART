@@ -101,16 +101,16 @@ const linkClass = `hover:opacity-75 transition font-medium ${transparent ? '!tex
         <div className="flex items-center justify-end gap-4 min-w-[160px]">
           <LanguageSelector transparent={transparent} />
 
-          <Link
-            to="/contact"
-            className={`px-6 py-2.5 text-sm font-semibold rounded-full border-2 transition-all duration-300
-              ${transparent
-                ? 'border-white text-white hover:bg-white hover:text-black'
-                : 'bg-black text-white border-black hover:bg-gray-800'
-              }`}
-          >
-            {t('getStarted', 'Commencer')}
-          </Link>
+      <Link
+  to="/contact"
+  className={`px-6 py-2.5 text-sm font-semibold rounded-full border-2 transition-all duration-300
+    ${transparent
+      ? 'border-white !text-white hover:bg-white hover:!text-black'
+      : 'border-black bg-black !text-white hover:bg-gray-800 hover:!text-white'
+    }`}
+>
+  {t('getStarted', 'Commencer')}
+</Link>
         </div>
       </div>
     </header>
