@@ -78,7 +78,7 @@ export default function Admin() {
   // Login Screen
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black flex items-center justify-center px-4 pt-20 pb-6">
         <div className="w-full max-w-md">
           <div className="bg-white rounded-2xl shadow-2xl p-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
@@ -144,7 +144,7 @@ export default function Admin() {
 
   // Dashboard Screen
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pt-20">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
