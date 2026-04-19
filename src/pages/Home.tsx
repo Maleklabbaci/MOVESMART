@@ -13,7 +13,7 @@ export default function Home() {
 <div className="min-h-screen pt-20">
       
       {/* ==================== HERO ==================== */}
-      <section className="relative h-[calc(100svh-64px)] sm:h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative h-[calc(100svh-144px)] sm:h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img
             src="https://images.pexels.com/photos/4531667/pexels-photo-4531667.jpeg"
