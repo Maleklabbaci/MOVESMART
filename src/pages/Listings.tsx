@@ -1,63 +1,77 @@
 import React, { useState, useEffect } from 'react';
-import { Bed, Bath, Square, ChevronDown, ChevronLeft, ChevronRight, Share2 } from 'lucide-react';
+import { Bed, Bath, Square, ChevronLeft, ChevronRight, Share2, Search, SlidersHorizontal } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 
 const ListingCard = ({ listing }: { listing: any }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [idx, setIdx] = useState(0);
   const images = listing.images || [];
-
-  const nextImage = (e: React.MouseEvent) => { e.preventDefault(); setCurrentIndex((prev) => (prev + 1) % images.length); };
-  const prevImage = (e: React.MouseEvent) => { e.preventDefault(); setCurrentIndex((prev) => (prev - 1 + images.length) % images.length); };
-  const handleShare = (e: React.MouseEvent) => {
+  const next = (e: React.MouseEvent) => { e.preventDefault(); setIdx(p => (p + 1) % images.length); };
+  const prev = (e: React.MouseEvent) => { e.preventDefault(); setIdx(p => (p - 1 + images.length) % images.length); };
+  const share = (e: React.MouseEvent) => {
     e.preventDefault();
     const url = `${window.location.origin}/listings/${listing.id}`;
-    if (navigator.share) navigator.share({ title: listing.title, url }).catch(console.error);
-    else navigator.clipboard.writeText(url).then(() => alert('Link copied!'));
+    navigator.share ? navigator.share({ title: listing.title, url }).catch(console.error) : navigator.clipboard.writeText(url);
   };
 
   return (
-    <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300">
-      <div className="relative h-60 w-full overflow-hidden bg-gray-100">
+    <Link to={`/listings/${listing.id}`} className="group block">
+      <div className="aspect-[4/3] overflow-hidden bg-white/[0.03] mb-5 relative">
         {images.length > 0
-          ? <img src={images[currentIndex]} alt={listing.title} className="w-full h-full object-cover" loading="lazy" />
-          : <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">No image</div>
+          ? <img src={images[idx]} alt={listing.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
+          : <div className="w-full h-full flex items-center justify-center text-gray-700 text-xs font-sans">No image</div>
         }
-        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-gray-900 shadow-sm">{listing.type}</div>
-        <button onClick={handleShare} className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm p-2 rounded-full hover:bg-white transition shadow-sm">
-          <Share2 className="w-5 h-5 text-gray-900" />
+        <div className="absolute top-4 left-4 bg-black/70 backdrop-blur-sm px-3 py-1">
+          <span className="text-amber-400 text-xs font-sans tracking-widest uppercase">{listing.type}</span>
+        </div>
+        <button onClick={share} className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm p-2 hover:bg-black/80 transition">
+          <Share2 className="w-4 h-4 text-white" />
         </button>
         {images.length > 1 && (
           <>
-            <button onClick={prevImage} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-1 rounded-full hover:bg-white transition"><ChevronLeft className="w-6 h-6 text-gray-800" /></button>
-            <button onClick={nextImage} className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-1 rounded-full hover:bg-white transition"><ChevronRight className="w-6 h-6 text-gray-800" /></button>
+            <button onClick={prev} className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 p-1.5 hover:bg-black/80 transition">
+              <ChevronLeft className="w-4 h-4 text-white" />
+            </button>
+            <button onClick={next} className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 p-1.5 hover:bg-black/80 transition">
+              <ChevronRight className="w-4 h-4 text-white" />
+            </button>
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1">
+              {images.map((_: any, i: number) => (
+                <div key={i} className={`w-1 h-1 rounded-full transition-colors ${i === idx ? 'bg-amber-400' : 'bg-white/30'}`} />
+              ))}
+            </div>
           </>
         )}
       </div>
-      <div className="p-6">
-        <h4 className="font-bold text-lg md:text-xl mb-1">{listing.title}</h4>
-        <p className="text-xs md:text-sm text-gray-500 mb-4">{listing.location}</p>
-        <div className="font-bold text-xl md:text-2xl mb-6">AED {listing.price?.toLocaleString()}</div>
-        <div className="flex items-center justify-between pt-6 border-t border-gray-100 text-gray-600 mb-6 gap-2 flex-wrap">
-          <div className="flex items-center gap-2"><Bed className="w-5 h-5" /><span className="text-xs md:text-sm font-medium">{listing.beds}</span></div>
-          <div className="flex items-center gap-2"><Bath className="w-5 h-5" /><span className="text-xs md:text-sm font-medium">{listing.baths}</span></div>
-          <div className="flex items-center gap-2"><Square className="w-5 h-5" /><span className="text-xs md:text-sm font-medium">{listing.area?.toLocaleString()}</span></div>
-        </div>
-        <Link to={`/listings/${listing.id}`} className="block w-full text-center bg-black text-white py-3 rounded-full font-bold hover:bg-gray-800 transition text-sm md:text-base">
-          View Details
-        </Link>
+      <div className="flex items-center gap-2 text-gray-600 text-xs font-sans mb-2">
+        <span className="text-xs">📍</span>{listing.location}
       </div>
-    </div>
+      <h3 className="text-xl font-light mb-3 group-hover:text-amber-400 transition-colors duration-300" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+        {listing.title}
+      </h3>
+      <div className="flex items-center gap-4 text-xs text-gray-600 font-sans mb-4">
+        <span className="flex items-center gap-1.5"><Bed className="w-3.5 h-3.5" /> {listing.beds} ch.</span>
+        <span className="flex items-center gap-1.5"><Bath className="w-3.5 h-3.5" /> {listing.baths} sdb.</span>
+        <span className="flex items-center gap-1.5"><Square className="w-3.5 h-3.5" /> {listing.area?.toLocaleString()} sqft</span>
+      </div>
+      <div className="flex items-center justify-between pt-4 border-t border-white/[0.06]">
+        <div className="text-2xl font-light text-amber-400" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          AED {listing.price?.toLocaleString()}
+        </div>
+        <span className="text-xs font-sans text-gray-600 tracking-widest uppercase group-hover:text-amber-400 transition-colors">Voir →</span>
+      </div>
+    </Link>
   );
 };
 
 export default function Listings() {
-  const [listings, setListings] = useState([]);
+  const [listings, setListings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [search, setSearch] = useState('');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [sortBy, setSortBy] = useState('default');
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     supabase.from('listings').select('*').order('created_at', { ascending: false })
@@ -66,10 +80,11 @@ export default function Listings() {
 
   const filtered = listings
     .filter((l: any) => {
-      const matchSearch = l.title?.toLowerCase().includes(searchTerm.toLowerCase()) || l.location?.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchMin = minPrice === '' || l.price >= Number(minPrice);
-      const matchMax = maxPrice === '' || l.price <= Number(maxPrice);
-      return matchSearch && matchMin && matchMax;
+      const s = search.toLowerCase();
+      const match = l.title?.toLowerCase().includes(s) || l.location?.toLowerCase().includes(s);
+      const min = minPrice === '' || l.price >= Number(minPrice);
+      const max = maxPrice === '' || l.price <= Number(maxPrice);
+      return match && min && max;
     })
     .sort((a: any, b: any) => {
       if (sortBy === 'price-low') return a.price - b.price;
@@ -80,38 +95,100 @@ export default function Listings() {
     });
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 pt-24 pb-16 px-6 md:px-10">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl md:text-6xl font-extrabold tracking-tighter mb-6 md:mb-10">Our Listings</h1>
-        <div className="flex flex-col gap-3 mb-8 md:mb-12">
-          <input type="text" placeholder="Search by location or name..."
-            className="w-full px-4 py-3 text-sm border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none shadow-sm"
-            value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <input type="number" placeholder="Min Price" className="w-full px-4 py-3 text-sm border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none shadow-sm" value={minPrice} onChange={(e) => setMinPrice(e.target.value)} />
-            <input type="number" placeholder="Max Price" className="w-full px-4 py-3 text-sm border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none shadow-sm" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} />
-            <div className="relative">
-              <select className="appearance-none w-full px-4 py-3 text-sm border border-gray-200 rounded-full focus:ring-2 focus:ring-black outline-none shadow-sm bg-white cursor-pointer" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                <option value="default">Sort by</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="beds">Beds (Most)</option>
-                <option value="area">Area (Largest)</option>
-              </select>
-              <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-            </div>
+    <div className="min-h-screen bg-[#080808] text-white" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+
+      {/* HEADER */}
+      <section className="pt-40 pb-16 px-6 border-b border-white/[0.04]">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="h-px w-8 bg-amber-400" />
+            <span className="text-amber-400 text-xs font-sans tracking-[0.3em] uppercase">Propriétés</span>
+          </div>
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+            <h1 className="text-5xl sm:text-6xl font-light leading-[0.9]">
+              Nos biens<br /><em className="not-italic text-amber-400">d'exception</em>
+            </h1>
+            <p className="text-gray-500 font-sans font-light text-sm max-w-xs leading-relaxed">
+              {loading ? '' : `${filtered.length} propriété${filtered.length > 1 ? 's' : ''} disponible${filtered.length > 1 ? 's' : ''}`}
+            </p>
           </div>
         </div>
-        {loading ? (
-          <div className="flex justify-center py-20"><div className="w-8 h-8 border-4 border-amber-500 border-t-transparent rounded-full animate-spin" /></div>
-        ) : filtered.length === 0 ? (
-          <p className="text-center text-gray-500 mt-10">{listings.length === 0 ? 'Aucun bien disponible.' : 'Aucun résultat.'}</p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {filtered.map((l: any) => <ListingCard key={l.id} listing={l} />)}
+      </section>
+
+      {/* FILTERS */}
+      <section className="py-8 px-6 border-b border-white/[0.04] bg-[#050505]">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+            <div className="relative flex-1">
+              <Search className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
+              <input type="text" placeholder="Rechercher par nom ou localisation..."
+                className="w-full bg-transparent border-b border-white/10 focus:border-amber-400 outline-none py-2 pl-7 text-white placeholder-gray-600 font-sans font-light text-sm transition-colors"
+                value={search} onChange={e => setSearch(e.target.value)} />
+            </div>
+            <button onClick={() => setShowFilters(!showFilters)}
+              className="flex items-center gap-2 text-xs font-sans text-gray-500 hover:text-amber-400 transition-colors tracking-[0.2em] uppercase">
+              <SlidersHorizontal className="w-4 h-4" /> Filtres
+            </button>
           </div>
-        )}
-      </div>
+
+          {showFilters && (
+            <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-6">
+              <div>
+                <label className="text-xs font-sans text-gray-600 tracking-[0.2em] uppercase block mb-2">Prix min (AED)</label>
+                <input type="number" placeholder="0" value={minPrice} onChange={e => setMinPrice(e.target.value)}
+                  className="w-full bg-transparent border-b border-white/10 focus:border-amber-400 outline-none py-2 text-white placeholder-gray-700 font-sans text-sm transition-colors" />
+              </div>
+              <div>
+                <label className="text-xs font-sans text-gray-600 tracking-[0.2em] uppercase block mb-2">Prix max (AED)</label>
+                <input type="number" placeholder="∞" value={maxPrice} onChange={e => setMaxPrice(e.target.value)}
+                  className="w-full bg-transparent border-b border-white/10 focus:border-amber-400 outline-none py-2 text-white placeholder-gray-700 font-sans text-sm transition-colors" />
+              </div>
+              <div>
+                <label className="text-xs font-sans text-gray-600 tracking-[0.2em] uppercase block mb-2">Trier par</label>
+                <select value={sortBy} onChange={e => setSortBy(e.target.value)}
+                  className="w-full bg-transparent border-b border-white/10 focus:border-amber-400 outline-none py-2 text-white font-sans text-sm transition-colors cursor-pointer" style={{ background: 'transparent' }}>
+                  <option value="default" className="bg-[#080808]">Récents</option>
+                  <option value="price-low" className="bg-[#080808]">Prix croissant</option>
+                  <option value="price-high" className="bg-[#080808]">Prix décroissant</option>
+                  <option value="beds" className="bg-[#080808]">Chambres</option>
+                  <option value="area" className="bg-[#080808]">Surface</option>
+                </select>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* GRID */}
+      <section className="py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          {loading ? (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
+              {[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="aspect-[4/3] bg-white/[0.03] animate-pulse" />)}
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="py-32 text-center">
+              <p className="text-gray-600 font-sans font-light text-lg mb-2">
+                {listings.length === 0 ? 'Aucun bien disponible pour le moment.' : 'Aucun résultat pour cette recherche.'}
+              </p>
+              {listings.length === 0 && <p className="text-gray-700 font-sans text-sm">Revenez bientôt — de nouveaux biens arrivent.</p>}
+            </div>
+          ) : (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
+              {filtered.map((l: any) => <ListingCard key={l.id} listing={l} />)}
+            </div>
+          )}
+        </div>
+      </section>
+
+      <footer className="bg-[#030303] border-t border-white/[0.04] py-10 px-6">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+          <p className="text-xs text-gray-700 font-sans">© 2026 MoveSmart Invest. Tous droits réservés.</p>
+          <div className="flex gap-6 text-xs text-gray-700 font-sans">
+            <a href="#" className="hover:text-amber-400 transition-colors">Mentions légales</a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
