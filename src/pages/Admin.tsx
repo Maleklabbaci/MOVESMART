@@ -1,28 +1,32 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Plus, Edit2, Trash2, Eye, EyeOff, X, Save, Upload, ImageIcon } from 'lucide-react';
+import { LogOut, Plus, Edit2, Trash2, Eye, EyeOff, X, Save, Upload, ImageIcon, CheckCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 const EMPTY_FORM = { title: '', type: 'Apartment', location: '', price: '', beds: '', baths: '', area: '', description: '' };
 const TYPES = ['Apartment', 'Villa', 'Penthouse', 'House', 'Townhouse', 'Studio', 'Office', 'Land'];
 
+const inputClass = "w-full px-4 py-2.5 bg-[#111] border border-white/10 focus:border-amber-400 outline-none text-white text-sm placeholder-gray-600 transition-colors duration-200 rounded-lg";
+const labelClass = "block text-xs font-sans text-gray-500 tracking-[0.2em] uppercase mb-2";
+
 export default function Admin() {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
   const [error, setError] = useState('');
-  const [listings, setListings] = useState([]);
+  const [listings, setListings] = useState<any[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [editingId, setEditingId] = useState(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [images, setImages] = useState<string[]>([]);
   const [uploadingImages, setUploadingImages] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
+  const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -43,7 +47,7 @@ export default function Admin() {
     setListings(data || []);
   };
 
-  const handleLogin = async (e) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginLoading(true);
     setError('');
@@ -52,21 +56,36 @@ export default function Admin() {
     setLoginLoading(false);
   };
 
-  const handleLogout = async () => { await supabase.auth.signOut(); navigate('/'); };
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/');
+  };
 
-  const openAdd = () => { setForm(EMPTY_FORM); setImages([]); setEditingId(null); setShowForm(true); };
+  const openAdd = () => {
+    setForm(EMPTY_FORM);
+    setImages([]);
+    setEditingId(null);
+    setShowForm(true);
+  };
 
-  const openEdit = (l) => {
-    setForm({ title: l.title || '', type: l.type || 'Apartment', location: l.location || '', price: l.price?.toString() || '', beds: l.beds?.toString() || '', baths: l.baths?.toString() || '', area: l.area?.toString() || '', description: l.description || '' });
+  const openEdit = (l: any) => {
+    setForm({
+      title: l.title || '', type: l.type || 'Apartment',
+      location: l.location || '', price: l.price?.toString() || '',
+      beds: l.beds?.toString() || '', baths: l.baths?.toString() || '',
+      area: l.area?.toString() || '', description: l.description || '',
+    });
     setImages(Array.isArray(l.images) ? l.images : []);
     setEditingId(l.id);
     setShowForm(true);
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => {
     if (!window.confirm('Supprimer ce bien ?')) return;
+    setDeleteLoading(id);
     await supabase.from('listings').delete().eq('id', id);
-    setListings(prev => prev.filter((l: any) => l.id !== id));
+    setListings(prev => prev.filter(l => l.id !== id));
+    setDeleteLoading(null);
   };
 
   const handleUploadPhotos = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,9 +107,7 @@ export default function Admin() {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  const removeImage = (index: number) => setImages(prev => prev.filter((_, i) => i !== index));
-
-  const handleSave = async (e) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaveLoading(true);
     const payload = {
@@ -99,11 +116,11 @@ export default function Admin() {
       baths: parseInt(form.baths), area: parseInt(form.area),
       description: form.description, images,
     };
-    let error;
-    if (editingId) ({ error } = await supabase.from('listings').update(payload).eq('id', editingId));
-    else ({ error } = await supabase.from('listings').insert(payload));
+    let err;
+    if (editingId) ({ error: err } = await supabase.from('listings').update(payload).eq('id', editingId));
+    else ({ error: err } = await supabase.from('listings').insert(payload));
     setSaveLoading(false);
-    if (!error) {
+    if (!err) {
       setSuccessMsg(editingId ? 'Bien modifié ✓' : 'Bien ajouté ✓');
       setTimeout(() => setSuccessMsg(''), 3000);
       setShowForm(false);
@@ -111,101 +128,167 @@ export default function Admin() {
     }
   };
 
+  // ── LOADING ──
   if (authLoading) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="w-8 h-8 border-4 border-amber-500 border-t-transparent rounded-full animate-spin" />
+    <div className="min-h-screen bg-[#080808] flex items-center justify-center">
+      <div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
-  // LOGIN
+  // ── LOGIN ──
   if (!user) return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#080808] flex items-center justify-center px-4"
+      style={{ fontFamily: 'sans-serif' }}>
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-2xl p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
-          <p className="text-gray-600 mb-8">Connectez-vous pour gérer vos biens</p>
-          {error && <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">{error}</div>}
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none transition"
-                placeholder="votre@email.com" required />
+        {/* Logo */}
+        <div className="text-center mb-10">
+          <img src="https://i.ibb.co/60PJ8PVw/aass.png" alt="MoveSmart"
+            className="h-10 w-auto brightness-0 invert mx-auto mb-4" referrerPolicy="no-referrer" />
+          <h1 className="text-2xl font-light text-white tracking-wide" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            Admin Dashboard
+          </h1>
+          <p className="text-gray-600 text-xs tracking-[0.2em] uppercase mt-2">MoveSmart Invest</p>
+        </div>
+
+        {/* Card */}
+        <div className="bg-[#0d0d0d] border border-white/[0.06] p-8">
+          {error && (
+            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-sans">
+              {error}
             </div>
+          )}
+
+          <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Mot de passe</label>
+              <label className={labelClass}>Email</label>
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+                className={inputClass} placeholder="votre@email.com" required />
+            </div>
+
+            <div>
+              <label className={labelClass}>Mot de passe</label>
               <div className="relative">
-                <input type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none transition pr-10"
-                  placeholder="••••••••" required />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                <input type={showPassword ? 'text' : 'password'} value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  className={`${inputClass} pr-12`} placeholder="••••••••" required />
+                <button type="button" onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 hover:text-amber-400 transition-colors">
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
+
             <button type="submit" disabled={loginLoading}
-              className="w-full bg-amber-500 text-black py-3 rounded-lg font-semibold hover:bg-amber-400 transition disabled:opacity-50">
+              className="w-full bg-amber-400 text-black py-3 text-xs font-sans font-bold tracking-[0.25em] uppercase hover:bg-amber-300 transition-all duration-300 disabled:opacity-50">
               {loginLoading ? 'Connexion...' : 'Se connecter'}
             </button>
           </form>
         </div>
+
+        <p className="text-center text-xs text-gray-700 font-sans mt-6 tracking-widest uppercase">
+          Accès restreint · MoveSmart
+        </p>
       </div>
     </div>
   );
 
-  // DASHBOARD
+  // ── DASHBOARD ──
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 pt-10">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-            <p className="text-sm text-gray-500">{user.email}</p>
+    <div className="min-h-screen bg-[#080808] text-white" style={{ fontFamily: 'sans-serif' }}>
+
+      {/* TOP BAR */}
+      <div className="sticky top-0 z-40 bg-[#080808]/95 backdrop-blur-md border-b border-white/[0.04]">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <img src="https://i.ibb.co/60PJ8PVw/aass.png" alt="MoveSmart"
+              className="h-6 w-auto brightness-0 invert" referrerPolicy="no-referrer" />
+            <div className="hidden sm:block h-4 w-px bg-white/10" />
+            <span className="hidden sm:block text-xs text-gray-500 tracking-[0.2em] uppercase">Admin</span>
           </div>
           <div className="flex items-center gap-3">
-            <button onClick={openAdd} className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-black rounded-lg hover:bg-amber-400 transition font-semibold text-sm">
-              <Plus className="w-4 h-4" /> Ajouter un bien
+            <span className="hidden sm:block text-xs text-gray-600 font-sans">{user.email}</span>
+            <button onClick={openAdd}
+              className="flex items-center gap-2 bg-amber-400 text-black px-4 py-2 text-xs font-bold tracking-[0.15em] uppercase hover:bg-amber-300 transition-all duration-200">
+              <Plus className="w-3.5 h-3.5" /> Ajouter
             </button>
-            <button onClick={handleLogout} className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium text-sm">
-              <LogOut className="w-4 h-4" /> Déconnexion
+            <button onClick={handleLogout}
+              className="flex items-center gap-2 border border-white/10 text-gray-400 px-4 py-2 text-xs tracking-[0.15em] uppercase hover:border-red-500/40 hover:text-red-400 transition-all duration-200">
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden sm:block">Déconnexion</span>
             </button>
           </div>
         </div>
+      </div>
 
-        {successMsg && <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 font-medium">{successMsg}</div>}
+      {/* CONTENT */}
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-10">
 
-        <div className="bg-white rounded-xl shadow overflow-x-auto">
-          <table className="w-full min-w-[600px]">
-            <thead className="bg-gray-50 border-b border-gray-200">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-light mb-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            Mes propriétés
+          </h1>
+          <p className="text-xs text-gray-600 tracking-[0.2em] uppercase">
+            {listings.length} bien{listings.length > 1 ? 's' : ''} enregistré{listings.length > 1 ? 's' : ''}
+          </p>
+        </div>
+
+        {/* Success */}
+        {successMsg && (
+          <div className="mb-6 flex items-center gap-3 p-4 bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-sans">
+            <CheckCircle className="w-4 h-4 flex-shrink-0" /> {successMsg}
+          </div>
+        )}
+
+        {/* TABLE */}
+        <div className="border border-white/[0.06] overflow-x-auto">
+          <table className="w-full min-w-[640px]">
+            <thead className="border-b border-white/[0.06] bg-[#0d0d0d]">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase">Photo</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase">Titre</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase">Type</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase">Prix</th>
-                <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase">Actions</th>
+                <th className="px-6 py-4 text-left text-xs text-gray-600 tracking-[0.2em] uppercase w-20">Photo</th>
+                <th className="px-6 py-4 text-left text-xs text-gray-600 tracking-[0.2em] uppercase">Titre</th>
+                <th className="px-6 py-4 text-left text-xs text-gray-600 tracking-[0.2em] uppercase hidden md:table-cell">Type</th>
+                <th className="px-6 py-4 text-left text-xs text-gray-600 tracking-[0.2em] uppercase">Prix</th>
+                <th className="px-6 py-4 text-right text-xs text-gray-600 tracking-[0.2em] uppercase">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody>
               {listings.length === 0 ? (
-                <tr><td colSpan={5} className="px-6 py-16 text-center text-gray-400">Aucun bien. Cliquez sur "Ajouter un bien".</td></tr>
+                <tr>
+                  <td colSpan={5} className="px-6 py-20 text-center text-gray-600 text-sm font-sans">
+                    Aucun bien. Cliquez sur <span className="text-amber-400">"Ajouter"</span> pour commencer.
+                  </td>
+                </tr>
               ) : listings.map((l: any) => (
-                <tr key={l.id} className="hover:bg-gray-50 transition">
+                <tr key={l.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
                   <td className="px-6 py-4">
                     {l.images?.[0]
-                      ? <img src={l.images[0]} alt={l.title} className="w-14 h-14 object-cover rounded-lg" />
-                      : <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center"><ImageIcon className="w-5 h-5 text-gray-400" /></div>
+                      ? <img src={l.images[0]} alt={l.title} className="w-14 h-14 object-cover" />
+                      : <div className="w-14 h-14 bg-white/[0.03] border border-white/[0.06] flex items-center justify-center">
+                          <ImageIcon className="w-5 h-5 text-gray-700" />
+                        </div>
                     }
                   </td>
-                  <td className="px-6 py-4 text-sm font-medium text-gray-900">{l.title}</td>
-                  <td className="px-6 py-4"><span className="px-2 py-1 bg-amber-50 text-amber-700 rounded-full text-xs font-semibold">{l.type}</span></td>
-                  <td className="px-6 py-4 text-sm font-semibold text-gray-900">AED {l.price?.toLocaleString()}</td>
-                  <td className="px-6 py-4 text-right space-x-2">
-                    <button onClick={() => openEdit(l)} className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition">
-                      <Edit2 className="w-3.5 h-3.5" /> Modifier
-                    </button>
-                    <button onClick={() => handleDelete(l.id)} className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 rounded-lg transition">
-                      <Trash2 className="w-3.5 h-3.5" /> Supprimer
-                    </button>
+                  <td className="px-6 py-4">
+                    <div className="text-sm text-white font-medium" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{l.title}</div>
+                    <div className="text-xs text-gray-600 mt-0.5">{l.location}</div>
+                  </td>
+                  <td className="px-6 py-4 hidden md:table-cell">
+                    <span className="text-xs text-amber-400 border border-amber-400/20 px-2 py-1 tracking-widest uppercase">{l.type}</span>
+                  </td>
+                  <td className="px-6 py-4 text-sm font-sans text-white">AED {l.price?.toLocaleString()}</td>
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <button onClick={() => openEdit(l)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-gray-400 hover:text-amber-400 border border-white/[0.06] hover:border-amber-400/30 transition-all duration-200">
+                        <Edit2 className="w-3.5 h-3.5" /> Modifier
+                      </button>
+                      <button onClick={() => handleDelete(l.id)} disabled={deleteLoading === l.id}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-gray-400 hover:text-red-400 border border-white/[0.06] hover:border-red-500/30 transition-all duration-200 disabled:opacity-40">
+                        <Trash2 className="w-3.5 h-3.5" />
+                        {deleteLoading === l.id ? '...' : 'Supprimer'}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -214,100 +297,127 @@ export default function Admin() {
         </div>
       </div>
 
-      {/* MODAL */}
+      {/* ── MODAL ── */}
       {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/60">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 sticky top-0 bg-white z-10">
-              <h2 className="text-xl font-bold text-gray-900">{editingId ? 'Modifier le bien' : 'Ajouter un bien'}</h2>
-              <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600"><X className="w-6 h-6" /></button>
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm px-0 sm:px-4">
+          <div className="bg-[#0d0d0d] border border-white/[0.06] w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto flex flex-col">
+
+            {/* Modal header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06] sticky top-0 bg-[#0d0d0d] z-10">
+              <h2 className="text-lg font-light" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                {editingId ? 'Modifier le bien' : 'Ajouter un bien'}
+              </h2>
+              <button onClick={() => setShowForm(false)}
+                className="text-gray-600 hover:text-white transition-colors p-1">
+                <X className="w-5 h-5" />
+              </button>
             </div>
-            <form onSubmit={handleSave} className="p-6 space-y-4">
+
+            <form onSubmit={handleSave} className="p-6 space-y-5 flex-1">
+
+              {/* Titre */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Titre *</label>
+                <label className={labelClass}>Titre *</label>
                 <input type="text" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-sm" placeholder="Ex: Luxury Villa Downtown" required />
+                  className={inputClass} placeholder="Ex: Luxury Villa Downtown" required />
               </div>
+
+              {/* Type + Localisation */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Type *</label>
+                  <label className={labelClass}>Type *</label>
                   <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-sm bg-white">
-                    {TYPES.map(t => <option key={t}>{t}</option>)}
+                    className={`${inputClass} cursor-pointer`} style={{ background: '#111' }}>
+                    {TYPES.map(t => <option key={t} className="bg-[#111]">{t}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Localisation *</label>
+                  <label className={labelClass}>Localisation *</label>
                   <input type="text" value={form.location} onChange={e => setForm({ ...form, location: e.target.value })}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-sm" placeholder="Ex: Dubai Marina" required />
+                    className={inputClass} placeholder="Ex: Dubai Marina" required />
                 </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Prix (AED) *</label>
-                  <input type="number" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-sm" placeholder="2500000" required />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Surface (sqft) *</label>
-                  <input type="number" value={form.area} onChange={e => setForm({ ...form, area: e.target.value })}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-sm" placeholder="1500" required />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Chambres *</label>
-                  <input type="number" value={form.beds} onChange={e => setForm({ ...form, beds: e.target.value })}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-sm" placeholder="3" required />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Salles de bain *</label>
-                  <input type="number" value={form.baths} onChange={e => setForm({ ...form, baths: e.target.value })}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-sm" placeholder="2" required />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-sm" rows={3} placeholder="Description du bien..." />
               </div>
 
-              {/* UPLOAD PHOTOS */}
+              {/* Prix + Surface */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className={labelClass}>Prix (AED) *</label>
+                  <input type="number" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })}
+                    className={inputClass} placeholder="2500000" required />
+                </div>
+                <div>
+                  <label className={labelClass}>Surface (sqft) *</label>
+                  <input type="number" value={form.area} onChange={e => setForm({ ...form, area: e.target.value })}
+                    className={inputClass} placeholder="1500" required />
+                </div>
+              </div>
+
+              {/* Chambres + SDB */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className={labelClass}>Chambres *</label>
+                  <input type="number" value={form.beds} onChange={e => setForm({ ...form, beds: e.target.value })}
+                    className={inputClass} placeholder="3" required />
+                </div>
+                <div>
+                  <label className={labelClass}>Salles de bain *</label>
+                  <input type="number" value={form.baths} onChange={e => setForm({ ...form, baths: e.target.value })}
+                    className={inputClass} placeholder="2" required />
+                </div>
+              </div>
+
+              {/* Description */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Photos</label>
-                <div
-                  onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-amber-500 hover:bg-amber-50 transition">
-                  <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                  <p className="text-sm text-gray-600 font-medium">Clique pour uploader des photos</p>
-                  <p className="text-xs text-gray-400 mt-1">JPG, PNG, WEBP — plusieurs fichiers acceptés</p>
-                  {uploadingImages && <p className="text-xs text-amber-600 mt-2 font-medium">Upload en cours...</p>}
+                <label className={labelClass}>Description</label>
+                <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
+                  className={`${inputClass} resize-none`} rows={3} placeholder="Description du bien..." />
+              </div>
+
+              {/* Upload photos */}
+              <div>
+                <label className={labelClass}>Photos</label>
+                <div onClick={() => fileInputRef.current?.click()}
+                  className="border border-dashed border-white/10 hover:border-amber-400/40 p-8 text-center cursor-pointer transition-colors duration-200 group">
+                  <Upload className="w-6 h-6 text-gray-600 group-hover:text-amber-400 mx-auto mb-3 transition-colors" />
+                  <p className="text-sm text-gray-500 font-sans">
+                    {uploadingImages ? (
+                      <span className="text-amber-400">Upload en cours...</span>
+                    ) : (
+                      <>Cliquer pour ajouter des photos<br /><span className="text-xs text-gray-700">JPG, PNG, WEBP · Plusieurs fichiers acceptés</span></>
+                    )}
+                  </p>
                 </div>
                 <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handleUploadPhotos} className="hidden" />
 
                 {images.length > 0 && (
-                  <div className="grid grid-cols-3 gap-3 mt-3">
+                  <div className="grid grid-cols-4 gap-2 mt-3">
                     {images.map((url, i) => (
-                      <div key={i} className="relative group">
-                        <img src={url} alt="" className="w-full h-24 object-cover rounded-lg" />
-                        <button type="button" onClick={() => removeImage(i)}
-                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition text-xs">
-                          <X className="w-3 h-3" />
+                      <div key={i} className="relative group aspect-square">
+                        <img src={url} alt="" className="w-full h-full object-cover" />
+                        <button type="button" onClick={() => setImages(prev => prev.filter((_, j) => j !== i))}
+                          className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                          <X className="w-4 h-4 text-white" />
                         </button>
+                        {i === 0 && (
+                          <div className="absolute bottom-0 left-0 right-0 bg-amber-400 text-black text-[9px] text-center py-0.5 font-sans font-bold tracking-widest uppercase">
+                            Principale
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
                 )}
               </div>
 
-              <div className="flex gap-3 pt-2">
+              {/* Boutons */}
+              <div className="flex gap-3 pt-2 border-t border-white/[0.06]">
                 <button type="button" onClick={() => setShowForm(false)}
-                  className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium text-sm">
+                  className="flex-1 py-3 border border-white/10 text-gray-400 text-xs tracking-[0.2em] uppercase hover:border-white/20 hover:text-white transition-all duration-200">
                   Annuler
                 </button>
                 <button type="submit" disabled={saveLoading || uploadingImages}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-amber-500 text-black rounded-lg hover:bg-amber-400 transition font-semibold text-sm disabled:opacity-50">
-                  <Save className="w-4 h-4" />
+                  className="flex-1 flex items-center justify-center gap-2 py-3 bg-amber-400 text-black text-xs font-bold tracking-[0.2em] uppercase hover:bg-amber-300 transition-all duration-200 disabled:opacity-40">
+                  <Save className="w-3.5 h-3.5" />
                   {saveLoading ? 'Enregistrement...' : 'Enregistrer'}
                 </button>
               </div>
