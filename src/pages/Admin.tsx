@@ -94,13 +94,23 @@ export default function Admin() {
     setUploadingImages(true);
     const uploaded: string[] = [];
     for (const file of files) {
-      const ext = file.name.split('.').pop();
-      const path = `listings/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-      const { error } = await supabase.storage.from('photos').upload(path, file, { upsert: true });
-      if (!error) {
-        const { data } = supabase.storage.from('photos').getPublicUrl(path);
-        uploaded.push(data.publicUrl);
+      // Vérifier la taille (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert(`${file.name} est trop lourd (max 5MB)`);
+        continue;
       }
+      const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+      const path = `listings/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: uploadError } = await supabase.storage
+        .from('photos')
+        .upload(path, file, { upsert: true, contentType: file.type });
+      if (uploadError) {
+        console.error('Upload error:', uploadError.message);
+        alert(`Erreur upload: ${uploadError.message}\n\nVérifiez que le bucket "photos" existe et est public sur Supabase.`);
+        continue;
+      }
+      const { data } = supabase.storage.from('photos').getPublicUrl(path);
+      uploaded.push(data.publicUrl);
     }
     setImages(prev => [...prev, ...uploaded]);
     setUploadingImages(false);
@@ -416,7 +426,8 @@ export default function Admin() {
                   Annuler
                 </button>
                 <button type="submit" disabled={saveLoading || uploadingImages}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 bg-amber-400 text-black text-xs font-bold tracking-[0.2em] uppercase hover:bg-amber-300 transition-all duration-200 disabled:opacity-40">
+                  style={{ backgroundColor: '#FBBF24', color: '#000000' }}
+                  className="flex-1 flex items-center justify-center gap-2 py-3 text-xs font-bold tracking-[0.2em] uppercase hover:opacity-90 transition-opacity disabled:opacity-40">
                   <Save className="w-3.5 h-3.5" />
                   {saveLoading ? 'Enregistrement...' : 'Enregistrer'}
                 </button>
