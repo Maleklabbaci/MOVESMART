@@ -189,7 +189,8 @@ export default function Admin() {
             </div>
 
             <button type="submit" disabled={loginLoading}
-              className="w-full bg-amber-400 text-black py-3 text-xs font-sans font-bold tracking-[0.25em] uppercase hover:bg-amber-300 transition-all duration-300 disabled:opacity-50">
+              style={{ backgroundColor: '#FBBF24', color: '#000000' }}
+              className="w-full py-3 text-xs font-sans font-bold tracking-[0.25em] uppercase hover:opacity-90 transition-opacity disabled:opacity-50">
               {loginLoading ? 'Connexion...' : 'Se connecter'}
             </button>
           </form>
