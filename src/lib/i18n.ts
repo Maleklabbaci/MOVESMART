@@ -1,313 +1,478 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Bed, Bath, Square, MapPin, ArrowRight, Phone } from 'lucide-react';
-import { supabase } from '../lib/supabase';
-import { companyInfo } from '../constants';
-import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
 
-function Counter({ target, suffix = '' }: { target: number; suffix?: string }) {
-  const [count, setCount] = useState(0);
-  const ref = useRef<HTMLSpanElement>(null);
-  useEffect(() => {
-    const observer = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) {
-        let start = 0;
-        const step = target / 60;
-        const timer = setInterval(() => {
-          start += step;
-          if (start >= target) { setCount(target); clearInterval(timer); }
-          else setCount(Math.floor(start));
-        }, 16);
+i18n
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init({
+    resources: {
+
+      // ─────────── FRANÇAIS ───────────
+      fr: {
+        translation: {
+          // Nav
+          home: 'Accueil',
+          listings: 'Propriétés',
+          about: 'À Propos',
+          contact: 'Contact',
+          getStarted: 'Commencer',
+
+          // Hero
+          hero_tag: 'MoveSmart Consultancy · Dubaï',
+          hero_title_1: "L'Art de",
+          hero_title_em: 'Vivre',
+          hero_title_2: 'à Dubaï',
+          hero_sub: "Propriétés d'exception, accompagnement sur-mesure, visa résidence & investissement premium.",
+          hero_cta: 'Découvrir les biens',
+          hero_cta2: 'Nous contacter',
+
+          // Stats
+          stat_sold: 'Biens vendus',
+          stat_nations: 'Nationalités',
+          stat_years: "D'expertise",
+
+          // About section
+          about_tag: 'Notre Vision',
+          about_title_1: 'Votre partenaire',
+          about_title_em: '360°',
+          about_title_2: 'à Dubaï',
+          about_p1: "MoveSmart accompagne les investisseurs internationaux dans l'acquisition de biens immobiliers d'exception à Dubaï.",
+          about_p2: 'Recherche personnalisée, accompagnement juridique, visa résidence et gestion locative.',
+          about_link: 'En savoir plus',
+
+          // Services
+          services_tag: 'Services',
+          services_title: 'Une expertise complète',
+          s1_title: 'Recherche de biens',
+          s1_desc: "Sélection personnalisée selon vos critères d'investissement.",
+          s2_title: 'Visa résidence',
+          s2_desc: 'Accompagnement complet pour le Golden Visa 10 ans.',
+          s3_title: 'Gestion locative',
+          s3_desc: 'Optimisation du rendement et gestion professionnelle.',
+          s4_title: 'Suivi juridique',
+          s4_desc: 'Vérification des titres et accompagnement notarial.',
+
+          // Listings
+          listings_tag: 'Sélection exclusive',
+          listings_title_1: 'Propriétés',
+          listings_title_em: 'en vedette',
+          listings_see_all: 'Voir tout',
+          listings_no_img: 'Aucune photo',
+
+          // CTA
+          cta_tag: 'Commencer',
+          cta_title_1: 'Investissez',
+          cta_title_2: 'à',
+          cta_title_em: 'Dubaï',
+          cta_title_3: "dès aujourd'hui.",
+          cta_sub: "Notre équipe d'experts vous accompagne de A à Z dans votre projet.",
+          cta_btn: 'Prendre rendez-vous',
+          cta_wa: 'WhatsApp',
+
+          // Footer
+          footer_nav: 'Navigation',
+          footer_contact: 'Contact',
+          footer_rights: 'Tous droits réservés.',
+          footer_legal: 'Mentions légales',
+          footer_privacy: 'Confidentialité',
+
+          // About page
+          about_page_tag: 'À Propos',
+          about_page_baseline_tag: 'Notre Vision',
+          why_dubai: 'Investir à Dubaï,',
+          why_dubai_em: "c'est investir dans l'avenir.",
+          why_tag: 'Pourquoi Dubaï',
+          hub_title: 'Hub mondial',
+          hub_desc: "Position stratégique entre Orient et Occident.",
+          tax_title: 'Fiscalité attractive',
+          tax_desc: "Pas d'impôt sur le revenu. Environnement fiscal unique.",
+          biz_title: 'Business friendly',
+          biz_desc: "Infrastructure mondiale et facilité de création d'entreprise.",
+          approach_tag: 'Notre approche',
+          vision_title: 'Vision stratégique',
+          vision_desc: "Feuilles de route claires adaptées à vos objectifs d'investissement.",
+          personal_title: 'Approche personnalisée',
+          personal_desc: "Service 360° couvrant chaque aspect de votre installation.",
+          trust_title: 'Expertise de confiance',
+          trust_desc: "Connaissance approfondie pour naviguer les réglementations locales.",
+          growth_title: 'Croissance durable',
+          growth_desc: "Focus sur le succès long terme pour faire fructifier vos actifs.",
+          commit_tag: 'Notre engagement',
+          commit_title_1: 'La confiance comme',
+          commit_title_em: 'fondation de tout.',
+          commit_p: "Chez MoveSmart Invest, nous croyons que le succès à Dubaï repose sur la confiance, la transparence et une compréhension profonde du marché local.",
+          commit_cta: 'Commencer maintenant',
+
+          // Contact page
+          contact_tag: 'Contact',
+          contact_title_1: 'Parlons de',
+          contact_title_em: 'votre projet.',
+          contact_sub: "Notre équipe répond sous 24h pour étudier votre projet d'investissement.",
+          office_label: 'Notre bureau',
+          hours_label: 'Disponibilité',
+          mon_fri: 'Lun – Ven',
+          saturday: 'Samedi',
+          whatsapp_always: 'Toujours disponible',
+          form_title: 'Envoyer un message',
+          field_name: 'Nom *',
+          field_email: 'Email *',
+          field_phone: 'Téléphone',
+          field_subject: 'Sujet',
+          field_message: 'Message *',
+          select_inquiry: 'Sélectionner',
+          inquiry_re: 'Investissement immobilier',
+          inquiry_co: 'Création de société',
+          inquiry_vi: 'Visa & résidence',
+          inquiry_ge: 'Question générale',
+          btn_send: 'Envoyer',
+          sending: 'Envoi...',
+          success_title: 'Message envoyé.',
+          success_sub: 'Nous vous répondons sous 24h.',
+          name_ph: 'Jean Dupont',
+          email_ph: 'jean@email.com',
+          phone_ph: '+33 6 00 00 00 00',
+          message_ph: 'Décrivez votre projet...',
+
+          // Listings page
+          listings_page_tag: 'Propriétés',
+          listings_page_title_1: 'Nos biens',
+          listings_page_title_em: "d'exception",
+          search_ph: 'Rechercher par nom ou localisation...',
+          filter_min: 'Prix min (AED)',
+          filter_max: 'Prix max (AED)',
+          sort_label: 'Trier par',
+          sort_recent: 'Récents',
+          sort_price_low: 'Prix croissant',
+          sort_price_high: 'Prix décroissant',
+          sort_beds: 'Chambres',
+          sort_area: 'Surface',
+          no_listings: 'Aucun bien disponible pour le moment.',
+          no_results: 'Aucun résultat trouvé.',
+          filters_btn: 'Filtres',
+          view_detail: 'Voir →',
+
+          // Listing details
+          back: 'Retour',
+          share: 'Partager',
+          copied: 'Copié ✓',
+          price_label: 'Prix',
+          desc_label: 'Description',
+          beds_label: 'Chambres',
+          baths_label: 'SDB',
+          sqft_label: 'sqft',
+          wa_btn: 'WhatsApp',
+          msg_btn: 'Envoyer un message',
+          team_note: 'Réponse sous 24h. Accompagnement complet Dubai.',
+          all_props: '← Toutes les propriétés',
+          not_found: 'Bien non trouvé.',
+        }
+      },
+
+      // ─────────── ENGLISH ───────────
+      en: {
+        translation: {
+          home: 'Home',
+          listings: 'Properties',
+          about: 'About',
+          contact: 'Contact',
+          getStarted: 'Get Started',
+
+          hero_tag: 'MoveSmart Consultancy · Dubai',
+          hero_title_1: 'The Art of',
+          hero_title_em: 'Living',
+          hero_title_2: 'in Dubai',
+          hero_sub: 'Premium properties, tailored guidance, residence visa & luxury investment.',
+          hero_cta: 'Discover Properties',
+          hero_cta2: 'Contact Us',
+
+          stat_sold: 'Properties Sold',
+          stat_nations: 'Nationalities',
+          stat_years: 'Years Expertise',
+
+          about_tag: 'Our Vision',
+          about_title_1: 'Your',
+          about_title_em: '360°',
+          about_title_2: 'partner in Dubai',
+          about_p1: 'MoveSmart guides international investors in acquiring exceptional real estate in Dubai.',
+          about_p2: 'Personalized search, legal support, residence visa and property management.',
+          about_link: 'Learn more',
+
+          services_tag: 'Services',
+          services_title: 'Complete Expertise',
+          s1_title: 'Property Search',
+          s1_desc: 'Personalized selection based on your investment criteria.',
+          s2_title: 'Residence Visa',
+          s2_desc: 'Full support for the 10-year Golden Visa.',
+          s3_title: 'Property Management',
+          s3_desc: 'Rental yield optimization and professional management.',
+          s4_title: 'Legal Support',
+          s4_desc: 'Title verification and notarial accompaniment.',
+
+          listings_tag: 'Exclusive Selection',
+          listings_title_1: 'Featured',
+          listings_title_em: 'Properties',
+          listings_see_all: 'See all',
+          listings_no_img: 'No photo',
+
+          cta_tag: 'Get Started',
+          cta_title_1: 'Invest',
+          cta_title_2: 'in',
+          cta_title_em: 'Dubai',
+          cta_title_3: 'today.',
+          cta_sub: 'Our expert team guides you through every step of your project.',
+          cta_btn: 'Book a meeting',
+          cta_wa: 'WhatsApp',
+
+          footer_nav: 'Navigation',
+          footer_contact: 'Contact',
+          footer_rights: 'All rights reserved.',
+          footer_legal: 'Legal Notice',
+          footer_privacy: 'Privacy Policy',
+
+          about_page_tag: 'About',
+          about_page_baseline_tag: 'Our Vision',
+          why_dubai: 'Investing in Dubai',
+          why_dubai_em: "is investing in the future.",
+          why_tag: 'Why Dubai',
+          hub_title: 'Global Hub',
+          hub_desc: 'Strategic location connecting East and West.',
+          tax_title: 'Tax Efficiency',
+          tax_desc: 'No income tax. A unique fiscal environment worldwide.',
+          biz_title: 'Business Friendly',
+          biz_desc: 'World-class infrastructure and ease of doing business.',
+          approach_tag: 'Our Approach',
+          vision_title: 'Strategic Vision',
+          vision_desc: 'Clear roadmaps tailored to your investment goals.',
+          personal_title: 'Personalized Approach',
+          personal_desc: '360° service covering every aspect of your relocation.',
+          trust_title: 'Trusted Expertise',
+          trust_desc: 'Deep local knowledge to navigate Dubai regulations.',
+          growth_title: 'Sustainable Growth',
+          growth_desc: 'Long-term focus to build and grow your assets.',
+          commit_tag: 'Our Commitment',
+          commit_title_1: 'Trust as the',
+          commit_title_em: 'foundation of everything.',
+          commit_p: 'At MoveSmart Invest, success in Dubai is built on trust, transparency, and deep understanding of the local market.',
+          commit_cta: 'Start now',
+
+          contact_tag: 'Contact',
+          contact_title_1: "Let's talk about",
+          contact_title_em: 'your project.',
+          contact_sub: 'Our team responds within 24h to discuss your investment project.',
+          office_label: 'Our Office',
+          hours_label: 'Availability',
+          mon_fri: 'Mon – Fri',
+          saturday: 'Saturday',
+          whatsapp_always: 'Always available',
+          form_title: 'Send a message',
+          field_name: 'Full Name *',
+          field_email: 'Email *',
+          field_phone: 'Phone',
+          field_subject: 'Subject',
+          field_message: 'Message *',
+          select_inquiry: 'Select',
+          inquiry_re: 'Real Estate Investment',
+          inquiry_co: 'Company Formation',
+          inquiry_vi: 'Visa & Residency',
+          inquiry_ge: 'General Inquiry',
+          btn_send: 'Send',
+          sending: 'Sending...',
+          success_title: 'Message sent.',
+          success_sub: "We'll reply within 24h.",
+          name_ph: 'John Smith',
+          email_ph: 'john@email.com',
+          phone_ph: '+1 000 000 0000',
+          message_ph: 'Describe your project...',
+
+          listings_page_tag: 'Properties',
+          listings_page_title_1: 'Our',
+          listings_page_title_em: 'Exceptional Properties',
+          search_ph: 'Search by name or location...',
+          filter_min: 'Min Price (AED)',
+          filter_max: 'Max Price (AED)',
+          sort_label: 'Sort by',
+          sort_recent: 'Recent',
+          sort_price_low: 'Price: Low to High',
+          sort_price_high: 'Price: High to Low',
+          sort_beds: 'Bedrooms',
+          sort_area: 'Area',
+          no_listings: 'No properties available yet.',
+          no_results: 'No results found.',
+          filters_btn: 'Filters',
+          view_detail: 'View →',
+
+          back: 'Back',
+          share: 'Share',
+          copied: 'Copied ✓',
+          price_label: 'Price',
+          desc_label: 'Description',
+          beds_label: 'Bedrooms',
+          baths_label: 'Bathrooms',
+          sqft_label: 'sqft',
+          wa_btn: 'WhatsApp',
+          msg_btn: 'Send a message',
+          team_note: 'Response within 24h. Full Dubai support.',
+          all_props: '← All properties',
+          not_found: 'Property not found.',
+        }
+      },
+
+      // ─────────── ARABIC ───────────
+      ar: {
+        translation: {
+          home: 'الرئيسية',
+          listings: 'العقارات',
+          about: 'من نحن',
+          contact: 'اتصل بنا',
+          getStarted: 'ابدأ الآن',
+
+          hero_tag: 'موف سمارت كونسلتنسي · دبي',
+          hero_title_1: 'فن',
+          hero_title_em: 'العيش',
+          hero_title_2: 'في دبي',
+          hero_sub: 'عقارات استثنائية، خدمة مخصصة، تأشيرة الإقامة والاستثمار الفاخر.',
+          hero_cta: 'اكتشف العقارات',
+          hero_cta2: 'تواصل معنا',
+
+          stat_sold: 'عقار مباع',
+          stat_nations: 'جنسية',
+          stat_years: 'سنوات خبرة',
+
+          about_tag: 'رؤيتنا',
+          about_title_1: 'شريكك',
+          about_title_em: '360°',
+          about_title_2: 'في دبي',
+          about_p1: 'موف سمارت يرافق المستثمرين الدوليين في اقتناء العقارات الاستثنائية في دبي.',
+          about_p2: 'بحث مخصص، دعم قانوني، تأشيرة إقامة وإدارة عقارية احترافية.',
+          about_link: 'اعرف أكثر',
+
+          services_tag: 'خدماتنا',
+          services_title: 'خبرة شاملة',
+          s1_title: 'البحث العقاري',
+          s1_desc: 'اختيار مخصص وفق معايير استثمارك.',
+          s2_title: 'تأشيرة الإقامة',
+          s2_desc: 'دعم كامل للحصول على التأشيرة الذهبية 10 سنوات.',
+          s3_title: 'إدارة الإيجار',
+          s3_desc: 'تحسين العائد الإيجاري وإدارة احترافية.',
+          s4_title: 'المتابعة القانونية',
+          s4_desc: 'التحقق من صكوك الملكية والمرافقة الكاملة.',
+
+          listings_tag: 'اختيار حصري',
+          listings_title_1: 'العقارات',
+          listings_title_em: 'المميزة',
+          listings_see_all: 'عرض الكل',
+          listings_no_img: 'لا توجد صورة',
+
+          cta_tag: 'ابدأ',
+          cta_title_1: 'استثمر',
+          cta_title_2: 'في',
+          cta_title_em: 'دبي',
+          cta_title_3: 'اليوم.',
+          cta_sub: 'فريق خبرائنا يرافقك في كل خطوة من مشروعك.',
+          cta_btn: 'احجز موعداً',
+          cta_wa: 'واتساب',
+
+          footer_nav: 'التنقل',
+          footer_contact: 'اتصل بنا',
+          footer_rights: 'جميع الحقوق محفوظة.',
+          footer_legal: 'الشروط القانونية',
+          footer_privacy: 'سياسة الخصوصية',
+
+          about_page_tag: 'من نحن',
+          about_page_baseline_tag: 'رؤيتنا',
+          why_dubai: 'الاستثمار في دبي',
+          why_dubai_em: 'استثمار في المستقبل.',
+          why_tag: 'لماذا دبي',
+          hub_title: 'مركز عالمي',
+          hub_desc: 'موقع استراتيجي بين الشرق والغرب.',
+          tax_title: 'كفاءة ضريبية',
+          tax_desc: 'لا ضريبة دخل. بيئة ضريبية فريدة في العالم.',
+          biz_title: 'بيئة أعمال مثالية',
+          biz_desc: 'بنية تحتية عالمية وسهولة تأسيس الشركات.',
+          approach_tag: 'نهجنا',
+          vision_title: 'رؤية استراتيجية',
+          vision_desc: 'خطط واضحة وقابلة للتنفيذ وفق أهدافك الاستثمارية.',
+          personal_title: 'نهج شخصي',
+          personal_desc: 'خدمة 360° تغطي كل جانب من جوانب انتقالك.',
+          trust_title: 'خبرة موثوقة',
+          trust_desc: 'معرفة عميقة بالسوق المحلي للتعامل مع اللوائح.',
+          growth_title: 'نمو مستدام',
+          growth_desc: 'تركيز على النجاح طويل الأمد لتنمية أصولك.',
+          commit_tag: 'التزامنا',
+          commit_title_1: 'الثقة',
+          commit_title_em: 'أساس كل شيء.',
+          commit_p: 'في موف سمارت إنفست، نؤمن بأن النجاح في دبي مبني على الثقة والشفافية والفهم العميق للسوق المحلي.',
+          commit_cta: 'ابدأ الآن',
+
+          contact_tag: 'اتصل بنا',
+          contact_title_1: 'تحدث معنا عن',
+          contact_title_em: 'مشروعك.',
+          contact_sub: 'فريقنا يرد خلال 24 ساعة لمناقشة مشروع استثمارك.',
+          office_label: 'مكتبنا',
+          hours_label: 'أوقات العمل',
+          mon_fri: 'الإثنين – الجمعة',
+          saturday: 'السبت',
+          whatsapp_always: 'متاح دائماً',
+          form_title: 'أرسل رسالة',
+          field_name: 'الاسم الكامل *',
+          field_email: 'البريد الإلكتروني *',
+          field_phone: 'الهاتف',
+          field_subject: 'الموضوع',
+          field_message: 'الرسالة *',
+          select_inquiry: 'اختر',
+          inquiry_re: 'استثمار عقاري',
+          inquiry_co: 'تأسيس شركة',
+          inquiry_vi: 'تأشيرة وإقامة',
+          inquiry_ge: 'استفسار عام',
+          btn_send: 'إرسال',
+          sending: 'جارٍ الإرسال...',
+          success_title: 'تم إرسال الرسالة.',
+          success_sub: 'سنرد عليك خلال 24 ساعة.',
+          name_ph: 'محمد أحمد',
+          email_ph: 'mohammed@email.com',
+          phone_ph: '+971 50 000 0000',
+          message_ph: 'صف مشروعك...',
+
+          listings_page_tag: 'العقارات',
+          listings_page_title_1: 'عقاراتنا',
+          listings_page_title_em: 'الاستثنائية',
+          search_ph: 'البحث بالاسم أو الموقع...',
+          filter_min: 'الحد الأدنى للسعر',
+          filter_max: 'الحد الأقصى للسعر',
+          sort_label: 'ترتيب حسب',
+          sort_recent: 'الأحدث',
+          sort_price_low: 'السعر: من الأقل',
+          sort_price_high: 'السعر: من الأعلى',
+          sort_beds: 'غرف النوم',
+          sort_area: 'المساحة',
+          no_listings: 'لا توجد عقارات متاحة حالياً.',
+          no_results: 'لا توجد نتائج.',
+          filters_btn: 'تصفية',
+          view_detail: 'عرض ←',
+
+          back: 'رجوع',
+          share: 'مشاركة',
+          copied: 'تم النسخ ✓',
+          price_label: 'السعر',
+          desc_label: 'الوصف',
+          beds_label: 'غرف النوم',
+          baths_label: 'الحمامات',
+          sqft_label: 'قدم مربع',
+          wa_btn: 'واتساب',
+          msg_btn: 'أرسل رسالة',
+          team_note: 'رد خلال 24 ساعة. دعم كامل في دبي.',
+          all_props: 'كل العقارات →',
+          not_found: 'العقار غير موجود.',
+        }
       }
-    }, { threshold: 0.5 });
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [target]);
-  return <span ref={ref}>{count}{suffix}</span>;
-}
+    },
+    fallbackLng: 'fr',
+    detection: {
+      order: ['localStorage', 'navigator'],
+      caches: ['localStorage'],
+    },
+    interpolation: { escapeValue: false },
+  });
 
-export default function Home() {
-  const { t, i18n } = useTranslation();
-  const isRTL = i18n.language === 'ar';
-  const [listings, setListings] = useState<any[]>([]);
-
-  useEffect(() => {
-    supabase.from('listings').select('*').order('created_at', { ascending: false }).limit(3)
-      .then(({ data }) => setListings(data || []));
-  }, []);
-
-  const serif = { fontFamily: isRTL ? "'Cairo', serif" : "'Cormorant Garamond', Georgia, serif" };
-
-  return (
-    <div className="min-h-screen bg-[#080808] text-white" style={serif}>
-
-      {/* HERO */}
-      <section className="relative h-[calc(100svh-64px)] sm:h-screen flex flex-col items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <img src="https://images.pexels.com/photos/4531667/pexels-photo-4531667.jpeg"
-            alt="Dubai" className="w-full h-full object-cover opacity-35" referrerPolicy="no-referrer" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#080808]/80 via-transparent to-[#080808]" />
-        </div>
-
-        <div className="relative z-10 w-full max-w-5xl mx-auto px-6 flex flex-col items-center text-center">
-          <div className="flex items-center gap-4 mb-8">
-            <div className="h-px w-12 bg-amber-400/50" />
-            <span className="text-amber-400 text-xs font-sans font-light tracking-[0.4em] uppercase">{t('hero_tag')}</span>
-            <div className="h-px w-12 bg-amber-400/50" />
-          </div>
-
-          <h1 className="text-5xl sm:text-7xl md:text-8xl font-light text-white leading-[0.9] tracking-tight mb-8">
-            {t('hero_title_1')}<br />
-            <em className="text-amber-400 not-italic">{t('hero_title_em')}</em>
-            <br />{t('hero_title_2')}
-          </h1>
-
-          <p className="text-gray-400 text-sm sm:text-base max-w-lg mx-auto mb-12 leading-relaxed font-sans font-light tracking-wide">
-            {t('hero_sub')}
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 items-center">
-            <Link to="/listings"
-              className="group inline-flex items-center gap-3 px-8 py-3.5 text-xs font-sans font-bold tracking-[0.25em] uppercase hover:opacity-90 transition-all duration-300"
-              style={{ backgroundColor: '#FBBF24', color: '#000' }}>
-              {t('hero_cta')}
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link to="/contact"
-              className="inline-flex items-center gap-3 px-8 py-3.5 text-xs font-sans font-bold tracking-[0.25em] uppercase transition-all duration-300"
-              style={{ border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(251,191,36,0.5)'; e.currentTarget.style.color = '#FBBF24'; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'; e.currentTarget.style.color = '#fff'; }}>
-              {t('hero_cta2')}
-            </Link>
-          </div>
-        </div>
-
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
-          <div className="w-px h-12 bg-gradient-to-b from-transparent to-amber-400/50" />
-        </div>
-      </section>
-
-      {/* STATS */}
-      <section className="border-y border-white/[0.04] py-14 px-6">
-        <div className="max-w-4xl mx-auto grid grid-cols-3 gap-8 text-center">
-          {[
-            { value: 500, suffix: '+', label: t('stat_sold') },
-            { value: 40, suffix: '+', label: t('stat_nations') },
-            { value: 10, suffix: isRTL ? '' : ' ans', label: t('stat_years') },
-          ].map((s, i) => (
-            <div key={i}>
-              <div className="text-3xl sm:text-5xl font-light mb-2" style={{ color: '#FBBF24' }}>
-                <Counter target={s.value} suffix={s.suffix} />
-              </div>
-              <div className="text-xs font-sans tracking-[0.25em] uppercase" style={{ color: '#4B5563' }}>{s.label}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ABOUT */}
-      <section className="py-28 sm:py-36 px-6">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
-          <div>
-            <div className="flex items-center gap-3 mb-8">
-              <div className="h-px w-8 bg-amber-400" />
-              <span className="text-amber-400 text-xs font-sans tracking-[0.3em] uppercase">{t('about_tag')}</span>
-            </div>
-            <h2 className="text-4xl sm:text-5xl font-light leading-tight mb-8">
-              {t('about_title_1')}<br />
-              <em className="not-italic text-amber-400">{t('about_title_em')}</em> {t('about_title_2')}
-            </h2>
-            <p className="text-gray-500 leading-relaxed mb-5 font-sans font-light text-sm sm:text-base">{t('about_p1')}</p>
-            <p className="text-gray-500 leading-relaxed font-sans font-light text-sm sm:text-base mb-10">{t('about_p2')}</p>
-            <Link to="/about"
-              className="inline-flex items-center gap-3 text-amber-400 text-xs font-sans tracking-[0.25em] uppercase hover:gap-5 transition-all duration-300">
-              {t('about_link')} <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-          <div className="relative">
-            <div className="aspect-[3/4] overflow-hidden">
-              <img src="https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?q=80&w=800&auto=format&fit=crop"
-                alt="Luxury Interior" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
-                loading="lazy" referrerPolicy="no-referrer" />
-            </div>
-            <div className="absolute -bottom-5 -right-5 w-28 h-28 hidden md:block" style={{ border: '1px solid rgba(251,191,36,0.1)' }} />
-          </div>
-        </div>
-      </section>
-
-      {/* SERVICES */}
-      <section className="py-28 sm:py-36 px-6" style={{ backgroundColor: '#050505' }}>
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="h-px w-8 bg-amber-400" />
-              <span className="text-amber-400 text-xs font-sans tracking-[0.3em] uppercase">{t('services_tag')}</span>
-              <div className="h-px w-8 bg-amber-400" />
-            </div>
-            <h2 className="text-4xl sm:text-5xl font-light">{t('services_title')}</h2>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px" style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}>
-            {[
-              { num: '01', title: t('s1_title'), desc: t('s1_desc') },
-              { num: '02', title: t('s2_title'), desc: t('s2_desc') },
-              { num: '03', title: t('s3_title'), desc: t('s3_desc') },
-              { num: '04', title: t('s4_title'), desc: t('s4_desc') },
-            ].map((s) => (
-              <div key={s.num} className="p-8 sm:p-10 group transition-colors duration-300"
-                style={{ backgroundColor: '#050505' }}
-                onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#0a0a0a')}
-                onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#050505')}>
-                <div className="text-xs font-sans tracking-[0.4em] mb-8 transition-colors duration-300"
-                  style={{ color: 'rgba(251,191,36,0.3)' }}
-                  ref={el => { if (el) { el.addEventListener('mouseenter', () => el.style.color = '#FBBF24'); el.addEventListener('mouseleave', () => el.style.color = 'rgba(251,191,36,0.3)'); } }}>
-                  {s.num}
-                </div>
-                <h3 className="text-lg sm:text-xl font-light mb-4">{s.title}</h3>
-                <p className="text-xs sm:text-sm font-sans font-light leading-relaxed" style={{ color: '#4B5563' }}>{s.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* LISTINGS */}
-      <section className="py-28 sm:py-36 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-16 gap-6">
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-px w-8 bg-amber-400" />
-                <span className="text-amber-400 text-xs font-sans tracking-[0.3em] uppercase">{t('listings_tag')}</span>
-              </div>
-              <h2 className="text-4xl sm:text-5xl font-light">
-                {t('listings_title_1')}<br />
-                <em className="not-italic text-amber-400">{t('listings_title_em')}</em>
-              </h2>
-            </div>
-            <Link to="/listings"
-              className="inline-flex items-center gap-3 text-xs font-sans tracking-[0.25em] uppercase hover:gap-5 transition-all duration-300 self-start sm:self-end"
-              style={{ color: '#9CA3AF' }}
-              onMouseEnter={e => (e.currentTarget.style.color = '#FBBF24')}
-              onMouseLeave={e => (e.currentTarget.style.color = '#9CA3AF')}>
-              {t('listings_see_all')} <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          {listings.length === 0 ? (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[1, 2, 3].map(i => <div key={i} className="aspect-[4/3] animate-pulse" style={{ backgroundColor: 'rgba(255,255,255,0.03)' }} />)}
-            </div>
-          ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {listings.map((l: any) => (
-                <Link to={`/listings/${l.id}`} key={l.id} className="group block">
-                  <div className="aspect-[4/3] overflow-hidden mb-5 relative" style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}>
-                    {l.images?.[0]
-                      ? <img src={l.images[0]} alt={l.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
-                      : <div className="w-full h-full flex items-center justify-center text-xs font-sans" style={{ color: '#374151' }}>{t('listings_no_img')}</div>
-                    }
-                    <div className="absolute top-4 left-4 px-3 py-1" style={{ backgroundColor: 'rgba(0,0,0,0.7)' }}>
-                      <span className="text-amber-400 text-xs font-sans tracking-widest uppercase">{l.type}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs font-sans mb-2" style={{ color: '#4B5563' }}>
-                    <MapPin className="w-3 h-3" />{l.location}
-                  </div>
-                  <h3 className="text-xl font-light mb-3 transition-colors duration-300 group-hover:text-amber-400">{l.title}</h3>
-                  <div className="flex items-center gap-4 text-xs font-sans mb-4" style={{ color: '#4B5563' }}>
-                    <span className="flex items-center gap-1.5"><Bed className="w-3.5 h-3.5" /> {l.beds}</span>
-                    <span className="flex items-center gap-1.5"><Bath className="w-3.5 h-3.5" /> {l.baths}</span>
-                    <span className="flex items-center gap-1.5"><Square className="w-3.5 h-3.5" /> {l.area?.toLocaleString()} sqft</span>
-                  </div>
-                  <div className="flex items-center justify-between pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                    <div className="text-2xl font-light" style={{ color: '#FBBF24' }}>AED {l.price?.toLocaleString()}</div>
-                    <span className="text-xs font-sans tracking-widest uppercase transition-colors group-hover:text-amber-400" style={{ color: '#4B5563' }}>{t('view_detail')}</span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="relative py-36 px-6 overflow-hidden">
-        <div className="absolute inset-0">
-          <img src="https://images.unsplash.com/photo-1486325212027-8081e485255e?q=80&w=1600&auto=format&fit=crop"
-            alt="" className="w-full h-full object-cover" style={{ opacity: 0.08 }} referrerPolicy="no-referrer" />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, #080808, rgba(8,8,8,0.9))' }} />
-        </div>
-        <div className="relative z-10 max-w-5xl mx-auto">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="h-px w-8 bg-amber-400" />
-            <span className="text-amber-400 text-xs font-sans tracking-[0.3em] uppercase">{t('cta_tag')}</span>
-          </div>
-          <h2 className="text-4xl sm:text-6xl lg:text-7xl font-light leading-[0.9] mb-10">
-            {t('cta_title_1')}<br />
-            {t('cta_title_2')} <em className="not-italic text-amber-400">{t('cta_title_em')}</em><br />
-            {t('cta_title_3')}
-          </h2>
-          <p className="font-sans font-light text-base mb-12 max-w-md leading-relaxed" style={{ color: '#6B7280' }}>{t('cta_sub')}</p>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link to="/contact"
-              className="inline-flex items-center justify-center gap-3 px-10 py-4 text-xs font-sans font-bold tracking-[0.25em] uppercase hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: '#FBBF24', color: '#000' }}>
-              {t('cta_btn')}
-            </Link>
-            <a href={`https://wa.me/${companyInfo.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-3 px-10 py-4 text-xs font-sans font-bold tracking-[0.25em] uppercase transition-all duration-300"
-              style={{ border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(251,191,36,0.4)'; e.currentTarget.style.color = '#FBBF24'; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = '#fff'; }}>
-              <Phone className="w-4 h-4" /> {t('cta_wa')}
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="py-16 px-6" style={{ backgroundColor: '#030303', borderTop: '1px solid rgba(255,255,255,0.04)' }}>
-        <div className="max-w-6xl mx-auto">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
-            <div className="lg:col-span-2">
-              <div className="text-xl font-light text-white mb-4">
-                MoveSmart<em className="not-italic text-amber-400"> Invest</em>
-              </div>
-              <p className="text-xs font-sans font-light leading-relaxed mb-6 max-w-sm" style={{ color: '#4B5563' }}>
-                {companyInfo.description}
-              </p>
-              <div className="flex items-center gap-2 text-xs font-sans" style={{ color: '#4B5563' }}>
-                <MapPin className="w-3.5 h-3.5 text-amber-400" /> {companyInfo.location}
-              </div>
-            </div>
-            <div>
-              <div className="text-xs font-sans tracking-[0.3em] uppercase mb-6" style={{ color: '#4B5563' }}>{t('footer_nav')}</div>
-              <ul className="space-y-3 text-sm font-sans" style={{ color: '#4B5563' }}>
-                {[['/', t('home')], ['/listings', t('listings')], ['/about', t('about')], ['/contact', t('contact')]].map(([href, label]) => (
-                  <li key={href}>
-                    <Link to={href} className="hover:text-amber-400 transition-colors duration-200">{label}</Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <div className="text-xs font-sans tracking-[0.3em] uppercase mb-6" style={{ color: '#4B5563' }}>{t('footer_contact')}</div>
-              <ul className="space-y-3 text-sm font-sans" style={{ color: '#4B5563' }}>
-                <li className="flex items-center gap-2"><Phone className="w-3.5 h-3.5 text-amber-400" />{companyInfo.whatsapp}</li>
-                <li className="text-xs">contact@movesmartinvest.com</li>
-              </ul>
-            </div>
-          </div>
-          <div className="pt-8 flex flex-col sm:flex-row justify-between items-center gap-4" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
-            <p className="text-xs font-sans" style={{ color: '#374151' }}>© 2026 MoveSmart Invest. {t('footer_rights')}</p>
-            <div className="flex gap-6 text-xs font-sans" style={{ color: '#374151' }}>
-              <a href="#" className="hover:text-amber-400 transition-colors">{t('footer_legal')}</a>
-              <a href="#" className="hover:text-amber-400 transition-colors">{t('footer_privacy')}</a>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
-  );
-}
+export default i18n;
