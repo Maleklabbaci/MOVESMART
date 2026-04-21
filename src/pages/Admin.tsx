@@ -235,14 +235,34 @@ export default function Admin() {
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-10">
 
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-light mb-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-            Mes propriétés
-          </h1>
-          <p className="text-xs text-gray-600 tracking-[0.2em] uppercase">
-            {listings.length} bien{listings.length > 1 ? 's' : ''} enregistré{listings.length > 1 ? 's' : ''}
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
+          <div>
+            <h1 className="text-3xl font-light mb-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+              Mes propriétés
+            </h1>
+            <p className="text-xs text-gray-600 tracking-[0.2em] uppercase">
+              {listings.length} bien{listings.length > 1 ? 's' : ''} enregistré{listings.length > 1 ? 's' : ''}
+            </p>
+          </div>
+          <button onClick={openAdd}
+            style={{ backgroundColor: '#FBBF24', color: '#000000' }}
+            className="flex items-center gap-3 px-8 py-4 text-xs font-sans font-bold tracking-[0.25em] uppercase hover:opacity-90 transition-opacity whitespace-nowrap">
+            <Plus className="w-4 h-4" /> Ajouter un bien
+          </button>
         </div>
+
+        {listings.length === 0 && (
+          <button onClick={openAdd} className="w-full mb-8 py-20 flex flex-col items-center gap-4 transition-all duration-300"
+            style={{ border: '2px dashed rgba(251,191,36,0.2)' }}>
+            <div style={{ width: 60, height: 60, backgroundColor: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Plus className="w-6 h-6 text-amber-400" />
+            </div>
+            <div className="text-center">
+              <p className="text-white font-light text-xl mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Ajouter votre premier bien</p>
+              <p className="text-xs font-sans text-gray-600 tracking-[0.2em] uppercase">Cliquer pour commencer</p>
+            </div>
+          </button>
+        )}
 
         {/* Success */}
         {successMsg && (
