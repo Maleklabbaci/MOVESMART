@@ -1,16 +1,18 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Search, MessageSquare, Info } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function MobileNav() {
   const location = useLocation();
+  const { t } = useTranslation();
   if (location.pathname.startsWith('/admin')) return null;
 
   const items = [
-    { path: '/', icon: Home, label: 'Accueil' },
-    { path: '/listings', icon: Search, label: 'Biens' },
-    { path: '/contact', icon: MessageSquare, label: 'Contact' },
-    { path: '/about', icon: Info, label: 'À Propos' },
+    { path: '/', icon: Home, label: t('home') },
+    { path: '/listings', icon: Search, label: t('listings') },
+    { path: '/contact', icon: MessageSquare, label: t('contact') },
+    { path: '/about', icon: Info, label: t('about') },
   ];
 
   return (
@@ -24,7 +26,7 @@ export default function MobileNav() {
               className="flex flex-col items-center justify-center flex-1 h-full gap-1 transition-colors duration-200 relative"
               style={{ color: active ? '#FBBF24' : '#6B7280' }}>
               <Icon className="w-5 h-5" strokeWidth={1.5} />
-              <span className="text-[9px] tracking-[0.12em] uppercase">{label}</span>
+              <span className="text-[9px] tracking-[0.1em] uppercase truncate px-1">{label}</span>
               {active && <div style={{ position: 'absolute', bottom: 0, width: 24, height: 2, backgroundColor: '#FBBF24', borderRadius: '2px 2px 0 0' }} />}
             </Link>
           );
