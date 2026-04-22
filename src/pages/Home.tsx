@@ -122,8 +122,8 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-[#080808]/80 via-transparent to-[#080808]" />
         </div>
 
-        <div className="relative z-10 w-full max-w-5xl mx-auto px-6 flex flex-col items-center text-center">
-          <div className="flex items-center gap-4 mb-6">
+<div className="relative z-10 w-full max-w-5xl mx-auto px-6 flex flex-col items-center text-center mt-24 md:mt-32">
+  <div className="flex items-center gap-4 mb-6">
             <div className="h-px w-12 bg-amber-400/50" />
             <span className="text-amber-400 text-xs font-sans font-light tracking-[0.4em] uppercase">{t('hero_tag')}</span>
             <div className="h-px w-12 bg-amber-400/50" />
