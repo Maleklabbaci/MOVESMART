@@ -115,8 +115,8 @@ export default function Home() {
     <div className="min-h-screen bg-[#080808] text-white" style={serif}>
 
       {/* ── HERO ── INVESTOR ANGLE ── */}
-      <section className="relative h-[calc(100svh-64px)] sm:h-screen flex flex-col items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
+<section className="relative min-h-[calc(100svh-64px)] sm:min-h-screen flex flex-col items-center justify-center overflow-hidden pb-20 pt-24">
+  <div className="absolute inset-0">
           <img src="https://images.pexels.com/photos/4531667/pexels-photo-4531667.jpeg"
             alt="Dubai" className="w-full h-full object-cover opacity-35" referrerPolicy="no-referrer" />
           <div className="absolute inset-0 bg-gradient-to-b from-[#080808]/80 via-transparent to-[#080808]" />
