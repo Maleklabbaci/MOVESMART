@@ -19,10 +19,10 @@ const ListingCard = ({ listing }: { listing: any }) => {
       <div className="aspect-[4/3] overflow-hidden bg-white/[0.03] mb-5 relative">
         {images.length > 0
           ? <img src={images[idx]} alt={listing.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
-          : <div className="w-full h-full flex items-center justify-center text-gray-700 text-xs font-sans">No image</div>
+          : <div className="w-full h-full flex items-center justify-center text-[var(--text5)] text-xs font-sans">No image</div>
         }
         <div className="absolute top-4 left-4 bg-black/70 backdrop-blur-sm px-3 py-1">
-          <span className="text-amber-400 text-xs font-sans tracking-widest uppercase">{listing.type}</span>
+          <span className="text-[var(--accent)] text-xs font-sans tracking-widest uppercase">{listing.type}</span>
         </div>
         <button onClick={share} className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm p-2 hover:bg-black/80 transition">
           <Share2 className="w-4 h-4 text-white" />
@@ -37,28 +37,28 @@ const ListingCard = ({ listing }: { listing: any }) => {
             </button>
             <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1">
               {images.map((_: any, i: number) => (
-                <div key={i} className={`w-1 h-1 rounded-full transition-colors ${i === idx ? 'bg-amber-400' : 'bg-white/30'}`} />
+                <div key={i} className={`w-1 h-1 rounded-full transition-colors ${i === idx ? 'bg-[var(--accent)]' : 'bg-white/30'}`} />
               ))}
             </div>
           </>
         )}
       </div>
-      <div className="flex items-center gap-2 text-gray-600 text-xs font-sans mb-2">
+      <div className="flex items-center gap-2 text-[var(--text4)] text-xs font-sans mb-2">
         <span className="text-xs">📍</span>{listing.location}
       </div>
-      <h3 className="text-xl font-light mb-3 group-hover:text-amber-400 transition-colors duration-300" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+      <h3 className="text-xl font-light mb-3 group-hover:text-[var(--accent)] transition-colors duration-300" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
         {listing.title}
       </h3>
-      <div className="flex items-center gap-4 text-xs text-gray-600 font-sans mb-4">
+      <div className="flex items-center gap-4 text-xs text-[var(--text4)] font-sans mb-4">
         <span className="flex items-center gap-1.5"><Bed className="w-3.5 h-3.5" /> {listing.beds} ch.</span>
         <span className="flex items-center gap-1.5"><Bath className="w-3.5 h-3.5" /> {listing.baths} sdb.</span>
         <span className="flex items-center gap-1.5"><Square className="w-3.5 h-3.5" /> {listing.area?.toLocaleString()} sqft</span>
       </div>
-      <div className="flex items-center justify-between pt-4 border-t border-white/[0.06]">
-        <div className="text-2xl font-light text-amber-400" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+      <div className="flex items-center justify-between pt-4 border-t border-[var(--border)]">
+        <div className="text-2xl font-light text-[var(--accent)]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
           AED {listing.price?.toLocaleString()}
         </div>
-        <span className="text-xs font-sans text-gray-600 tracking-widest uppercase group-hover:text-amber-400 transition-colors">Voir →</span>
+        <span className="text-xs font-sans text-[var(--text4)] tracking-widest uppercase group-hover:text-[var(--accent)] transition-colors">Voir →</span>
       </div>
     </Link>
   );
@@ -95,20 +95,20 @@ export default function Listings() {
     });
 
   return (
-    <div className="min-h-screen bg-[#080808] text-white" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+    <div className="min-h-screen bg-[var(--bg)] text-white" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
 
       {/* HEADER */}
-      <section className="pt-40 pb-16 px-6 border-b border-white/[0.04]">
+      <section className="pt-40 pb-16 px-6 border-b border-[var(--border2)]">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
-            <div className="h-px w-8 bg-amber-400" />
-            <span className="text-amber-400 text-xs font-sans tracking-[0.3em] uppercase">Propriétés</span>
+            <div className="h-px w-8 bg-[var(--accent)]" />
+            <span className="text-[var(--accent)] text-xs font-sans tracking-[0.3em] uppercase">Propriétés</span>
           </div>
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
             <h1 className="text-5xl sm:text-6xl font-light leading-[0.9]">
-              Nos biens<br /><em className="not-italic text-amber-400">d'exception</em>
+              Nos biens<br /><em className="not-italic text-[var(--accent)]">d'exception</em>
             </h1>
-            <p className="text-gray-500 font-sans font-light text-sm max-w-xs leading-relaxed">
+            <p className="text-[var(--text3)] font-sans font-light text-sm max-w-xs leading-relaxed">
               {loading ? '' : `${filtered.length} propriété${filtered.length > 1 ? 's' : ''} disponible${filtered.length > 1 ? 's' : ''}`}
             </p>
           </div>
@@ -116,17 +116,17 @@ export default function Listings() {
       </section>
 
       {/* FILTERS */}
-      <section className="py-8 px-6 border-b border-white/[0.04] bg-[#050505]">
+      <section className="py-8 px-6 border-b border-[var(--border2)] bg-[var(--bg2)]">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
             <div className="relative flex-1">
-              <Search className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
+              <Search className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text4)]" />
               <input type="text" placeholder="Rechercher par nom ou localisation..."
-                className="w-full bg-transparent border-b border-white/10 focus:border-amber-400 outline-none py-2 pl-7 text-white placeholder-gray-600 font-sans font-light text-sm transition-colors"
+                className="w-full bg-transparent border-b border-white/10 focus:border-[var(--accent)] outline-none py-2 pl-7 text-white placeholder-gray-600 font-sans font-light text-sm transition-colors"
                 value={search} onChange={e => setSearch(e.target.value)} />
             </div>
             <button onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 text-xs font-sans text-gray-500 hover:text-amber-400 transition-colors tracking-[0.2em] uppercase">
+              className="flex items-center gap-2 text-xs font-sans text-[var(--text3)] hover:text-[var(--accent)] transition-colors tracking-[0.2em] uppercase">
               <SlidersHorizontal className="w-4 h-4" /> Filtres
             </button>
           </div>
@@ -134,24 +134,24 @@ export default function Listings() {
           {showFilters && (
             <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-6">
               <div>
-                <label className="text-xs font-sans text-gray-600 tracking-[0.2em] uppercase block mb-2">Prix min (AED)</label>
+                <label className="text-xs font-sans text-[var(--text4)] tracking-[0.2em] uppercase block mb-2">Prix min (AED)</label>
                 <input type="number" placeholder="0" value={minPrice} onChange={e => setMinPrice(e.target.value)}
-                  className="w-full bg-transparent border-b border-white/10 focus:border-amber-400 outline-none py-2 text-white placeholder-gray-700 font-sans text-sm transition-colors" />
+                  className="w-full bg-transparent border-b border-white/10 focus:border-[var(--accent)] outline-none py-2 text-white placeholder-gray-700 font-sans text-sm transition-colors" />
               </div>
               <div>
-                <label className="text-xs font-sans text-gray-600 tracking-[0.2em] uppercase block mb-2">Prix max (AED)</label>
+                <label className="text-xs font-sans text-[var(--text4)] tracking-[0.2em] uppercase block mb-2">Prix max (AED)</label>
                 <input type="number" placeholder="∞" value={maxPrice} onChange={e => setMaxPrice(e.target.value)}
-                  className="w-full bg-transparent border-b border-white/10 focus:border-amber-400 outline-none py-2 text-white placeholder-gray-700 font-sans text-sm transition-colors" />
+                  className="w-full bg-transparent border-b border-white/10 focus:border-[var(--accent)] outline-none py-2 text-white placeholder-gray-700 font-sans text-sm transition-colors" />
               </div>
               <div>
-                <label className="text-xs font-sans text-gray-600 tracking-[0.2em] uppercase block mb-2">Trier par</label>
+                <label className="text-xs font-sans text-[var(--text4)] tracking-[0.2em] uppercase block mb-2">Trier par</label>
                 <select value={sortBy} onChange={e => setSortBy(e.target.value)}
-                  className="w-full bg-transparent border-b border-white/10 focus:border-amber-400 outline-none py-2 text-white font-sans text-sm transition-colors cursor-pointer" style={{ background: 'transparent' }}>
-                  <option value="default" className="bg-[#080808]">Récents</option>
-                  <option value="price-low" className="bg-[#080808]">Prix croissant</option>
-                  <option value="price-high" className="bg-[#080808]">Prix décroissant</option>
-                  <option value="beds" className="bg-[#080808]">Chambres</option>
-                  <option value="area" className="bg-[#080808]">Surface</option>
+                  className="w-full bg-transparent border-b border-white/10 focus:border-[var(--accent)] outline-none py-2 text-white font-sans text-sm transition-colors cursor-pointer" style={{ background: 'transparent' }}>
+                  <option value="default" className="bg-[var(--bg)]">Récents</option>
+                  <option value="price-low" className="bg-[var(--bg)]">Prix croissant</option>
+                  <option value="price-high" className="bg-[var(--bg)]">Prix décroissant</option>
+                  <option value="beds" className="bg-[var(--bg)]">Chambres</option>
+                  <option value="area" className="bg-[var(--bg)]">Surface</option>
                 </select>
               </div>
             </div>
@@ -168,10 +168,10 @@ export default function Listings() {
             </div>
           ) : filtered.length === 0 ? (
             <div className="py-32 text-center">
-              <p className="text-gray-600 font-sans font-light text-lg mb-2">
+              <p className="text-[var(--text4)] font-sans font-light text-lg mb-2">
                 {listings.length === 0 ? 'Aucun bien disponible pour le moment.' : 'Aucun résultat pour cette recherche.'}
               </p>
-              {listings.length === 0 && <p className="text-gray-700 font-sans text-sm">Revenez bientôt — de nouveaux biens arrivent.</p>}
+              {listings.length === 0 && <p className="text-[var(--text5)] font-sans text-sm">Revenez bientôt — de nouveaux biens arrivent.</p>}
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
@@ -181,11 +181,11 @@ export default function Listings() {
         </div>
       </section>
 
-      <footer className="bg-[#030303] border-t border-white/[0.04] py-10 px-6">
+      <footer className="bg-[var(--bg4)] border-t border-[var(--border2)] py-10 px-6">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-gray-700 font-sans">© 2026 MoveSmart Invest. Tous droits réservés.</p>
-          <div className="flex gap-6 text-xs text-gray-700 font-sans">
-            <a href="#" className="hover:text-amber-400 transition-colors">Mentions légales</a>
+          <p className="text-xs text-[var(--text5)] font-sans">© 2026 MoveSmart Invest. Tous droits réservés.</p>
+          <div className="flex gap-6 text-xs text-[var(--text5)] font-sans">
+            <a href="#" className="hover:text-[var(--accent)] transition-colors">Mentions légales</a>
           </div>
         </div>
       </footer>

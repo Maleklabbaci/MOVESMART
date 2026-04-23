@@ -33,17 +33,17 @@ export default function ListingDetails() {
   };
 
   if (loading) return (
-    <div className="min-h-screen bg-[#080808] flex items-center justify-center">
-      <div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+    <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center">
+      <div className="w-8 h-8 border-2 border-[var(--accent)] border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
   if (!listing) return (
-    <div className="min-h-screen bg-[#080808] text-white flex flex-col items-center justify-center gap-6"
+    <div className="min-h-screen bg-[var(--bg)] text-white flex flex-col items-center justify-center gap-6"
       style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-      <p className="text-2xl font-light text-gray-400">Bien non trouvé.</p>
+      <p className="text-2xl font-light text-[var(--text2)]">Bien non trouvé.</p>
       <button onClick={handleBack}
-        className="text-amber-400 text-xs font-sans tracking-[0.3em] uppercase hover:text-amber-300 transition-colors">
+        className="text-[var(--accent)] text-xs font-sans tracking-[0.3em] uppercase hover:text-amber-300 transition-colors">
         ← Retour aux propriétés
       </button>
     </div>
@@ -52,7 +52,7 @@ export default function ListingDetails() {
   const images = listing.images || [];
 
   return (
-    <div className="min-h-screen bg-[#080808] text-white pb-24 md:pb-0"
+    <div className="min-h-screen bg-[var(--bg)] text-white pb-24 md:pb-0"
       style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
 
       {/* ── BACK + SHARE — EN DEHORS DE L'IMAGE, sous le header ── */}
@@ -60,7 +60,7 @@ export default function ListingDetails() {
         <div className="max-w-5xl mx-auto flex items-center justify-between py-4">
           <button onClick={handleBack}
             className="flex items-center gap-2 text-xs font-sans tracking-[0.2em] uppercase transition-all duration-200"
-            style={{ color: '#9CA3AF' }}
+            style={{ color: 'var(--text2)' }}
             onMouseEnter={e => (e.currentTarget.style.color = '#FBBF24')}
             onMouseLeave={e => (e.currentTarget.style.color = '#9CA3AF')}>
             <ArrowLeft className="w-4 h-4" />
@@ -79,12 +79,12 @@ export default function ListingDetails() {
       </div>
 
       {/* ── IMAGE PRINCIPALE ── */}
-      <div className="relative h-[45vh] sm:h-[60vh] overflow-hidden bg-[#111] mx-4 sm:mx-6 md:mx-10 max-w-5xl md:mx-auto">
+      <div className="relative h-[45vh] sm:h-[60vh] overflow-hidden bg-[var(--bg3)] mx-4 sm:mx-6 md:mx-10 max-w-5xl md:mx-auto">
         {images.length > 0 ? (
           <img src={images[activeImg]} alt={listing.title}
             className="w-full h-full object-cover" loading="lazy" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-700 font-sans text-sm">
+          <div className="w-full h-full flex items-center justify-center text-[var(--text5)] font-sans text-sm">
             Aucune photo
           </div>
         )}
@@ -135,39 +135,39 @@ export default function ListingDetails() {
         {/* LEFT */}
         <div className="lg:col-span-2">
           <div className="inline-flex items-center gap-2 mb-5">
-            <div className="h-px w-6 bg-amber-400" />
-            <span className="text-amber-400 text-xs font-sans tracking-[0.3em] uppercase">{listing.type}</span>
+            <div className="h-px w-6 bg-[var(--accent)]" />
+            <span className="text-[var(--accent)] text-xs font-sans tracking-[0.3em] uppercase">{listing.type}</span>
           </div>
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-light leading-tight mb-4">{listing.title}</h1>
 
-          <div className="flex items-center gap-2 font-sans text-sm mb-8" style={{ color: '#6B7280' }}>
+          <div className="flex items-center gap-2 font-sans text-sm mb-8" style={{ color: 'var(--text3)' }}>
             <MapPin className="w-4 h-4 flex-shrink-0" style={{ color: 'rgba(251,191,36,0.6)' }} />
             {listing.location}
           </div>
 
           {/* Specs */}
-          <div className="grid grid-cols-3 gap-px mb-10" style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}>
+          <div className="grid grid-cols-3 gap-px mb-10" style={{ backgroundColor: 'var(--border2)' }}>
             {[
               { icon: Bed, value: listing.beds, label: 'Chambres' },
               { icon: Bath, value: listing.baths, label: 'SDB' },
               { icon: Square, value: listing.area?.toLocaleString(), label: 'sqft' },
             ].map((s, i) => (
               <div key={i} className="flex flex-col items-center text-center py-5 px-2"
-                style={{ backgroundColor: '#0d0d0d' }}>
+                style={{ backgroundColor: 'var(--bg3)' }}>
                 <s.icon className="w-4 h-4 mb-2" style={{ color: 'rgba(251,191,36,0.5)' }} />
                 <div className="text-xl sm:text-2xl font-light mb-1">{s.value}</div>
-                <div className="text-[10px] font-sans tracking-[0.2em] uppercase" style={{ color: '#4B5563' }}>{s.label}</div>
+                <div className="text-[10px] font-sans tracking-[0.2em] uppercase" style={{ color: 'var(--text4)' }}>{s.label}</div>
               </div>
             ))}
           </div>
 
           {/* Description */}
           <div className="flex items-center gap-3 mb-5">
-            <div className="h-px w-6 bg-amber-400" />
-            <span className="text-amber-400 text-xs font-sans tracking-[0.3em] uppercase">Description</span>
+            <div className="h-px w-6 bg-[var(--accent)]" />
+            <span className="text-[var(--accent)] text-xs font-sans tracking-[0.3em] uppercase">Description</span>
           </div>
-          <p className="font-sans font-light text-sm sm:text-base leading-relaxed" style={{ color: '#9CA3AF' }}>
+          <p className="font-sans font-light text-sm sm:text-base leading-relaxed" style={{ color: 'var(--text2)' }}>
             {listing.description ||
               `Découvrez ce ${listing.type?.toLowerCase()} d'exception situé à ${listing.location}. Cette propriété offre un confort inégalé avec des finitions premium et des équipements de standing international.`}
           </p>
@@ -177,12 +177,12 @@ export default function ListingDetails() {
         <div className="lg:col-span-1">
           <div className="lg:sticky lg:top-24 space-y-4">
             {/* Prix */}
-            <div className="p-6" style={{ border: '1px solid rgba(255,255,255,0.06)' }}>
-              <div className="text-xs font-sans tracking-[0.3em] uppercase mb-3" style={{ color: '#4B5563' }}>Prix</div>
-              <div className="text-3xl sm:text-4xl font-light mb-1" style={{ color: '#FBBF24' }}>
+            <div className="p-6" style={{ border: '1px solid var(--border)' }}>
+              <div className="text-xs font-sans tracking-[0.3em] uppercase mb-3" style={{ color: 'var(--text4)' }}>Prix</div>
+              <div className="text-3xl sm:text-4xl font-light mb-1" style={{ color: 'var(--accent)' }}>
                 AED {listing.price?.toLocaleString()}
               </div>
-              <div className="text-xs font-sans" style={{ color: '#4B5563' }}>
+              <div className="text-xs font-sans" style={{ color: 'var(--text4)' }}>
                 ≈ {Math.round((listing.price || 0) / 3.67).toLocaleString()} USD
               </div>
             </div>
@@ -191,7 +191,7 @@ export default function ListingDetails() {
             <a href={`https://wa.me/${companyInfo.whatsapp.replace(/\D/g, '')}?text=Bonjour, je suis intéressé par: ${listing.title}`}
               target="_blank" rel="noopener noreferrer"
               className="flex items-center justify-center gap-3 w-full py-4 text-xs font-sans font-bold tracking-[0.25em] uppercase hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: '#FBBF24', color: '#000000' }}>
+              style={{ backgroundColor: 'var(--accent)', color: '#000000' }}>
               <Phone className="w-4 h-4" /> WhatsApp
             </a>
 
@@ -209,9 +209,9 @@ export default function ListingDetails() {
               Envoyer un message
             </Link>
 
-            <div className="p-5" style={{ border: '1px solid rgba(255,255,255,0.04)' }}>
-              <div className="text-xs font-sans tracking-[0.3em] uppercase mb-2" style={{ color: '#4B5563' }}>MoveSmart Invest</div>
-              <p className="text-xs font-sans font-light leading-relaxed" style={{ color: '#4B5563' }}>
+            <div className="p-5" style={{ border: '1px solid var(--border2)' }}>
+              <div className="text-xs font-sans tracking-[0.3em] uppercase mb-2" style={{ color: 'var(--text4)' }}>MoveSmart Invest</div>
+              <p className="text-xs font-sans font-light leading-relaxed" style={{ color: 'var(--text4)' }}>
                 Réponse sous 24h. Accompagnement complet Dubai.
               </p>
             </div>
@@ -220,10 +220,10 @@ export default function ListingDetails() {
       </div>
 
       {/* FOOTER */}
-      <footer className="mt-10 py-8 px-6" style={{ backgroundColor: '#030303', borderTop: '1px solid rgba(255,255,255,0.04)' }}>
+      <footer className="mt-10 py-8 px-6" style={{ backgroundColor: 'var(--bg4)', borderTop: '1px solid var(--border2)' }}>
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-xs font-sans" style={{ color: '#374151' }}>© 2026 MoveSmart Invest.</p>
-          <button onClick={handleBack} className="text-xs font-sans hover:text-amber-400 transition-colors" style={{ color: '#374151' }}>
+          <p className="text-xs font-sans" style={{ color: 'var(--text5)' }}>© 2026 MoveSmart Invest.</p>
+          <button onClick={handleBack} className="text-xs font-sans hover:text-[var(--accent)] transition-colors" style={{ color: 'var(--text5)' }}>
             ← Toutes les propriétés
           </button>
         </div>
