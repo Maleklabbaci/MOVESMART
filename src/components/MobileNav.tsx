@@ -17,7 +17,7 @@ export default function MobileNav() {
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40"
-      style={{ backgroundColor: '#080808', borderTop: '1px solid rgba(255,255,255,0.06)', paddingBottom: 'env(safe-area-inset-bottom)', fontFamily: 'sans-serif' }}>
+      style={{ backgroundColor: 'var(--bg)', borderTop: '1px solid var(--border)', paddingBottom: 'env(safe-area-inset-bottom)', fontFamily: 'sans-serif' }}>
       <div className="flex justify-around items-center h-16 relative">
         {items.map(({ path, icon: Icon, label }) => {
           const active = location.pathname === path;
