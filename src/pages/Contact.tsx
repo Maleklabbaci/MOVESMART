@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MapPin, Phone, Mail, Send, CheckCircle, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { companyInfo } from '../constants'; // Pour récupérer le vrai numéro
 
 export default function Contact() {
   const { t } = useTranslation();
@@ -71,8 +72,9 @@ export default function Contact() {
                 <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-4" style={{ color: 'var(--text3)' }}>
                   WhatsApp Rapide
                 </h4>
-                <a href="https://wa.me/971501234567" className="text-2xl font-serif tracking-tighter transition-colors hover:text-accent" style={{ color: 'var(--text)' }}>
-                  +971 50 123 4567
+                {/* Formatage d'affichage : on rajoute des espaces sur le numéro brut si besoin */}
+                <a href={`https://wa.me/${companyInfo.whatsapp.replace(/\D/g,'')}`} className="text-2xl font-serif tracking-tighter transition-colors hover:text-accent" style={{ color: 'var(--text)' }}>
+                  +971 56 913 0632
                 </a>
               </div>
             </div>
