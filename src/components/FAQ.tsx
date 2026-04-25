@@ -34,46 +34,45 @@ export default function FAQ() {
   ];
 
   return (
-    <div className="py-24" style={{ backgroundColor: 'var(--bg)' }}>
+    <div className="py-32" style={{ backgroundColor: 'var(--bg)' }}>
       <div className="max-w-4xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <p className="font-bold uppercase tracking-widest text-sm mb-4" style={{ color: 'var(--accent)' }}>
+        <div className="text-center mb-20 animate-fade-in">
+          <p className="font-semibold uppercase tracking-[0.3em] text-[10px] mb-6 block text-gold">
             {t('faq_tag', 'Questions?')}
           </p>
-          <h2 className="text-3xl md:text-5xl font-bold uppercase tracking-wider mb-6" style={{ color: 'var(--text)' }}>
+          <h2 className="text-4xl md:text-6xl font-serif tracking-tight mb-8" style={{ color: 'var(--text)' }}>
             {t('faq_title', 'Frequently Asked Questions')}
           </h2>
-          <p style={{ color: 'var(--text3)' }}>
+          <p className="text-sm uppercase tracking-widest font-semibold" style={{ color: 'var(--text3)' }}>
             {t('faq_sub', 'Everything you need to know about investing in Dubai')}
           </p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           {faqs.map((faq, index) => (
             <div 
               key={index}
-              className="border rounded-lg overflow-hidden transition-all duration-300"
-              style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg)', filter: 'brightness(1.05)' }}
+              className="border rounded transition-all duration-400 shadow-sm animate-fade-in"
+              style={{ borderColor: openIndex === index ? 'var(--accent)' : 'var(--border)', backgroundColor: 'var(--bg)' }}
             >
               <button
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full px-6 py-5 flex items-center justify-between transition-colors text-left"
-                style={{ backgroundColor: openIndex === index ? 'var(--accent-bg, rgba(245, 158, 11, 0.1))' : 'transparent' }}
+                className="w-full px-8 py-7 flex items-center justify-between transition-colors text-left"
+                style={{ backgroundColor: openIndex === index ? 'var(--accent-bg)' : 'transparent' }}
               >
-                <span className="font-medium pr-4" style={{ color: 'var(--text)' }}>{faq.question}</span>
+                <span className="font-serif text-xl tracking-tight pr-6" style={{ color: 'var(--text)' }}>{faq.question}</span>
                 <ChevronDown 
-                  className={`w-5 h-5 transition-transform duration-300 ${openIndex === index ? 'rotate-180' : ''}`}
-                  style={{ color: 'var(--accent)' }}
+                  className={`w-6 h-6 transition-transform duration-500 text-gold ${openIndex === index ? 'rotate-180' : ''}`}
                 />
               </button>
               
               <div 
-                className={`px-6 overflow-hidden transition-all duration-300 ease-in-out ${
-                  openIndex === index ? 'max-h-48 py-5 opacity-100 border-t' : 'max-h-0 py-0 opacity-0'
+                className={`px-8 overflow-hidden transition-all duration-500 ease-in-out ${
+                  openIndex === index ? 'max-h-64 py-8 opacity-100 border-t' : 'max-h-0 py-0 opacity-0'
                 }`}
                 style={{ borderColor: 'var(--border)' }}
               >
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--text3)' }}>{faq.answer}</p>
+                <p className="text-sm leading-[1.8] font-light" style={{ color: 'var(--text3)' }}>{faq.answer}</p>
               </div>
             </div>
           ))}
