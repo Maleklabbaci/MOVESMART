@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Building, MapPin, Check, Phone, Star } from 'lucide-react';
+import { Building, MapPin, Check, Phone, Star, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import FAQ from '../components/FAQ';
 import Testimonials from '../components/Testimonials';
@@ -10,44 +10,42 @@ export default function Home() {
 
   return (
     <div style={{ backgroundColor: 'var(--bg)' }}>
-      {/* HERO */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      {/* HERO ULTRA MODERNE */}
+      <section className="relative h-[95vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
             src="https://images.pexels.com/photos/4531667/pexels-photo-4531667.jpeg" 
             alt="Dubai Skyline" 
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover scale-105"
           />
-          {/* Overlay gradient to keep text crisp */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80"></div>
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
         </div>
         
-        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto mt-20 animate-fade-in">
-          <span className="font-semibold tracking-[0.4em] uppercase text-xs mb-8 block text-gold">
-            MoveSmart
+        <div className="relative z-10 text-center px-6 max-w-5xl mx-auto mt-24 animate-blur-fade">
+          <span className="inline-block py-1.5 px-4 rounded-full border mb-8 text-[11px] font-semibold tracking-[0.2em] uppercase backdrop-blur-md bg-white/5 border-white/20 text-white shadow-lg">
+            Investissement Immobilier · Dubaï
           </span>
-          <h1 className="text-5xl md:text-8xl font-serif mb-8 tracking-tight leading-[1.1] text-white">
+          <h1 className="text-6xl md:text-[100px] font-semibold mb-6 tracking-tighter leading-[0.95] text-white drop-shadow-xl">
             {t('hero_title_1', 'Investissez à')} <br/>
-            <span className="font-serif-italic text-gold">{t('hero_title_em', 'Dubaï.')}</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-gray-400">
+              {t('hero_title_em', 'Dubaï.')}
+            </span>
           </h1>
-          <p className="text-base md:text-lg mb-12 max-w-2xl mx-auto font-light leading-relaxed text-gray-200">
-            {t('hero_sub', 'Rendement locatif · 0% d\'impôt · Achat sur plan exclusif. MoveSmart sécurise et maximise votre investissement.')}
+          <p className="text-lg md:text-2xl mb-12 max-w-3xl mx-auto font-light leading-relaxed text-gray-300 drop-shadow-md">
+            {t('hero_sub', 'Rendement locatif jusqu\'à 8% net · 0% d\'impôt · Off-plan exclusif. MoveSmart maximise et sécurise votre investissement.')}
           </p>
           
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link 
               to="/listings" 
-              className="w-full sm:w-auto px-10 py-4 font-semibold uppercase tracking-widest text-[11px] transition-all hover:bg-amber-600 shadow-xl text-black"
-              style={{ backgroundColor: 'var(--accent)' }}
+              className="w-full sm:w-auto px-8 py-4 bg-white text-black rounded-full font-semibold text-sm transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
             >
               {t('hero_cta', 'Voir les opportunités')}
             </Link>
             <Link 
               to="/contact" 
-              className="w-full sm:w-auto px-10 py-4 bg-transparent border font-semibold uppercase tracking-widest text-[11px] transition-colors text-white"
-              style={{ borderColor: 'rgba(255,255,255,0.4)' }}
-              onMouseEnter={e => { e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'; }}
-              onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+              className="w-full sm:w-auto px-8 py-4 bg-black/40 backdrop-blur-md border border-white/20 text-white rounded-full font-semibold text-sm transition-all hover:bg-white/10"
             >
               {t('hero_cta2', 'Consultation gratuite')}
             </Link>
@@ -55,79 +53,87 @@ export default function Home() {
         </div>
       </section>
 
-      {/* INTRO */}
-      <section className="py-32" style={{ backgroundColor: 'var(--bg)' }}>
-        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-20 items-center">
-          <div className="animate-fade-in">
-            <span className="font-semibold uppercase tracking-widest text-[10px] mb-6 block text-gold">
-              {t('why_us_tag', 'Pourquoi MoveSmart')}
-            </span>
-            <h2 className="text-4xl md:text-5xl font-serif tracking-tight mb-8" style={{ color: 'var(--text)' }}>
-              {t('about_title_1', 'On sécurise votre capital')}
-            </h2>
-            <p className="mb-6 text-sm leading-relaxed" style={{ color: 'var(--text3)' }}>
-              {t('why_us_p1', 'MoveSmart accompagne exclusivement les investisseurs internationaux sur le marché immobilier de Dubaï. Notre rôle : vous trouver les meilleures opportunités, négocier pour vous, et sécuriser chaque étape.')}
-            </p>
-            <p className="mb-12 text-sm leading-relaxed" style={{ color: 'var(--text3)' }}>
-              {t('why_us_p2', 'Rendement locatif, achat sur plan, revente ou Golden Visa — nous gérons tout pour maximiser votre retour sur investissement.')}
-            </p>
-            
-            <div className="grid grid-cols-3 gap-8 pt-10" style={{ borderTop: '1px solid var(--border)' }}>
-              <div>
-                <p className="text-4xl font-serif text-gold mb-3">500+</p>
-                <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: 'var(--text3)' }}>{t('stat_sold', 'Investissements réalisés')}</p>
-              </div>
-              <div>
-                <p className="text-4xl font-serif text-gold mb-3">40+</p>
-                <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: 'var(--text3)' }}>{t('stat_nations', 'Nationalités')}</p>
-              </div>
-              <div>
-                <p className="text-4xl font-serif text-gold mb-3">10</p>
-                <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: 'var(--text3)' }}>{t('stat_years', 'Années d\'expertise')}</p>
-              </div>
+      {/* STATS STRIP */}
+      <section className="border-b" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--surface)' }}>
+        <div className="max-w-[1400px] mx-auto px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8 divide-x" style={{ borderColor: 'var(--border)' }}>
+          {[
+            { v: '500+', l: t('stat_sold', 'Investissements sécurisés') },
+            { v: '15%', l: t('roi_3_label', 'Appréciation annuelle') },
+            { v: '8%', l: t('roi_1_label', 'Rendement locatif net') },
+            { v: '0%', l: t('roi_2_label', 'Taxes & impôts') }
+          ].map((s, i) => (
+            <div key={i} className="text-center px-4">
+              <p className="text-4xl md:text-5xl font-bold tracking-tighter mb-2" style={{ color: 'var(--text)' }}>{s.v}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>{s.l}</p>
             </div>
-          </div>
-          
+          ))}
+        </div>
+      </section>
+
+      {/* INTRO 2024 */}
+      <section className="py-32" style={{ backgroundColor: 'var(--bg)' }}>
+        <div className="max-w-[1400px] mx-auto px-6 grid lg:grid-cols-2 gap-20 items-center">
           <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-tr from-gray-500/20 to-transparent blur-3xl rounded-full"></div>
             <img 
               src="https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?q=80&w=800&auto=format&fit=crop" 
               alt="Luxury Interior" 
-              className="w-full h-[650px] object-cover rounded grayscale hover:grayscale-0 transition-all duration-1000 shadow-2xl"
+              className="w-full h-[700px] object-cover rounded-[32px] shadow-2xl relative z-10"
             />
-            <div className="absolute -bottom-8 -left-8 p-10 max-w-xs hidden lg:block rounded shadow-2xl backdrop-blur-xl animate-fade-in" style={{ backgroundColor: 'var(--header-bg)', border: '1px solid var(--border)' }}>
-              <div className="flex gap-1.5 mb-5 text-gold">
+            <div className="absolute -bottom-10 -right-10 p-8 max-w-sm hidden lg:block glass-panel z-20 animate-float">
+              <div className="flex gap-1.5 mb-4 text-amber-500">
                 {[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 fill-current" />)}
               </div>
-              <p className="text-3xl font-serif mb-3" style={{ color: 'var(--text)' }}>5.0/5</p>
-              <p className="text-xs font-serif-italic tracking-wide leading-relaxed" style={{ color: 'var(--text3)' }}>"Service exceptionnel et accompagnement professionnel de bout en bout."</p>
+              <p className="text-3xl font-bold tracking-tight mb-2" style={{ color: 'var(--text)' }}>Top Agence 2024</p>
+              <p className="text-sm font-medium leading-relaxed" style={{ color: 'var(--text-muted)' }}>Reconnue pour la qualité de son accompagnement investisseur francophone à Dubaï.</p>
             </div>
+          </div>
+
+          <div className="animate-blur-fade">
+            <span className="px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase border mb-8 inline-block" style={{ color: 'var(--text)', borderColor: 'var(--border)' }}>
+              {t('why_us_tag', 'Pourquoi MoveSmart')}
+            </span>
+            <h2 className="text-5xl md:text-6xl font-bold tracking-tighter mb-8 leading-[1.1]" style={{ color: 'var(--text)' }}>
+              On ne vend pas du rêve. <br/>
+              <span className="text-gradient">On sécurise du capital.</span>
+            </h2>
+            <p className="mb-6 text-lg leading-relaxed font-medium" style={{ color: 'var(--text-muted)' }}>
+              {t('why_us_p1', 'MoveSmart accompagne exclusivement les investisseurs internationaux sur le marché immobilier de Dubaï. Notre rôle : vous trouver les meilleures opportunités, négocier pour vous, et sécuriser chaque étape.')}
+            </p>
+            <p className="mb-12 text-lg leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+              {t('why_us_p2', 'Rendement locatif, achat sur plan, revente ou Golden Visa — nous gérons tout pour maximiser votre retour sur investissement avec des chiffres concrets.')}
+            </p>
+            
+            <Link to="/about" className="modern-btn-outline inline-flex items-center gap-2 px-6 py-3">
+              Découvrir notre approche <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* SERVICES / VALUE PROPS */}
-      <section className="py-32" style={{ backgroundColor: 'var(--bg)', filter: 'brightness(0.97)' }}>
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-20">
-            <span className="font-semibold uppercase tracking-widest text-[10px] mb-6 block text-gold">
-              {t('services_tag', 'Nos Services')}
-            </span>
-            <h2 className="text-4xl md:text-6xl font-serif tracking-tight" style={{ color: 'var(--text)' }}>
-              {t('services_title', 'Un accompagnement complet')}
+      {/* SERVICES 2024 */}
+      <section className="py-32 border-y" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}>
+        <div className="max-w-[1400px] mx-auto px-6">
+          <div className="text-center mb-24 max-w-3xl mx-auto">
+            <h2 className="text-5xl md:text-6xl font-bold tracking-tighter mb-6" style={{ color: 'var(--text)' }}>
+              Un accompagnement <span className="text-gradient">de A à Z</span>
             </h2>
+            <p className="text-lg" style={{ color: 'var(--text-muted)' }}>De la sélection du projet jusqu'à la revente ou la mise en location, nous sommes votre bureau local à Dubaï.</p>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { icon: Building, title: t('s1_title', 'Achat sur plan'), desc: t('s1_desc', 'Accès exclusif aux meilleurs projets off-plan avant ouverture publique.') },
-              { icon: MapPin, title: t('s4_title', 'Golden Visa'), desc: t('s4_desc', 'Résidence 10 ans incluse dès 545,000 AED d\'investissement.') },
-              { icon: Check, title: t('s2_title', 'Investissement locatif'), desc: t('s2_desc', 'Sélection des biens à fort rendement locatif 6–8% net par an.') },
-              { icon: Phone, title: t('s3_title', 'Revente & plus-value'), desc: t('s3_desc', 'Stratégie de revente pour maximiser votre capital.') },
+              { icon: Building, title: t('s1_title', 'Achat sur plan'), desc: t('s1_desc', 'Accès exclusif aux meilleurs projets off-plan avant ouverture publique pour garantir la plus-value.') },
+              { icon: MapPin, title: t('s4_title', 'Golden Visa'), desc: t('s4_desc', 'Résidence 10 ans incluse dès 545,000 AED d\'investissement. On gère 100% de l\'administratif.') },
+              { icon: Check, title: t('s2_title', 'Investissement locatif'), desc: t('s2_desc', 'Sélection chirurgicale des biens à fort rendement locatif 6–8% net par an.') },
+              { icon: Phone, title: t('s3_title', 'Revente & Stratégie'), desc: t('s3_desc', 'On ne fait pas que vous vendre : on prévoit la stratégie de sortie pour maximiser le capital.') },
             ].map((service, index) => (
-              <div key={index} className="p-10 border rounded transition-all duration-300 group hover:-translate-y-2 shadow-sm hover:shadow-xl" style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }}>
-                <service.icon className="w-12 h-12 mb-8 group-hover:scale-110 transition-transform text-gold" strokeWidth={1} />
-                <h3 className="text-xl font-serif tracking-tight mb-4" style={{ color: 'var(--text)' }}>{service.title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--text3)' }}>{service.desc}</p>
+              <div key={index} className="modern-card p-10 group">
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-8 transition-transform group-hover:scale-110 group-hover:rotate-3" style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}>
+                  <service.icon className="w-8 h-8" style={{ color: 'var(--text)' }} strokeWidth={1.5} />
+                </div>
+                <h3 className="text-2xl font-bold tracking-tight mb-4" style={{ color: 'var(--text)' }}>{service.title}</h3>
+                <p className="text-[15px] leading-relaxed font-medium" style={{ color: 'var(--text-muted)' }}>{service.desc}</p>
               </div>
             ))}
           </div>
@@ -140,23 +146,22 @@ export default function Home() {
       {/* FAQ */}
       <FAQ />
 
-      {/* CTA */}
-      <section className="py-40 text-center relative overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
-        <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at center, var(--accent) 0%, transparent 70%)' }}></div>
-        <div className="max-w-3xl mx-auto px-6 relative z-10">
-          <h2 className="text-5xl md:text-7xl font-serif tracking-tight mb-8" style={{ color: 'var(--text)' }}>
-            {t('cta_title_1', 'Votre investissement commence')} <span className="font-serif-italic text-gold block mt-2">{t('cta_title_em', 'aujourd\'hui.')}</span>
+      {/* CTA 2024 */}
+      <section className="py-40 relative overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
+        <div className="max-w-4xl mx-auto px-6 relative z-10 text-center glass-panel p-16 md:p-24 border" style={{ borderColor: 'var(--border)' }}>
+          <h2 className="text-5xl md:text-7xl font-bold tracking-tighter mb-8 leading-tight" style={{ color: 'var(--text)' }}>
+            Votre investissement commence <br/>
+            <span className="text-gradient">aujourd'hui.</span>
           </h2>
-          <p className="text-base mb-16 leading-relaxed" style={{ color: 'var(--text3)' }}>
-            {t('cta_sub', 'Consultation gratuite. Notre expert analyse votre projet et vous propose les meilleures opportunités du marché.')}
+          <p className="text-lg md:text-xl mb-12 font-medium max-w-2xl mx-auto" style={{ color: 'var(--text-muted)' }}>
+            {t('cta_sub', 'Réservez votre appel gratuit de 30 minutes. Notre expert analyse vos objectifs et vous propose une stratégie sur mesure.')}
           </p>
-          <div className="flex justify-center gap-6">
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link 
               to="/contact" 
-              className="px-10 py-5 font-semibold uppercase tracking-widest text-[11px] transition-transform hover:scale-105 shadow-2xl text-black rounded"
-              style={{ backgroundColor: 'var(--accent)' }}
+              className="modern-btn px-10 py-5 text-sm uppercase tracking-widest flex items-center justify-center gap-2"
             >
-              {t('cta_btn', 'Consultation gratuite')}
+              {t('cta_btn', 'Réserver un appel')} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
