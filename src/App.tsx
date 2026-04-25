@@ -120,73 +120,57 @@ function MobileNav() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 
+  // 1. Fermer le menu uniquement quand on change de page (URL)
   useEffect(() => {
     setIsOpen(false);
-    if (isOpen) document.body.style.overflow = 'hidden';
-    else document.body.style.overflow = 'auto';
-  }, [location.pathname, isOpen]);
+  }, [location.pathname]);
+
+  // 2. Gérer le scroll du body quand le menu est ouvert
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    // Nettoyage si le composant est démonté
+    return () => { document.body.style.overflow = 'auto'; };
+  }, [isOpen]);
 
   return (
     <div className="md:hidden flex items-center ml-2">
-      <button 
+      <button
         onClick={() => setIsOpen(!isOpen)}
         className="p-2 transition-colors duration-200 relative z-50 rounded-full border border-transparent"
         style={{ color: 'var(--text)' }}
-        onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border)'}
-        onMouseLeave={e => e.currentTarget.style.borderColor = 'transparent'}
       >
         {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" strokeWidth={1.5} />}
       </button>
 
       {/* Overlay Sombre */}
-      <div 
-        className={`fixed inset-0 z-30 transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+      <div
+        className={`fixed inset-0 z-30 transition-opacity duration-300 ${
+          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
         style={{ backgroundColor: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }}
         onClick={() => setIsOpen(false)}
       ></div>
 
       {/* Menu Coulissant */}
-      <div 
-        className={`fixed top-0 bottom-0 right-0 w-[85%] max-w-sm z-40 p-10 pt-32 flex flex-col gap-8 shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)]`} 
-        style={{ 
-          backgroundColor: 'var(--bg)', 
-          borderLeft: '1px solid var(--border)',
-          transform: isOpen ? 'translateX(0)' : 'translateX(100%)' 
-        }}
+      <div
+        className={`fixed top-0 bottom-0 right-0 w-[85%] max-w-sm z-40 p-10 pt-32 flex flex-col gap-8 shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${
+          isOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+        style={{ backgroundColor: 'var(--surface)', borderLeft: '1px solid var(--border)' }}
       >
-        {[
-          ['/', t('home')],
-          ['/listings', t('listings')],
-          ['/about', t('about')],
-          ['/blog', 'Journal'], 
-          ['/contact', t('contact')],
-        ].map(([href, label], i) => (
-          <Link
-            key={href}
-            to={href}
-            className={`text-2xl font-serif tracking-wider uppercase pb-4 flex items-center justify-between group transition-all duration-300 ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ 
-              color: location.pathname === href ? 'var(--accent)' : 'var(--text)', 
-              borderBottom: '1px solid var(--border)',
-              transitionDelay: `${i * 50}ms`
-            }}
-          >
-            {label}
-            <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--accent)' }}/>
-          </Link>
-        ))}
-
-        <div className="mt-auto pt-10 border-t" style={{ borderColor: 'var(--border)' }}>
-          <p className="text-[10px] font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--text3)' }}>Service Client</p>
-          <a href={`https://wa.me/${companyInfo.whatsapp.replace(/\D/g,'')}`} className="text-xl font-serif tracking-widest transition-colors hover:text-[var(--accent)]" style={{ color: 'var(--text)' }}>
-            {companyInfo.whatsapp}
-          </a>
-        </div>
+        <Link to="/" className="text-2xl font-serif">{t('home')}</Link>
+        <Link to="/listings" className="text-2xl font-serif">{t('listings')}</Link>
+        <Link to="/about" className="text-2xl font-serif">{t('about')}</Link>
+        <Link to="/contact" className="text-2xl font-serif">{t('contact')}</Link>
+        <Link to="/blog" className="text-2xl font-serif">{t('blog')}</Link>
       </div>
     </div>
   );
 }
-
 // ─── HEADER ───
 function Header() {
   const location = useLocation();
