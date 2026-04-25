@@ -1,16 +1,16 @@
 export const companyInfo = {
-  name: 'MoveSmart Consultancy',
+  name: 'MoveSmart Invest',
   brand: 'MoveSmart',
-  whatsapp: '+971501234567',
+  whatsapp: '+971569130632',
   email: 'contact@movesmartinvest.com',
-  location: 'Boulevard Plaza Tower 1, Downtown Dubai',
+  location: 'Dubai, UAE',
   social: {
-    instagram: 'https://instagram.com/movesmart',
-    linkedin: 'https://linkedin.com/company/movesmart',
+    instagram: 'https://www.instagram.com/faouzi_investdxb',
+    linkedin: 'https://ae.linkedin.com/in/faouzi-boucherit-pmp',
     facebook: 'https://facebook.com/movesmart',
   },
   colors: {
     primary: '#000000',
-    accent: '#d97706',
+    accent: '#d4af37',
   }
 };
