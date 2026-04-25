@@ -1,8 +1,16 @@
 export const companyInfo = {
-  name: "MoveSmart Consultancy – FZCO",
-  brand: "MoveSmart Invest",
-  baseline: "Your 360° partner to settle, invest and succeed in Dubai.",
-  description: "MoveSmart accompagne les investisseurs internationaux dans leur installation et leurs investissements à Dubaï, avec une approche 360° intégrant immobilier, création de société, visa et stratégie.",
-  location: "Dubaï, UAE",
-  whatsapp: "+971 56 913 0632",
+  name: 'MoveSmart Consultancy',
+  brand: 'MoveSmart',
+  whatsapp: '+971501234567',
+  email: 'contact@movesmartinvest.com',
+  location: 'Boulevard Plaza Tower 1, Downtown Dubai',
+  social: {
+    instagram: 'https://instagram.com/movesmart',
+    linkedin: 'https://linkedin.com/company/movesmart',
+    facebook: 'https://facebook.com/movesmart',
+  },
+  colors: {
+    primary: '#000000',
+    accent: '#d97706',
+  }
 };
