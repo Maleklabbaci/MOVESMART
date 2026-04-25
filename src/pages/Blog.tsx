@@ -55,7 +55,7 @@ const articles = [
     author: "Rashid Al Maktoumi",
     date: "March 15, 2024",
     category: "Finance",
-    image: "https://images.unsplash.com/photo-1507537362392-63e93d2f53b5?q=80&w=600&auto=format&fit=crop"
+    image: "https://images.pexels.com/photos/8293647/pexels-photo-8293647.jpeg?_gl=1*ygzcr2*_ga*MTg5MzA4Njc5Ni4xNzc2MDk4NDk0*_ga_8JE65Q40S6*czE3NzcxMTYyNTkkbzQkZzAkdDE3NzcxMTYyNTkkajYwJGwwJGgw"
   }
 ];
 
