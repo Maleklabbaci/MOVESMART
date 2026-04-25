@@ -2,7 +2,7 @@ import React, { useEffect, useState, createContext, useContext } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { useTranslation, I18nextProvider } from 'react-i18next';
 import { Sun, Moon, Menu, X } from 'lucide-react';
-import i18n from '../lib/i18n'; // Added explicit import for i18n
+import i18n from './lib/i18n'; // Corrected import path: from '../lib/i18n' to './lib/i18n'
 
 import Home from './pages/Home';
 import Listings from './pages/Listings';
@@ -296,7 +296,7 @@ export default function AppWrapper() {
 
   return (
     <I18nextProvider i18n={i18n}>
-      <ThemeContext.Provider value={{ theme, toggle }}> 
+      <ThemeContext.Provider value={{ theme, toggle }}>
         <BrowserRouter>
           <App />
         </BrowserRouter>
