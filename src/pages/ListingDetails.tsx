@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Bed, Bath, Square, MapPin, Phone, ChevronLeft, ChevronRight, ArrowLeft, Share2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { companyInfo } from '../constants';
-import { useTranslation } from 'react-i18next'; // Added translation
+import { useTranslation } from 'react-i18next'; 
 
 export default function ListingDetails() {
   const { t } = useTranslation();
@@ -43,7 +43,7 @@ export default function ListingDetails() {
   if (!listing) return (
     <div className="min-h-screen pt-32 pb-20 flex flex-col items-center justify-center gap-6" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       <p className="font-sans uppercase tracking-widest text-sm" style={{ color: 'var(--text3)' }}>{t('not_found', 'Bien non trouvé.')}</p>
-      <button onClick={handleBack} className="text-xs font-bold uppercase tracking-widest transition-colors hover:text-amber-500" style={{ color: 'var(--text)' }}>
+      <button onClick={handleBack} className="text-xs font-bold uppercase tracking-widest transition-colors" style={{ color: 'var(--accent)' }}>
         ← {t('back', 'Retour')}
       </button>
     </div>
@@ -52,11 +52,11 @@ export default function ListingDetails() {
   const images = listing.images || [];
 
   return (
-    <div className="min-h-screen pt-24 pb-20" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+    <div className="min-h-screen pt-24 pb-20 transition-colors duration-300" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
       <div className="max-w-6xl mx-auto px-6">
         
         {/* ── BACK + SHARE ── */}
-        <div className="flex items-center justify-between mb-8 pb-4 border-b" style={{ borderColor: 'var(--border)' }}>
+        <div className="flex items-center justify-between mb-8 pb-4 border-b transition-colors duration-300" style={{ borderColor: 'var(--border)' }}>
           <button 
             onClick={handleBack}
             className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-colors"
@@ -81,7 +81,7 @@ export default function ListingDetails() {
         </div>
 
         {/* ── IMAGE PRINCIPALE ── */}
-        <div className="relative aspect-[16/9] md:aspect-[21/9] bg-[#0a0a0a] mb-6 overflow-hidden border" style={{ borderColor: 'var(--border)' }}>
+        <div className="relative aspect-[16/9] md:aspect-[21/9] bg-[#0a0a0a] mb-6 overflow-hidden border transition-colors duration-300" style={{ borderColor: 'var(--border)' }}>
           {images.length > 0 ? (
             <img 
               src={images[activeImg]} 
@@ -99,20 +99,16 @@ export default function ListingDetails() {
             <>
               <button 
                 onClick={() => setActiveImg(p => (p - 1 + images.length) % images.length)}
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center transition-all duration-200 backdrop-blur-md"
-                style={{ backgroundColor: 'rgba(0,0,0,0.65)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
-                onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--accent)')}
-                onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)')}
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center transition-all duration-200 backdrop-blur-md hover:bg-black/80"
+                style={{ backgroundColor: 'rgba(0,0,0,0.5)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff' }}
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
               
               <button 
                 onClick={() => setActiveImg(p => (p + 1) % images.length)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center transition-all duration-200 backdrop-blur-md"
-                style={{ backgroundColor: 'rgba(0,0,0,0.65)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
-                onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--accent)')}
-                onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center transition-all duration-200 backdrop-blur-md hover:bg-black/80"
+                style={{ backgroundColor: 'rgba(0,0,0,0.5)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff' }}
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -161,7 +157,7 @@ export default function ListingDetails() {
             </div>
 
             {/* Specs */}
-            <div className="grid grid-cols-3 gap-6 py-8 border-y mb-12" style={{ borderColor: 'var(--border)' }}>
+            <div className="grid grid-cols-3 gap-6 py-8 border-y mb-12 transition-colors duration-300" style={{ borderColor: 'var(--border)' }}>
               {[
                 { icon: Bed, value: listing.beds, label: t('beds_label', 'Chambres') },
                 { icon: Bath, value: listing.baths, label: t('baths_label', 'SDB') },
@@ -176,9 +172,9 @@ export default function ListingDetails() {
             </div>
 
             {/* Description */}
-            <div className="prose prose-invert max-w-none">
+            <div className="prose max-w-none">
               <h2 className="text-sm font-bold uppercase tracking-widest mb-6" style={{ color: 'var(--text)' }}>
-                {t('desc_label', 'Description')}
+                {t('desc_label', 'Détails du bien')}
               </h2>
               <p className="font-light leading-loose text-sm md:text-base whitespace-pre-line" style={{ color: 'var(--text3)' }}>
                 {listing.description || 
@@ -189,14 +185,14 @@ export default function ListingDetails() {
 
           {/* RIGHT — sticky price card */}
           <div className="lg:col-span-1">
-            <div className="sticky top-28 p-8 border" style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)', filter: 'brightness(0.97)' }}>
+            <div className="sticky top-28 p-8 border transition-all duration-300 shadow-sm" style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }}>
               
               {/* Prix */}
               <div className="mb-8 pb-8 border-b" style={{ borderColor: 'var(--border)' }}>
                 <span className="block text-[10px] font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--text3)' }}>
-                  {t('price_label', 'Prix')}
+                  {t('price_label', 'Prix d\'acquisition')}
                 </span>
-                <div className="text-3xl font-bold font-sans tracking-wider mb-2">
+                <div className="text-3xl font-bold font-sans tracking-wider mb-2" style={{ color: 'var(--text)' }}>
                   AED {listing.price?.toLocaleString()}
                 </div>
                 <div className="text-xs font-sans tracking-widest" style={{ color: 'var(--text3)' }}>
@@ -210,32 +206,32 @@ export default function ListingDetails() {
                   href={`https://wa.me/${companyInfo.whatsapp.replace(/\D/g,'')}?text=Bonjour,%20je%20suis%20intéressé%20par%20la%20propriété:%20${listing.title}%20(${window.location.href})`}
                   target="_blank" rel="noopener noreferrer"
                   className="w-full py-4 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-3 transition-colors border"
-                  style={{ backgroundColor: 'var(--bg)', borderColor: 'rgba(255,255,255,0.1)', color: 'var(--text)' }}
+                  style={{ backgroundColor: 'transparent', borderColor: 'var(--border)', color: 'var(--text)' }}
                   onMouseEnter={e => {
                     e.currentTarget.style.borderColor = 'var(--accent)';
                     e.currentTarget.style.color = 'var(--accent)';
                   }}
                   onMouseLeave={e => {
-                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+                    e.currentTarget.style.borderColor = 'var(--border)';
                     e.currentTarget.style.color = 'var(--text)';
                   }}
                 >
                   <Phone className="w-4 h-4" />
-                  WhatsApp
+                  {t('wa_btn', 'WhatsApp')}
                 </a>
                 
                 <Link 
                   to="/contact" 
-                  className="w-full py-4 text-xs font-bold uppercase tracking-widest flex items-center justify-center transition-colors"
+                  className="w-full py-4 text-xs font-bold uppercase tracking-widest flex items-center justify-center transition-opacity hover:opacity-90"
                   style={{ backgroundColor: 'var(--accent)', color: '#000000' }}
                 >
-                  {t('msg_btn', 'Envoyer un message')}
+                  {t('msg_btn', 'Envoyer une demande')}
                 </Link>
               </div>
 
               <div className="mt-8 text-center">
                 <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--text3)' }}>MoveSmart Invest</p>
-                <p className="text-[10px] font-sans tracking-widest opacity-60">{t('team_note', 'Réponse sous 24h. Accompagnement complet Dubai.')}</p>
+                <p className="text-[10px] font-sans tracking-widest opacity-60" style={{ color: 'var(--text3)' }}>{t('team_note', 'Réponse sous 24h. Accompagnement complet Dubai.')}</p>
               </div>
             </div>
           </div>
