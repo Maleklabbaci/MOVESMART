@@ -35,14 +35,14 @@ export default function FAQ() {
 
   return (
     <div className="py-40" style={{ backgroundColor: 'var(--bg)' }}>
-      <div className="max-w-4xl mx-auto px-6">
-        <div className="text-center mb-32 animate-fade-in-up">
-          <span className="inline-block py-2 px-5 rounded-full border mb-8 text-[11px] font-bold tracking-widest uppercase" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}>
+      <div className="max-w-[1000px] mx-auto px-6">
+        <div className="text-center mb-32 animate-fade-in delay-100">
+          <span className="tag-gold">
             {t('faq_tag', 'Foire Aux Questions')}
           </span>
-          <h2 className="text-5xl md:text-7xl font-bold tracking-tighter mb-8" style={{ color: 'var(--text)' }}>
+          <h2 className="text-5xl md:text-8xl tracking-tighter mb-10 leading-[1.05]" style={{ color: 'var(--text)' }}>
             Vos questions.<br/>
-            <span className="font-serif-italic font-normal text-amber-500">Nos réponses claires.</span>
+            <span className="text-accent font-serif-italic">Nos réponses claires.</span>
           </h2>
         </div>
 
@@ -50,19 +50,19 @@ export default function FAQ() {
           {faqs.map((faq, index) => (
             <div 
               key={index}
-              className="border-b transition-all duration-400 animate-fade-in-up"
-              style={{ borderColor: openIndex === index ? 'var(--text)' : 'var(--border)', backgroundColor: 'var(--bg)', animationDelay: `${index * 100}ms` }}
+              className="border-b transition-colors duration-400 animate-fade-in"
+              style={{ borderColor: openIndex === index ? 'var(--text)' : 'var(--border)', backgroundColor: 'var(--bg)', animationDelay: `${index * 50}ms` }}
             >
               <button
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full py-8 flex items-center justify-between transition-colors text-left"
+                className="w-full py-10 flex items-center justify-between text-left"
               >
-                <span className="text-2xl md:text-3xl font-bold tracking-tight pr-6" style={{ color: openIndex === index ? 'var(--text)' : 'var(--text3)' }}>
+                <span className="text-3xl md:text-4xl font-serif tracking-tighter pr-8 transition-colors" style={{ color: openIndex === index ? 'var(--text)' : 'var(--text3)' }}>
                   {faq.question}
                 </span>
-                <span className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-transform duration-300" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
+                <span className="w-16 h-16 border rounded-full flex items-center justify-center flex-shrink-0 transition-transform duration-500" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}>
                   {openIndex === index ? (
-                    <Minus className="w-6 h-6 text-amber-500" />
+                    <Minus className="w-6 h-6 text-accent" />
                   ) : (
                     <Plus className="w-6 h-6" style={{ color: 'var(--text3)' }} />
                   )}
@@ -71,10 +71,10 @@ export default function FAQ() {
               
               <div 
                 className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                  openIndex === index ? 'max-h-64 pb-12 opacity-100' : 'max-h-0 pb-0 opacity-0'
+                  openIndex === index ? 'max-h-[400px] pb-12 opacity-100' : 'max-h-0 pb-0 opacity-0'
                 }`}
               >
-                <p className="text-[17px] md:text-[19px] leading-[1.8] font-light max-w-3xl font-sans" style={{ color: 'var(--text3)' }}>{faq.answer}</p>
+                <p className="text-[17px] md:text-[21px] leading-[1.9] font-light max-w-4xl" style={{ color: 'var(--text3)' }}>{faq.answer}</p>
               </div>
             </div>
           ))}
