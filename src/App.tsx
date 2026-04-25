@@ -1,8 +1,8 @@
 import React, { useEffect, useState, createContext, useContext } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { useTranslation, I18nextProvider } from 'react-i18next';
-import { Sun, Moon, Menu, X } from 'lucide-react';
-import i18n from './lib/i18n'; 
+import { Sun, Moon, Menu, X, Globe } from 'lucide-react';
+import i18n from './lib/i18n';
 
 import Home from './pages/Home';
 import Listings from './pages/Listings';
@@ -53,36 +53,39 @@ function LangSelector() {
     <div className="relative">
       <button
         onClick={() => setOpen(v => !v)}
-        className="flex items-center gap-1.5 text-xs font-sans tracking-[0.15em] uppercase transition-colors duration-200"
+        className="flex items-center gap-1.5 text-xs font-semibold tracking-widest uppercase transition-colors duration-200"
         style={{ color: 'var(--text3)' }}
         onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
         onMouseLeave={e => (e.currentTarget.style.color = 'var(--text3)')}
       >
-        <span>{current.label}</span>
-        <svg width="10" height="10" viewBox="0 0 10 10" style={{ opacity: 0.5, transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
-          <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-        </svg>
+        <Globe className="w-4 h-4" />
+        <span className="hidden sm:inline-block">{current.label}</span>
       </button>
 
       {open && (
         <div
-          className="absolute top-full mt-2 py-1 z-50 rounded-sm shadow-xl"
-          style={{ minWidth: 120, right: 0, backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}
+          className="absolute top-full mt-4 py-2 z-50 rounded shadow-2xl transition-all duration-200 animate-fade-in"
+          style={{ 
+            minWidth: 140, 
+            right: 0, 
+            backgroundColor: 'var(--header-bg)', 
+            backdropFilter: 'blur(16px)',
+            border: '1px solid var(--border)' 
+          }}
         >
           {LANGS.map(l => (
             <button
               key={l.code}
               onClick={() => change(l.code)}
-              className="w-full text-left px-4 py-2.5 text-xs font-sans flex items-center justify-between transition-colors duration-150"
+              className="w-full text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider flex items-center justify-between transition-colors duration-150"
               style={{
-                color: l.code === i18n.language ? 'var(--accent)' : 'var(--text3)',
+                color: l.code === i18n.language ? 'var(--accent)' : 'var(--text)',
                 backgroundColor: l.code === i18n.language ? 'var(--accent-bg)' : 'transparent',
               }}
               onMouseEnter={e => { if(l.code !== i18n.language) e.currentTarget.style.backgroundColor = 'var(--border)' }}
               onMouseLeave={e => { if(l.code !== i18n.language) e.currentTarget.style.backgroundColor = 'transparent' }}
             >
               <span>{l.name}</span>
-              <span style={{ opacity: 0.4 }}>{l.label}</span>
             </button>
           ))}
         </div>
@@ -98,10 +101,16 @@ function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="flex items-center justify-center w-8 h-8 transition-colors duration-200"
+      className="flex items-center justify-center w-8 h-8 rounded-full transition-colors duration-200"
       style={{ color: 'var(--text3)' }}
-      onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-      onMouseLeave={e => (e.currentTarget.style.color = 'var(--text3)')}
+      onMouseEnter={e => {
+        e.currentTarget.style.color = 'var(--accent)';
+        e.currentTarget.style.backgroundColor = 'var(--accent-bg)';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.color = 'var(--text3)';
+        e.currentTarget.style.backgroundColor = 'transparent';
+      }}
       title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
     >
       {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -120,20 +129,20 @@ function MobileNav() {
   }, [location.pathname]);
 
   return (
-    <div className="md:hidden flex items-center">
+    <div className="md:hidden flex items-center ml-2">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="p-2 transition-colors duration-200"
+        className="p-2 transition-colors duration-200 rounded-full"
         style={{ color: 'var(--text)' }}
-        onMouseEnter={e => e.currentTarget.style.color = 'var(--accent)'}
-        onMouseLeave={e => e.currentTarget.style.color = 'var(--text)'}
+        onMouseEnter={e => e.currentTarget.style.backgroundColor = 'var(--border)'}
+        onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
       >
-        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
 
       {isOpen && (
         <div 
-          className="fixed inset-0 top-20 z-40 p-6 flex flex-col gap-6" 
+          className="fixed inset-0 top-[72px] z-40 p-8 flex flex-col gap-8 animate-fade-in" 
           style={{ backgroundColor: 'var(--bg)', borderTop: '1px solid var(--border)' }}
         >
           {[
@@ -146,7 +155,7 @@ function MobileNav() {
             <Link
               key={href}
               to={href}
-              className="text-xl font-light tracking-[0.2em] uppercase pb-4"
+              className="text-2xl font-serif tracking-wide pb-4 transition-colors"
               style={{ 
                 color: location.pathname === href ? 'var(--accent)' : 'var(--text)', 
                 borderBottom: '1px solid var(--border)' 
@@ -169,7 +178,7 @@ function Header() {
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
+    const onScroll = () => setScrolled(window.scrollY > 40);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -184,25 +193,25 @@ function Header() {
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 h-20 transition-all duration-500"
+      className="fixed top-0 left-0 right-0 z-50 h-[72px] transition-all duration-300"
       style={{
         backgroundColor: scrolled ? 'var(--header-bg)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(12px)' : 'none',
-        borderBottom: scrolled ? '1px solid var(--border)' : 'none',
+        backdropFilter: scrolled ? 'blur(20px)' : 'none',
+        borderBottom: scrolled ? '1px solid var(--border)' : '1px solid transparent',
       }}
     >
-      <div className="h-full max-w-6xl mx-auto px-6 md:px-10 flex items-center justify-between">
+      <div className="h-full max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
         <Link to="/" className="flex items-center">
           <img
             src="https://i.ibb.co/60PJ8PVw/aass.png"
             alt={companyInfo?.brand || 'MoveSmart'}
-            className="h-7 md:h-9 w-auto transition-all duration-300"
+            className="h-6 md:h-8 w-auto transition-all duration-300"
             style={{ filter: 'var(--img-filter)' }}
             referrerPolicy="no-referrer"
           />
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8 text-xs font-light tracking-[0.2em] uppercase">
+        <nav className="hidden md:flex items-center gap-10 text-[11px] font-semibold tracking-[0.2em] uppercase">
           {[
             ['/', t('home')],
             ['/listings', t('listings')],
@@ -213,7 +222,7 @@ function Header() {
             <Link
               key={href}
               to={href}
-              className="transition-colors duration-200"
+              className="transition-colors duration-200 relative py-2"
               style={{ color: location.pathname === href ? 'var(--accent)' : 'var(--text3)' }}
               onMouseEnter={e => { if (location.pathname !== href) e.currentTarget.style.color = 'var(--text)'; }}
               onMouseLeave={e => { if (location.pathname !== href) e.currentTarget.style.color = 'var(--text3)'; }}
@@ -223,7 +232,7 @@ function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2 sm:gap-4">
+        <div className="flex items-center gap-2 sm:gap-6">
           <ThemeToggle />
           <LangSelector />
           <MobileNav />
@@ -240,7 +249,7 @@ function App() {
 
   return (
     <div
-      className="min-h-screen transition-colors duration-300 flex flex-col"
+      className="min-h-screen transition-colors duration-400 flex flex-col"
       style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}
     >
       <Header />
@@ -265,12 +274,12 @@ export default function AppWrapper() {
   const [theme, setTheme] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('theme');
-      return saved || 'dark';
+      return saved || 'light'; // Fallback to light theme directly
     }
-    return 'dark';
+    return 'light';
   });
 
-  // Appliquer le thème sur <html> via data-attribute pour que index.css gère tout
+  // Apply the theme to html tags immediately on mount and change
   useEffect(() => {
     const html = document.documentElement;
     if (theme === 'light') {
