@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 
 const faqs = [
@@ -33,59 +33,48 @@ const faqs = [
   {
     question: "What documents do I need for investment?",
     answer: "Passport, proof of income, bank statements, and ID. Requirements vary by property type and financing. We'll provide a complete checklist and guide through every step."
-  },
+  }
 ];
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className="py-24 sm:py-32 px-6 md:px-10 bg-white">
-      <div className="max-w-4xl mx-auto">
+    <div className="py-24 bg-black">
+      <div className="max-w-4xl mx-auto px-6">
         <div className="text-center mb-16">
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="h-px w-8 bg-amber-500" />
-            <span className="text-amber-600 text-xs tracking-[0.2em] uppercase font-semibold">Questions?</span>
-            <div className="h-px w-8 bg-amber-500" />
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            Frequently Asked Questions
-          </h2>
-          <p className="text-lg text-gray-600">
-            Everything you need to know about investing in Dubai
-          </p>
+          <p className="text-amber-500 font-bold uppercase tracking-widest text-sm mb-4">Questions?</p>
+          <h2 className="text-3xl md:text-5xl font-bold uppercase tracking-wider mb-6">Frequently Asked Questions</h2>
+          <p className="text-gray-400">Everything you need to know about investing in Dubai</p>
         </div>
 
         <div className="space-y-4">
           {faqs.map((faq, index) => (
-            <div
+            <div 
               key={index}
-              className="border border-gray-200 rounded-2xl overflow-hidden bg-white hover:shadow-md transition-all"
+              className="border border-white/10 rounded-lg bg-white/5 overflow-hidden transition-all duration-300"
             >
               <button
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full px-6 md:px-8 py-5 md:py-6 flex items-center justify-between hover:bg-gray-50 transition-colors text-left"
+                className="w-full px-6 py-5 flex items-center justify-between hover:bg-white/10 transition-colors text-left"
               >
-                <span className="text-base md:text-lg font-semibold text-gray-900">
-                  {faq.question}
-                </span>
-                <ChevronDown
-                  className={`w-5 h-5 text-amber-600 flex-shrink-0 transition-transform duration-300 ${
-                    openIndex === index ? 'rotate-180' : ''
-                  }`}
+                <span className="font-medium pr-4">{faq.question}</span>
+                <ChevronDown 
+                  className={`w-5 h-5 text-amber-500 transition-transform duration-300 ${openIndex === index ? 'rotate-180' : ''}`}
                 />
               </button>
-              {openIndex === index && (
-                <div className="px-6 md:px-8 py-4 md:py-6 bg-gray-50 border-t border-gray-200">
-                  <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                    {faq.answer}
-                  </p>
-                </div>
-              )}
+              
+              <div 
+                className={`px-6 overflow-hidden transition-all duration-300 ease-in-out ${
+                  openIndex === index ? 'max-h-48 py-5 opacity-100 border-t border-white/10' : 'max-h-0 py-0 opacity-0'
+                }`}
+              >
+                <p className="text-gray-400 text-sm leading-relaxed">{faq.answer}</p>
+              </div>
             </div>
           ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 }

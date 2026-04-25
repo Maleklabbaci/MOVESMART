@@ -1,3 +1,4 @@
+import React from 'react';
 import { Star } from 'lucide-react';
 
 const testimonials = [
@@ -42,60 +43,52 @@ const testimonials = [
     image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop",
     text: "Working with MoveSmart was refreshing. Their transparency, expertise, and dedication made my Dubai investment journey smooth and profitable. 5/5!",
     rating: 5
-  },
+  }
 ];
 
 export default function Testimonials() {
   return (
-    <section className="py-24 sm:py-32 px-6 md:px-10 bg-gray-50">
-      <div className="max-w-6xl mx-auto">
+    <div className="py-24 bg-black/95">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="h-px w-8 bg-amber-500" />
-            <span className="text-amber-600 text-xs tracking-[0.2em] uppercase font-semibold">Success Stories</span>
-            <div className="h-px w-8 bg-amber-500" />
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            What Our Clients Say
-          </h2>
-          <p className="text-lg text-gray-600">
+          <p className="text-amber-500 font-bold uppercase tracking-widest text-sm mb-4">Success Stories</p>
+          <h2 className="text-3xl md:text-5xl font-bold uppercase tracking-wider mb-6">What Our Clients Say</h2>
+          <p className="text-gray-400 max-w-2xl mx-auto">
             Join hundreds of satisfied investors who trusted us with their Dubai journey
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
-            <div
+            <div 
               key={index}
-              className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-lg transition-all border border-gray-100 flex flex-col"
+              className="bg-black border border-white/10 p-8 rounded-xl hover:border-amber-500/30 transition-all duration-300 transform hover:-translate-y-1"
             >
-              <div className="flex items-center gap-1 mb-4">
+              <div className="flex items-center gap-1 mb-6 text-amber-500">
                 {[...Array(testimonial.rating)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 text-amber-500 fill-amber-500" />
+                  <Star key={i} className="w-4 h-4 fill-current" />
                 ))}
               </div>
               
-              <p className="text-gray-600 mb-6 flex-grow leading-relaxed text-sm md:text-base">
+              <p className="text-gray-300 text-sm leading-relaxed mb-8 italic">
                 "{testimonial.text}"
               </p>
-
-              <div className="flex items-center gap-4 pt-6 border-t border-gray-100">
-                <img
-                  src={testimonial.image}
-                  alt={testimonial.name}
-                  className="w-12 h-12 rounded-full object-cover bg-gray-200"
-                  referrerPolicy="no-referrer"
-                  loading="lazy"
+              
+              <div className="flex items-center gap-4">
+                <img 
+                  src={testimonial.image} 
+                  alt={testimonial.name} 
+                  className="w-12 h-12 rounded-full object-cover border border-white/20"
                 />
                 <div>
-                  <p className="font-semibold text-gray-900 text-sm md:text-base">{testimonial.name}</p>
-                  <p className="text-xs md:text-sm text-gray-500">{testimonial.title}</p>
+                  <h4 className="font-bold text-sm text-white">{testimonial.name}</h4>
+                  <p className="text-xs text-amber-500/80">{testimonial.title}</p>
                 </div>
               </div>
             </div>
           ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 }
