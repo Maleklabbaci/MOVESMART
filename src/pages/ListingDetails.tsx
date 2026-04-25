@@ -3,8 +3,10 @@ import { useState, useEffect } from 'react';
 import { Bed, Bath, Square, MapPin, Phone, ChevronLeft, ChevronRight, ArrowLeft, Share2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { companyInfo } from '../constants';
+import { useTranslation } from 'react-i18next'; // Added translation
 
 export default function ListingDetails() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [listing, setListing] = useState<any>(null);
@@ -33,18 +35,16 @@ export default function ListingDetails() {
   };
 
   if (loading) return (
-    <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center">
-      <div className="w-8 h-8 border-2 border-[var(--accent)] border-t-transparent rounded-full animate-spin" />
+    <div className="min-h-screen pt-32 pb-20 flex items-center justify-center font-sans tracking-widest uppercase text-sm animate-pulse" style={{ backgroundColor: 'var(--bg)', color: 'var(--text3)' }}>
+      Chargement...
     </div>
   );
 
   if (!listing) return (
-    <div className="min-h-screen bg-[var(--bg)] text-white flex flex-col items-center justify-center gap-6"
-      style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-      <p className="text-2xl font-light text-[var(--text2)]">Bien non trouvé.</p>
-      <button onClick={handleBack}
-        className="text-[var(--accent)] text-xs font-sans tracking-[0.3em] uppercase hover:text-amber-300 transition-colors">
-        ← Retour aux propriétés
+    <div className="min-h-screen pt-32 pb-20 flex flex-col items-center justify-center gap-6" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+      <p className="font-sans uppercase tracking-widest text-sm" style={{ color: 'var(--text3)' }}>{t('not_found', 'Bien non trouvé.')}</p>
+      <button onClick={handleBack} className="text-xs font-bold uppercase tracking-widest transition-colors hover:text-amber-500" style={{ color: 'var(--text)' }}>
+        ← {t('back', 'Retour')}
       </button>
     </div>
   );
@@ -52,182 +52,196 @@ export default function ListingDetails() {
   const images = listing.images || [];
 
   return (
-    <div className="min-h-screen bg-[var(--bg)] text-white pb-24 md:pb-0"
-      style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
-
-      {/* ── BACK + SHARE — EN DEHORS DE L'IMAGE, sous le header ── */}
-      <div className="pt-20 px-4 sm:px-6 md:px-10">
-        <div className="max-w-5xl mx-auto flex items-center justify-between py-4">
-          <button onClick={handleBack}
-            className="flex items-center gap-2 text-xs font-sans tracking-[0.2em] uppercase transition-all duration-200"
-            style={{ color: 'var(--text2)' }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#FBBF24')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#9CA3AF')}>
-            <ArrowLeft className="w-4 h-4" />
-            <span>Retour</span>
+    <div className="min-h-screen pt-24 pb-20" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+      <div className="max-w-6xl mx-auto px-6">
+        
+        {/* ── BACK + SHARE ── */}
+        <div className="flex items-center justify-between mb-8 pb-4 border-b" style={{ borderColor: 'var(--border)' }}>
+          <button 
+            onClick={handleBack}
+            className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-colors"
+            style={{ color: 'var(--text3)' }}
+            onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text3)')}
+          >
+            <ArrowLeft className="w-3 h-3" />
+            {t('back', 'Retour')}
           </button>
-
-          <button onClick={handleShare}
-            className="flex items-center gap-2 text-xs font-sans tracking-[0.2em] uppercase transition-all duration-200"
-            style={{ color: copied ? '#FBBF24' : '#9CA3AF' }}
-            onMouseEnter={e => { if (!copied) e.currentTarget.style.color = '#FBBF24'; }}
-            onMouseLeave={e => { if (!copied) e.currentTarget.style.color = '#9CA3AF'; }}>
-            <Share2 className="w-4 h-4" />
-            <span>{copied ? 'Copié ✓' : 'Partager'}</span>
+          
+          <button 
+            onClick={handleShare}
+            className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-colors"
+            style={{ color: copied ? 'var(--accent)' : 'var(--text3)' }}
+            onMouseEnter={e => { if (!copied) e.currentTarget.style.color = 'var(--accent)'; }}
+            onMouseLeave={e => { if (!copied) e.currentTarget.style.color = 'var(--text3)'; }}
+          >
+            <Share2 className="w-3 h-3" />
+            {copied ? t('copied', 'Copié ✓') : t('share', 'Partager')}
           </button>
         </div>
-      </div>
 
-      {/* ── IMAGE PRINCIPALE ── */}
-      <div className="relative h-[45vh] sm:h-[60vh] overflow-hidden bg-[var(--bg3)] mx-4 sm:mx-6 md:mx-10 max-w-5xl md:mx-auto">
-        {images.length > 0 ? (
-          <img src={images[activeImg]} alt={listing.title}
-            className="w-full h-full object-cover" loading="lazy" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-[var(--text5)] font-sans text-sm">
-            Aucune photo
-          </div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#080808]/60 via-transparent to-transparent" />
-
-        {/* Flèches navigation */}
-        {images.length > 1 && (
-          <>
-            <button onClick={() => setActiveImg(p => (p - 1 + images.length) % images.length)}
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center transition-all duration-200"
-              style={{ backgroundColor: 'rgba(0,0,0,0.65)', border: '1px solid rgba(255,255,255,0.15)' }}
-              onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(251,191,36,0.6)')}
-              onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)')}>
-              <ChevronLeft className="w-4 h-4 text-white" />
-            </button>
-            <button onClick={() => setActiveImg(p => (p + 1) % images.length)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center transition-all duration-200"
-              style={{ backgroundColor: 'rgba(0,0,0,0.65)', border: '1px solid rgba(255,255,255,0.15)' }}
-              onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(251,191,36,0.6)')}
-              onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)')}>
-              <ChevronRight className="w-4 h-4 text-white" />
-            </button>
-            {/* Compteur */}
-            <div className="absolute bottom-3 right-3 text-xs font-sans text-white/60 px-2 py-1"
-              style={{ backgroundColor: 'rgba(0,0,0,0.55)' }}>
-              {activeImg + 1} / {images.length}
+        {/* ── IMAGE PRINCIPALE ── */}
+        <div className="relative aspect-[16/9] md:aspect-[21/9] bg-[#0a0a0a] mb-6 overflow-hidden border" style={{ borderColor: 'var(--border)' }}>
+          {images.length > 0 ? (
+            <img 
+              src={images[activeImg]} 
+              alt={listing.title} 
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center font-sans tracking-widest text-xs uppercase" style={{ color: 'var(--text3)' }}>
+              {t('listings_no_img', 'Aucune photo')}
             </div>
-          </>
-        )}
-      </div>
+          )}
 
-      {/* ── THUMBNAILS ── */}
-      {images.length > 1 && (
-        <div className="flex gap-2 px-4 sm:px-6 md:px-10 py-3 overflow-x-auto max-w-5xl md:mx-auto">
-          {images.map((img: string, i: number) => (
-            <button key={i} onClick={() => setActiveImg(i)}
-              className="flex-shrink-0 w-14 h-10 overflow-hidden transition-all duration-200"
-              style={{ border: `1px solid ${i === activeImg ? '#FBBF24' : 'rgba(255,255,255,0.08)'}`, opacity: i === activeImg ? 1 : 0.5 }}>
-              <img src={img} alt="" className="w-full h-full object-cover" loading="lazy" />
-            </button>
-          ))}
-        </div>
-      )}
+          {/* Flèches navigation */}
+          {images.length > 1 && (
+            <>
+              <button 
+                onClick={() => setActiveImg(p => (p - 1 + images.length) % images.length)}
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center transition-all duration-200 backdrop-blur-md"
+                style={{ backgroundColor: 'rgba(0,0,0,0.65)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--accent)')}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)')}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              
+              <button 
+                onClick={() => setActiveImg(p => (p + 1) % images.length)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center transition-all duration-200 backdrop-blur-md"
+                style={{ backgroundColor: 'rgba(0,0,0,0.65)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--accent)')}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)')}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
 
-      {/* ── CONTENT ── */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-10 py-8 grid lg:grid-cols-3 gap-8 lg:gap-16">
-
-        {/* LEFT */}
-        <div className="lg:col-span-2">
-          <div className="inline-flex items-center gap-2 mb-5">
-            <div className="h-px w-6 bg-[var(--accent)]" />
-            <span className="text-[var(--accent)] text-xs font-sans tracking-[0.3em] uppercase">{listing.type}</span>
-          </div>
-
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-light leading-tight mb-4">{listing.title}</h1>
-
-          <div className="flex items-center gap-2 font-sans text-sm mb-8" style={{ color: 'var(--text3)' }}>
-            <MapPin className="w-4 h-4 flex-shrink-0" style={{ color: 'rgba(251,191,36,0.6)' }} />
-            {listing.location}
-          </div>
-
-          {/* Specs */}
-          <div className="grid grid-cols-3 gap-px mb-10" style={{ backgroundColor: 'var(--border2)' }}>
-            {[
-              { icon: Bed, value: listing.beds, label: 'Chambres' },
-              { icon: Bath, value: listing.baths, label: 'SDB' },
-              { icon: Square, value: listing.area?.toLocaleString(), label: 'sqft' },
-            ].map((s, i) => (
-              <div key={i} className="flex flex-col items-center text-center py-5 px-2"
-                style={{ backgroundColor: 'var(--bg3)' }}>
-                <s.icon className="w-4 h-4 mb-2" style={{ color: 'rgba(251,191,36,0.5)' }} />
-                <div className="text-xl sm:text-2xl font-light mb-1">{s.value}</div>
-                <div className="text-[10px] font-sans tracking-[0.2em] uppercase" style={{ color: 'var(--text4)' }}>{s.label}</div>
+              {/* Compteur */}
+              <div 
+                className="absolute bottom-4 right-4 px-3 py-1.5 text-[10px] font-bold font-sans tracking-widest backdrop-blur-md"
+                style={{ backgroundColor: 'rgba(0,0,0,0.65)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
+              >
+                {activeImg + 1} / {images.length}
               </div>
+            </>
+          )}
+        </div>
+
+        {/* ── THUMBNAILS ── */}
+        {images.length > 1 && (
+          <div className="flex gap-2 overflow-x-auto pb-6 scrollbar-hide">
+            {images.map((img: string, i: number) => (
+              <button 
+                key={i} 
+                onClick={() => setActiveImg(i)}
+                className="flex-shrink-0 w-14 h-10 overflow-hidden transition-all duration-200"
+                style={{ border: `1px solid ${i === activeImg ? 'var(--accent)' : 'var(--border)'}`, opacity: i === activeImg ? 1 : 0.5 }}
+              >
+                <img src={img} className="w-full h-full object-cover" alt="" />
+              </button>
             ))}
           </div>
+        )}
 
-          {/* Description */}
-          <div className="flex items-center gap-3 mb-5">
-            <div className="h-px w-6 bg-[var(--accent)]" />
-            <span className="text-[var(--accent)] text-xs font-sans tracking-[0.3em] uppercase">Description</span>
-          </div>
-          <p className="font-sans font-light text-sm sm:text-base leading-relaxed" style={{ color: 'var(--text2)' }}>
-            {listing.description ||
-              `Découvrez ce ${listing.type?.toLowerCase()} d'exception situé à ${listing.location}. Cette propriété offre un confort inégalé avec des finitions premium et des équipements de standing international.`}
-          </p>
-        </div>
-
-        {/* RIGHT — sticky price card */}
-        <div className="lg:col-span-1">
-          <div className="lg:sticky lg:top-24 space-y-4">
-            {/* Prix */}
-            <div className="p-6" style={{ border: '1px solid var(--border)' }}>
-              <div className="text-xs font-sans tracking-[0.3em] uppercase mb-3" style={{ color: 'var(--text4)' }}>Prix</div>
-              <div className="text-3xl sm:text-4xl font-light mb-1" style={{ color: 'var(--accent)' }}>
-                AED {listing.price?.toLocaleString()}
-              </div>
-              <div className="text-xs font-sans" style={{ color: 'var(--text4)' }}>
-                ≈ {Math.round((listing.price || 0) / 3.67).toLocaleString()} USD
-              </div>
+        {/* ── CONTENT ── */}
+        <div className="grid lg:grid-cols-3 gap-12 mt-8">
+          
+          {/* LEFT */}
+          <div className="lg:col-span-2">
+            <span className="font-bold uppercase tracking-widest text-[10px] mb-4 block" style={{ color: 'var(--accent)' }}>
+              {listing.type}
+            </span>
+            <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-wider mb-6 leading-tight">
+              {listing.title}
+            </h1>
+            <div className="flex items-center gap-2 text-xs font-sans uppercase tracking-widest mb-12" style={{ color: 'var(--text3)' }}>
+              <MapPin className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+              {listing.location}
             </div>
 
-            {/* CTA buttons */}
-            <a href={`https://wa.me/${companyInfo.whatsapp.replace(/\D/g, '')}?text=Bonjour, je suis intéressé par: ${listing.title}`}
-              target="_blank" rel="noopener noreferrer"
-              className="flex items-center justify-center gap-3 w-full py-4 text-xs font-sans font-bold tracking-[0.25em] uppercase hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: 'var(--accent)', color: '#000000' }}>
-              <Phone className="w-4 h-4" /> WhatsApp
-            </a>
+            {/* Specs */}
+            <div className="grid grid-cols-3 gap-6 py-8 border-y mb-12" style={{ borderColor: 'var(--border)' }}>
+              {[
+                { icon: Bed, value: listing.beds, label: t('beds_label', 'Chambres') },
+                { icon: Bath, value: listing.baths, label: t('baths_label', 'SDB') },
+                { icon: Square, value: listing.area?.toLocaleString(), label: t('sqft_label', 'sqft') },
+              ].map((s, i) => (
+                <div key={i} className="text-center">
+                  <s.icon className="w-6 h-6 mx-auto mb-4" strokeWidth={1} style={{ color: 'var(--accent)' }} />
+                  <div className="text-2xl font-bold font-sans mb-1">{s.value}</div>
+                  <div className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--text3)' }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
 
-            <Link to="/contact"
-              className="flex items-center justify-center gap-3 w-full py-4 text-xs font-sans font-bold tracking-[0.25em] uppercase transition-all duration-200"
-              style={{ border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }}
-              onMouseEnter={e => {
-                e.currentTarget.style.borderColor = 'rgba(251,191,36,0.4)';
-                e.currentTarget.style.color = '#FBBF24';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
-                e.currentTarget.style.color = '#fff';
-              }}>
-              Envoyer un message
-            </Link>
-
-            <div className="p-5" style={{ border: '1px solid var(--border2)' }}>
-              <div className="text-xs font-sans tracking-[0.3em] uppercase mb-2" style={{ color: 'var(--text4)' }}>MoveSmart Invest</div>
-              <p className="text-xs font-sans font-light leading-relaxed" style={{ color: 'var(--text4)' }}>
-                Réponse sous 24h. Accompagnement complet Dubai.
+            {/* Description */}
+            <div className="prose prose-invert max-w-none">
+              <h2 className="text-sm font-bold uppercase tracking-widest mb-6" style={{ color: 'var(--text)' }}>
+                {t('desc_label', 'Description')}
+              </h2>
+              <p className="font-light leading-loose text-sm md:text-base whitespace-pre-line" style={{ color: 'var(--text3)' }}>
+                {listing.description || 
+                 `Découvrez ce ${listing.type?.toLowerCase()} d'exception situé à ${listing.location}. Cette propriété offre un confort inégalé avec des finitions premium et des équipements de standing international.`}
               </p>
             </div>
           </div>
+
+          {/* RIGHT — sticky price card */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-28 p-8 border" style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)', filter: 'brightness(0.97)' }}>
+              
+              {/* Prix */}
+              <div className="mb-8 pb-8 border-b" style={{ borderColor: 'var(--border)' }}>
+                <span className="block text-[10px] font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--text3)' }}>
+                  {t('price_label', 'Prix')}
+                </span>
+                <div className="text-3xl font-bold font-sans tracking-wider mb-2">
+                  AED {listing.price?.toLocaleString()}
+                </div>
+                <div className="text-xs font-sans tracking-widest" style={{ color: 'var(--text3)' }}>
+                  ≈ {Math.round((listing.price || 0) / 3.67).toLocaleString()} USD
+                </div>
+              </div>
+
+              {/* CTA buttons */}
+              <div className="space-y-4">
+                <a 
+                  href={`https://wa.me/${companyInfo.whatsapp.replace(/\D/g,'')}?text=Bonjour,%20je%20suis%20intéressé%20par%20la%20propriété:%20${listing.title}%20(${window.location.href})`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="w-full py-4 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-3 transition-colors border"
+                  style={{ backgroundColor: 'var(--bg)', borderColor: 'rgba(255,255,255,0.1)', color: 'var(--text)' }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.borderColor = 'var(--accent)';
+                    e.currentTarget.style.color = 'var(--accent)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+                    e.currentTarget.style.color = 'var(--text)';
+                  }}
+                >
+                  <Phone className="w-4 h-4" />
+                  WhatsApp
+                </a>
+                
+                <Link 
+                  to="/contact" 
+                  className="w-full py-4 text-xs font-bold uppercase tracking-widest flex items-center justify-center transition-colors"
+                  style={{ backgroundColor: 'var(--accent)', color: '#000000' }}
+                >
+                  {t('msg_btn', 'Envoyer un message')}
+                </Link>
+              </div>
+
+              <div className="mt-8 text-center">
+                <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--text3)' }}>MoveSmart Invest</p>
+                <p className="text-[10px] font-sans tracking-widest opacity-60">{t('team_note', 'Réponse sous 24h. Accompagnement complet Dubai.')}</p>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
-
-      {/* FOOTER */}
-      <footer className="mt-10 py-8 px-6" style={{ backgroundColor: 'var(--bg4)', borderTop: '1px solid var(--border2)' }}>
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-xs font-sans" style={{ color: 'var(--text5)' }}>© 2026 MoveSmart Invest.</p>
-          <button onClick={handleBack} className="text-xs font-sans hover:text-[var(--accent)] transition-colors" style={{ color: 'var(--text5)' }}>
-            ← Toutes les propriétés
-          </button>
-        </div>
-      </footer>
     </div>
   );
 }

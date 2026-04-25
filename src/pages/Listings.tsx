@@ -2,70 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Bed, Bath, Square, ChevronLeft, ChevronRight, Share2, Search, SlidersHorizontal } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-
-const ListingCard = ({ listing }: { listing: any }) => {
-  const [idx, setIdx] = useState(0);
-  const images = listing.images || [];
-  const next = (e: React.MouseEvent) => { e.preventDefault(); setIdx(p => (p + 1) % images.length); };
-  const prev = (e: React.MouseEvent) => { e.preventDefault(); setIdx(p => (p - 1 + images.length) % images.length); };
-  const share = (e: React.MouseEvent) => {
-    e.preventDefault();
-    const url = `${window.location.origin}/listings/${listing.id}`;
-    navigator.share ? navigator.share({ title: listing.title, url }).catch(console.error) : navigator.clipboard.writeText(url);
-  };
-
-  return (
-    <Link to={`/listings/${listing.id}`} className="group block">
-      <div className="aspect-[4/3] overflow-hidden bg-white/[0.03] mb-5 relative">
-        {images.length > 0
-          ? <img src={images[idx]} alt={listing.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
-          : <div className="w-full h-full flex items-center justify-center text-[var(--text5)] text-xs font-sans">No image</div>
-        }
-        <div className="absolute top-4 left-4 bg-black/70 backdrop-blur-sm px-3 py-1">
-          <span className="text-[var(--accent)] text-xs font-sans tracking-widest uppercase">{listing.type}</span>
-        </div>
-        <button onClick={share} className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm p-2 hover:bg-black/80 transition">
-          <Share2 className="w-4 h-4 text-white" />
-        </button>
-        {images.length > 1 && (
-          <>
-            <button onClick={prev} className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 p-1.5 hover:bg-black/80 transition">
-              <ChevronLeft className="w-4 h-4 text-white" />
-            </button>
-            <button onClick={next} className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 p-1.5 hover:bg-black/80 transition">
-              <ChevronRight className="w-4 h-4 text-white" />
-            </button>
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1">
-              {images.map((_: any, i: number) => (
-                <div key={i} className={`w-1 h-1 rounded-full transition-colors ${i === idx ? 'bg-[var(--accent)]' : 'bg-white/30'}`} />
-              ))}
-            </div>
-          </>
-        )}
-      </div>
-      <div className="flex items-center gap-2 text-[var(--text4)] text-xs font-sans mb-2">
-        <span className="text-xs">📍</span>{listing.location}
-      </div>
-      <h3 className="text-xl font-light mb-3 group-hover:text-[var(--accent)] transition-colors duration-300" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-        {listing.title}
-      </h3>
-      <div className="flex items-center gap-4 text-xs text-[var(--text4)] font-sans mb-4">
-        <span className="flex items-center gap-1.5"><Bed className="w-3.5 h-3.5" /> {listing.beds} ch.</span>
-        <span className="flex items-center gap-1.5"><Bath className="w-3.5 h-3.5" /> {listing.baths} sdb.</span>
-        <span className="flex items-center gap-1.5"><Square className="w-3.5 h-3.5" /> {listing.area?.toLocaleString()} sqft</span>
-      </div>
-      <div className="flex items-center justify-between pt-4 border-t border-[var(--border)]">
-        <div className="text-2xl font-light text-[var(--accent)]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-          AED {listing.price?.toLocaleString()}
-        </div>
-        <span className="text-xs font-sans text-[var(--text4)] tracking-widest uppercase group-hover:text-[var(--accent)] transition-colors">Voir →</span>
-      </div>
-    </Link>
-  );
-};
+import { useTranslation } from 'react-i18next'; // Ajout traduction
 
 export default function Listings() {
-  const [listings, setListings] = useState<any[]>([]);
+  const { t } = useTranslation();
+  const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [minPrice, setMinPrice] = useState('');
@@ -95,100 +36,130 @@ export default function Listings() {
     });
 
   return (
-    <div className="min-h-screen bg-[var(--bg)] text-white" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
-
-      {/* HEADER */}
-      <section className="pt-40 pb-16 px-6 border-b border-[var(--border2)]">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="h-px w-8 bg-[var(--accent)]" />
-            <span className="text-[var(--accent)] text-xs font-sans tracking-[0.3em] uppercase">Propriétés</span>
-          </div>
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-            <h1 className="text-5xl sm:text-6xl font-light leading-[0.9]">
-              Nos biens<br /><em className="not-italic text-[var(--accent)]">d'exception</em>
+    <div className="min-h-screen pt-24 pb-20" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+      <div className="max-w-7xl mx-auto px-6">
+        
+        {/* HEADER */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div>
+            <span className="font-bold uppercase tracking-widest text-sm mb-2 block" style={{ color: 'var(--accent)' }}>
+              {t('listings_page_tag', 'Opportunités')}
+            </span>
+            <h1 className="text-4xl md:text-5xl font-light uppercase tracking-wider">
+              {t('listings_page_title_1', 'Investissements')} <br/>
+              <em className="font-serif italic text-5xl md:text-6xl lowercase text-transparent" style={{ WebkitTextStroke: '1px var(--text)' }}>
+                {t('listings_page_title_em', 'sélectionnés')}
+              </em>
             </h1>
-            <p className="text-[var(--text3)] font-sans font-light text-sm max-w-xs leading-relaxed">
-              {loading ? '' : `${filtered.length} propriété${filtered.length > 1 ? 's' : ''} disponible${filtered.length > 1 ? 's' : ''}`}
-            </p>
+          </div>
+          <div className="text-sm font-sans tracking-widest uppercase" style={{ color: 'var(--text3)' }}>
+            {loading ? '' : `${filtered.length} ${t('listings_page_tag', 'opportunité')}${filtered.length > 1 ? 's' : ''}`}
           </div>
         </div>
-      </section>
 
-      {/* FILTERS */}
-      <section className="py-8 px-6 border-b border-[var(--border2)] bg-[var(--bg2)]">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+        {/* FILTERS */}
+        <div className="mb-12 space-y-4">
+          <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text4)]" />
-              <input type="text" placeholder="Rechercher par nom ou localisation..."
-                className="w-full bg-transparent border-b border-white/10 focus:border-[var(--accent)] outline-none py-2 pl-7 text-white placeholder-gray-600 font-sans font-light text-sm transition-colors"
-                value={search} onChange={e => setSearch(e.target.value)} />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text3)' }} />
+              <input 
+                type="text" 
+                placeholder={t('search_ph', 'Rechercher par projet ou zone...')}
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="w-full border rounded-sm pl-12 pr-4 py-4 text-sm font-sans focus:outline-none transition-colors"
+                style={{ backgroundColor: 'transparent', borderColor: 'var(--border)', color: 'var(--text)' }}
+              />
             </div>
-            <button onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 text-xs font-sans text-[var(--text3)] hover:text-[var(--accent)] transition-colors tracking-[0.2em] uppercase">
-              <SlidersHorizontal className="w-4 h-4" /> Filtres
+            <button 
+              onClick={() => setShowFilters(!showFilters)}
+              className="flex items-center justify-center gap-2 px-6 py-4 text-xs font-sans uppercase tracking-[0.2em] border transition-colors"
+              style={{ backgroundColor: showFilters ? 'var(--accent-bg)' : 'transparent', borderColor: showFilters ? 'var(--accent)' : 'var(--border)', color: showFilters ? 'var(--accent)' : 'var(--text)' }}
+            >
+              <SlidersHorizontal className="w-4 h-4" />
+              {t('filters_btn', 'Filtres')}
             </button>
           </div>
 
           {showFilters && (
-            <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 p-6 border rounded-sm animate-fade-in" style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)', filter: 'brightness(1.05)' }}>
               <div>
-                <label className="text-xs font-sans text-[var(--text4)] tracking-[0.2em] uppercase block mb-2">Prix min (AED)</label>
-                <input type="number" placeholder="0" value={minPrice} onChange={e => setMinPrice(e.target.value)}
-                  className="w-full bg-transparent border-b border-white/10 focus:border-[var(--accent)] outline-none py-2 text-white placeholder-gray-700 font-sans text-sm transition-colors" />
+                <label className="block text-[10px] font-sans uppercase tracking-widest mb-2" style={{ color: 'var(--text3)' }}>{t('filter_min', 'Budget min (AED)')}</label>
+                <input type="number" value={minPrice} onChange={e => setMinPrice(e.target.value)} className="w-full bg-transparent border-b outline-none py-2 text-sm font-sans" style={{ borderColor: 'var(--border)', color: 'var(--text)' }} />
               </div>
               <div>
-                <label className="text-xs font-sans text-[var(--text4)] tracking-[0.2em] uppercase block mb-2">Prix max (AED)</label>
-                <input type="number" placeholder="∞" value={maxPrice} onChange={e => setMaxPrice(e.target.value)}
-                  className="w-full bg-transparent border-b border-white/10 focus:border-[var(--accent)] outline-none py-2 text-white placeholder-gray-700 font-sans text-sm transition-colors" />
+                <label className="block text-[10px] font-sans uppercase tracking-widest mb-2" style={{ color: 'var(--text3)' }}>{t('filter_max', 'Budget max (AED)')}</label>
+                <input type="number" value={maxPrice} onChange={e => setMaxPrice(e.target.value)} className="w-full bg-transparent border-b outline-none py-2 text-sm font-sans" style={{ borderColor: 'var(--border)', color: 'var(--text)' }} />
               </div>
               <div>
-                <label className="text-xs font-sans text-[var(--text4)] tracking-[0.2em] uppercase block mb-2">Trier par</label>
-                <select value={sortBy} onChange={e => setSortBy(e.target.value)}
-                  className="w-full bg-transparent border-b border-white/10 focus:border-[var(--accent)] outline-none py-2 text-white font-sans text-sm transition-colors cursor-pointer" style={{ background: 'transparent' }}>
-                  <option value="default" className="bg-[var(--bg)]">Récents</option>
-                  <option value="price-low" className="bg-[var(--bg)]">Prix croissant</option>
-                  <option value="price-high" className="bg-[var(--bg)]">Prix décroissant</option>
-                  <option value="beds" className="bg-[var(--bg)]">Chambres</option>
-                  <option value="area" className="bg-[var(--bg)]">Surface</option>
+                <label className="block text-[10px] font-sans uppercase tracking-widest mb-2" style={{ color: 'var(--text3)' }}>{t('sort_label', 'Trier par')}</label>
+                <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="w-full bg-transparent border-b outline-none py-2 text-sm font-sans cursor-pointer" style={{ borderColor: 'var(--border)', color: 'var(--text)' }}>
+                  <option value="default">{t('sort_recent', 'Récents')}</option>
+                  <option value="price-low">{t('sort_price_low', 'Prix croissant')}</option>
+                  <option value="price-high">{t('sort_price_high', 'Prix décroissant')}</option>
+                  <option value="beds">{t('sort_beds', 'Chambres')}</option>
+                  <option value="area">{t('sort_area', 'Surface')}</option>
                 </select>
               </div>
             </div>
           )}
         </div>
-      </section>
 
-      {/* GRID */}
-      <section className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
+        {/* GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
           {loading ? (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
-              {[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="aspect-[4/3] bg-white/[0.03] animate-pulse" />)}
-            </div>
+            [1, 2, 3, 4, 5, 6].map(i => (
+              <div key={i} className="animate-pulse">
+                <div className="aspect-[4/3] mb-4 border" style={{ backgroundColor: 'var(--border)', borderColor: 'var(--border)' }}></div>
+                <div className="h-4 w-1/4 mb-2" style={{ backgroundColor: 'var(--border)' }}></div>
+                <div className="h-6 w-3/4 mb-4" style={{ backgroundColor: 'var(--border)' }}></div>
+                <div className="h-4 w-1/2" style={{ backgroundColor: 'var(--border)' }}></div>
+              </div>
+            ))
           ) : filtered.length === 0 ? (
-            <div className="py-32 text-center">
-              <p className="text-[var(--text4)] font-sans font-light text-lg mb-2">
-                {listings.length === 0 ? 'Aucun bien disponible pour le moment.' : 'Aucun résultat pour cette recherche.'}
+            <div className="col-span-full py-20 text-center border border-dashed rounded-sm" style={{ borderColor: 'var(--border)' }}>
+              <p className="text-sm font-sans uppercase tracking-widest mb-2" style={{ color: 'var(--text3)' }}>
+                {listings.length === 0 ? t('no_listings', 'Aucun bien disponible') : t('no_results', 'Aucun résultat')}
               </p>
-              {listings.length === 0 && <p className="text-[var(--text5)] font-sans text-sm">Revenez bientôt — de nouveaux biens arrivent.</p>}
             </div>
           ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
-              {filtered.map((l: any) => <ListingCard key={l.id} listing={l} />)}
-            </div>
+            filtered.map((l: any) => (
+              <Link key={l.id} to={`/listings/${l.id}`} className="group block border rounded-sm overflow-hidden" style={{ borderColor: 'var(--border)' }}>
+                <div className="aspect-[4/3] relative overflow-hidden bg-[#111]">
+                  {l.images && l.images.length > 0 ? (
+                    <img src={l.images[0]} alt={l.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-xs uppercase" style={{ color: 'var(--text3)' }}>{t('listings_no_img', 'Aucune photo')}</div>
+                  )}
+                  <div className="absolute top-4 left-4 px-3 py-1 text-[10px] font-bold uppercase tracking-widest" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+                    {l.type}
+                  </div>
+                </div>
+                <div className="p-6" style={{ backgroundColor: 'var(--bg)' }}>
+                  <div className="flex items-center gap-2 text-xs font-sans uppercase tracking-wider mb-3" style={{ color: 'var(--text3)' }}>
+                    <MapPin className="w-3 h-3" style={{ color: 'var(--accent)' }} />
+                    {l.location}
+                  </div>
+                  <h3 className="text-xl font-bold uppercase tracking-wider mb-4 line-clamp-1" style={{ color: 'var(--text)' }}>{l.title}</h3>
+                  <div className="flex items-center gap-4 text-xs font-sans uppercase tracking-widest mb-6" style={{ color: 'var(--text3)' }}>
+                    <span className="flex items-center gap-1"><Bed className="w-3 h-3" /> {l.beds} {t('sort_beds', 'ch.')}</span>
+                    <span className="flex items-center gap-1"><Bath className="w-3 h-3" /> {l.baths} sdb.</span>
+                    <span className="flex items-center gap-1"><Square className="w-3 h-3" /> {l.area?.toLocaleString()} {t('sqft_label', 'sqft')}</span>
+                  </div>
+                  <div className="flex items-center justify-between pt-6 border-t" style={{ borderColor: 'var(--border)' }}>
+                    <div className="text-lg font-bold font-sans" style={{ color: 'var(--text)' }}>
+                      AED {l.price?.toLocaleString()}
+                    </div>
+                    <div className="text-xs font-bold uppercase tracking-widest transition-transform group-hover:translate-x-1" style={{ color: 'var(--accent)' }}>
+                      {t('view_detail', 'Analyser →')}
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))
           )}
         </div>
-      </section>
-
-      <footer className="bg-[var(--bg4)] border-t border-[var(--border2)] py-10 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-[var(--text5)] font-sans">© 2026 MoveSmart Invest. Tous droits réservés.</p>
-          <div className="flex gap-6 text-xs text-[var(--text5)] font-sans">
-            <a href="#" className="hover:text-[var(--accent)] transition-colors">Mentions légales</a>
-          </div>
-        </div>
-      </footer>
+      </div>
     </div>
   );
 }
