@@ -1,7 +1,8 @@
 import React, { useEffect, useState, createContext, useContext } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { Sun, Moon } from 'lucide-react';
+import { useTranslation, I18nextProvider } from 'react-i18next';
+import { Sun, Moon, Menu, X } from 'lucide-react';
+import i18n from '../lib/i18n'; // Added explicit import for i18n
 
 import Home from './pages/Home';
 import Listings from './pages/Listings';
@@ -12,7 +13,6 @@ import Admin from './pages/Admin';
 import Blog from './pages/Blog';
 
 import WhatsAppButton from './components/WhatsAppButton';
-import MobileNav from './components/MobileNav';
 import { companyInfo } from './constants';
 
 // ─── THEME CONTEXT ───
@@ -101,8 +101,52 @@ function ThemeToggle() {
       onMouseLeave={e => (e.currentTarget.style.color = 'var(--text3)')}
       title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
     >
-      {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+      {theme === 'dark' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
     </button>
+  );
+}
+
+// ─── MOBILE NAV ───
+function MobileNav() {
+  const { t } = useTranslation();
+  const location = useLocation();
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Close menu when route changes
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
+
+  return (
+    <div className="md:hidden">
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="p-2 text-[var(--text)] hover:text-[var(--accent)] transition-colors"
+      >
+        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+      </button>
+
+      {isOpen && (
+        <div className="fixed inset-0 top-20 bg-[var(--bg)] z-40 p-6 flex flex-col gap-6" style={{ backgroundColor: 'var(--bg)' }}>
+          {[
+            ['/', t('home')],
+            ['/listings', t('listings')],
+            ['/about', t('about')],
+            ['/blog', 'BLOG'], // Added manually as it's not in translations yet
+            ['/contact', t('contact')],
+          ].map(([href, label]) => (
+            <Link
+              key={href}
+              to={href}
+              className="text-xl font-light tracking-[0.2em] uppercase border-b border-white/10 pb-4"
+              style={{ color: location.pathname === href ? 'var(--accent)' : 'var(--text)' }}
+            >
+              {label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -149,11 +193,11 @@ function Header() {
 
         <nav className="hidden md:flex items-center gap-8 text-xs font-light tracking-[0.2em] uppercase">
           {[
-            ['/', t('home', 'Home')],
-            ['/listings', t('listings', 'Listings')],
-            ['/about', t('about', 'About')],
-            ['/blog', t('blog', 'Blog')],
-            ['/contact', t('contact', 'Contact')],
+            ['/', t('home')],
+            ['/listings', t('listings')],
+            ['/about', t('about')],
+            ['/blog', 'BLOG'], // Added as fallback text
+            ['/contact', t('contact')],
           ].map(([href, label]) => (
             <Link
               key={href}
@@ -171,6 +215,7 @@ function Header() {
         <div className="flex items-center gap-4">
           <ThemeToggle />
           <LangSelector />
+          <MobileNav />
         </div>
       </div>
     </header>
@@ -188,7 +233,7 @@ function App() {
       style={{ backgroundColor: 'var(--bg, #080808)', color: 'var(--text, #ffffff)' }}
     >
       <Header />
-      <main className="pt-20">
+      <main>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/listings" element={<Listings />} />
@@ -200,7 +245,6 @@ function App() {
         </Routes>
       </main>
       {!isAdmin && <WhatsAppButton />}
-      {!isAdmin && <MobileNav />}
     </div>
   );
 }
@@ -221,13 +265,13 @@ export default function AppWrapper() {
     if (theme === 'light') {
       html.setAttribute('data-theme', 'light');
       html.removeAttribute('data-theme-dark');
-      // Adding variables directly so you don't need index.css strictly
       html.style.setProperty('--bg', '#ffffff');
       html.style.setProperty('--text', '#000000');
       html.style.setProperty('--text3', '#4b5563');
       html.style.setProperty('--border', 'rgba(0,0,0,0.1)');
       html.style.setProperty('--header-bg', 'rgba(255,255,255,0.9)');
       html.style.setProperty('--img-filter', 'invert(1)');
+      html.style.setProperty('--accent-bg', 'rgba(245, 158, 11, 0.1)');
     } else {
       html.removeAttribute('data-theme');
       html.setAttribute('data-theme-dark', 'true');
@@ -237,6 +281,7 @@ export default function AppWrapper() {
       html.style.setProperty('--border', 'rgba(255,255,255,0.1)');
       html.style.setProperty('--header-bg', 'rgba(0,0,0,0.8)');
       html.style.setProperty('--img-filter', 'invert(0)');
+      html.style.setProperty('--accent-bg', 'rgba(245, 158, 11, 0.1)');
     }
     html.style.setProperty('--accent', '#f59e0b');
     localStorage.setItem('theme', theme);
@@ -250,10 +295,12 @@ export default function AppWrapper() {
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggle }}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </ThemeContext.Provider>
+    <I18nextProvider i18n={i18n}>
+      <ThemeContext.Provider value={{ theme, toggle }}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ThemeContext.Provider>
+    </I18nextProvider>
   );
 }
