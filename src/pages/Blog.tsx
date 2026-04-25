@@ -28,7 +28,7 @@ const articles = [
     author: "Fatima Saeed",
     date: "April 5, 2024",
     category: "Comparison",
-    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=600&auto=format&fit=crop"
+    image: "https://images.pexels.com/photos/33669696/pexels-photo-33669696.jpeg?_gl=1*18w2vqx*_ga*MTg5MzA4Njc5Ni4xNzc2MDk4NDk0*_ga_8JE65Q40S6*czE3NzcxMTYyNTkkbzQkZzEkdDE3NzcxMTYzNzAkajI2JGwwJGgw"
   },
   {
     id: 4,
