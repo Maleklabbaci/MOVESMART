@@ -1,7 +1,7 @@
 import React, { useEffect, useState, createContext, useContext } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { useTranslation, I18nextProvider } from 'react-i18next';
-import { Sun, Moon, Menu, X } from 'lucide-react';
+import { Sun, Moon, Menu, X, ArrowRight, Globe } from 'lucide-react';
 import i18n from './lib/i18n'; 
 
 import Home from './pages/Home';
@@ -53,36 +53,33 @@ function LangSelector() {
     <div className="relative">
       <button
         onClick={() => setOpen(v => !v)}
-        className="flex items-center gap-1.5 text-xs font-sans tracking-[0.15em] uppercase transition-colors duration-200"
+        className="flex items-center gap-2 text-[10px] font-bold tracking-widest uppercase transition-colors duration-200"
         style={{ color: 'var(--text3)' }}
         onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
         onMouseLeave={e => (e.currentTarget.style.color = 'var(--text3)')}
       >
-        <span>{current.label}</span>
-        <svg width="10" height="10" viewBox="0 0 10 10" style={{ opacity: 0.5, transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
-          <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-        </svg>
+        <Globe className="w-4 h-4" />
+        <span className="hidden md:inline-block">{current.label}</span>
       </button>
 
       {open && (
         <div
-          className="absolute top-full mt-2 py-1 z-50 rounded-sm shadow-xl"
-          style={{ minWidth: 120, right: 0, backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}
+          className="absolute top-full mt-4 py-2 z-50 rounded-lg shadow-2xl glass-effect animate-slide-down border"
+          style={{ minWidth: 140, right: 0, backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }}
         >
           {LANGS.map(l => (
             <button
               key={l.code}
               onClick={() => change(l.code)}
-              className="w-full text-left px-4 py-2.5 text-xs font-sans flex items-center justify-between transition-colors duration-150"
+              className="w-full text-left px-5 py-3 text-xs font-bold uppercase tracking-wider flex items-center justify-between transition-all duration-200"
               style={{
-                color: l.code === i18n.language ? 'var(--accent)' : 'var(--text3)',
+                color: l.code === i18n.language ? 'var(--accent)' : 'var(--text)',
                 backgroundColor: l.code === i18n.language ? 'var(--accent-bg)' : 'transparent',
               }}
               onMouseEnter={e => { if(l.code !== i18n.language) e.currentTarget.style.backgroundColor = 'var(--border)' }}
               onMouseLeave={e => { if(l.code !== i18n.language) e.currentTarget.style.backgroundColor = 'transparent' }}
             >
               <span>{l.name}</span>
-              <span style={{ opacity: 0.4 }}>{l.label}</span>
             </button>
           ))}
         </div>
@@ -98,10 +95,18 @@ function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="flex items-center justify-center w-8 h-8 transition-colors duration-200"
-      style={{ color: 'var(--text3)' }}
-      onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-      onMouseLeave={e => (e.currentTarget.style.color = 'var(--text3)')}
+      className="flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300"
+      style={{ color: 'var(--text3)', border: '1px solid transparent' }}
+      onMouseEnter={e => {
+        e.currentTarget.style.color = 'var(--text)';
+        e.currentTarget.style.backgroundColor = 'var(--surface)';
+        e.currentTarget.style.borderColor = 'var(--border)';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.color = 'var(--text3)';
+        e.currentTarget.style.backgroundColor = 'transparent';
+        e.currentTarget.style.borderColor = 'transparent';
+      }}
       title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
     >
       {theme === 'dark' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
@@ -117,46 +122,69 @@ function MobileNav() {
 
   useEffect(() => {
     setIsOpen(false);
-  }, [location.pathname]);
+    // Bloque le scroll si le menu est ouvert
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => { document.body.style.overflow = 'auto'; };
+  }, [location.pathname, isOpen]);
 
   return (
     <div className="md:hidden flex items-center">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="p-2 transition-colors duration-200"
-        style={{ color: 'var(--text)' }}
-        onMouseEnter={e => e.currentTarget.style.color = 'var(--accent)'}
-        onMouseLeave={e => e.currentTarget.style.color = 'var(--text)'}
+        className="p-2 rounded-full transition-all duration-300 z-50 relative"
+        style={{ color: 'var(--text)', backgroundColor: isOpen ? 'transparent' : 'var(--surface)' }}
       >
-        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
 
-      {isOpen && (
-        <div 
-          className="fixed inset-0 top-20 z-40 p-6 flex flex-col gap-6" 
-          style={{ backgroundColor: 'var(--bg)', borderTop: '1px solid var(--border)' }}
-        >
-          {[
-            ['/', t('home')],
-            ['/listings', t('listings')],
-            ['/about', t('about')],
-            ['/blog', 'Blog'], 
-            ['/contact', t('contact')],
-          ].map(([href, label]) => (
-            <Link
-              key={href}
-              to={href}
-              className="text-xl font-light tracking-[0.2em] uppercase pb-4"
-              style={{ 
-                color: location.pathname === href ? 'var(--accent)' : 'var(--text)', 
-                borderBottom: '1px solid var(--border)' 
-              }}
-            >
-              {label}
-            </Link>
-          ))}
+      {/* OVERLAY SOMBRE */}
+      <div 
+        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-30 transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        onClick={() => setIsOpen(false)}
+      ></div>
+
+      {/* MENU COULISSANT */}
+      <div 
+        className={`fixed top-0 bottom-0 right-0 w-[80%] max-w-sm z-40 p-8 pt-28 flex flex-col gap-8 shadow-2xl transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1)`} 
+        style={{ 
+          backgroundColor: 'var(--bg)', 
+          borderLeft: '1px solid var(--border)',
+          transform: isOpen ? 'translateX(0)' : 'translateX(100%)' 
+        }}
+      >
+        {[
+          ['/', t('home')],
+          ['/listings', t('listings')],
+          ['/about', t('about')],
+          ['/blog', 'Blog'], 
+          ['/contact', t('contact')],
+        ].map(([href, label], index) => (
+          <Link
+            key={href}
+            to={href}
+            className={`text-2xl font-bold tracking-tight uppercase pb-4 flex items-center justify-between group transition-all duration-300 ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ 
+              color: location.pathname === href ? 'var(--accent)' : 'var(--text)', 
+              borderBottom: '1px solid var(--border)',
+              transitionDelay: `${index * 50}ms`
+            }}
+          >
+            {label}
+            <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--accent)' }}/>
+          </Link>
+        ))}
+
+        <div className="mt-auto pt-8 border-t" style={{ borderColor: 'var(--border)' }}>
+          <p className="text-[10px] font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--text3)' }}>Contact direct</p>
+          <a href={`https://wa.me/${companyInfo.whatsapp.replace(/\D/g,'')}`} className="text-xl font-bold transition-colors hover:text-amber-500" style={{ color: 'var(--text)' }}>
+            {companyInfo.whatsapp}
+          </a>
         </div>
-      )}
+      </div>
     </div>
   );
 }
@@ -169,7 +197,7 @@ function Header() {
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
+    const onScroll = () => setScrolled(window.scrollY > 40);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -184,47 +212,57 @@ function Header() {
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 h-20 transition-all duration-500"
+      className="fixed top-0 left-0 right-0 z-50 h-[80px] transition-all duration-500 ease-out"
       style={{
         backgroundColor: scrolled ? 'var(--header-bg)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(12px)' : 'none',
-        borderBottom: scrolled ? '1px solid var(--border)' : 'none',
+        backdropFilter: scrolled ? 'blur(20px)' : 'none',
+        borderBottom: scrolled ? '1px solid var(--border)' : '1px solid transparent',
       }}
     >
-      <div className="h-full max-w-6xl mx-auto px-6 md:px-10 flex items-center justify-between">
-        <Link to="/" className="flex items-center">
+      <div className="h-full max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
+        
+        {/* LOGO */}
+        <Link to="/" className="flex items-center gap-4 group">
           <img
             src="https://i.ibb.co/60PJ8PVw/aass.png"
             alt={companyInfo?.brand || 'MoveSmart'}
-            className="h-7 md:h-9 w-auto transition-all duration-300"
+            className="h-6 md:h-8 w-auto transition-transform duration-500 group-hover:scale-105"
             style={{ filter: 'var(--img-filter)' }}
             referrerPolicy="no-referrer"
           />
+          <span className="font-bold text-xl tracking-tighter hidden lg:block transition-colors" style={{ color: 'var(--text)' }}>
+            MoveSmart
+          </span>
         </Link>
 
-        {/* Le menu d'origine, simple, sans fioritures (pas de boutons pills, etc.) */}
-        <nav className="hidden md:flex items-center gap-8 text-xs font-light tracking-[0.2em] uppercase">
+        {/* NAVIGATION DESKTOP avec petit background moderne */}
+        <nav className="hidden md:flex items-center gap-2 p-1.5 rounded-full glass-effect border transition-all duration-300" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}>
           {[
-            ['/', t('home', 'Home')],
-            ['/listings', t('listings', 'Opportunités')],
-            ['/about', t('about', 'À Propos')],
+            ['/', t('home')],
+            ['/listings', t('listings')],
+            ['/about', t('about')],
             ['/blog', 'Blog'],
-            ['/contact', t('contact', 'Contact')],
+            ['/contact', t('contact')],
           ].map(([href, label]) => (
             <Link
               key={href}
               to={href}
-              className="transition-colors duration-200"
-              style={{ color: location.pathname === href ? 'var(--accent)' : 'var(--text3)' }}
-              onMouseEnter={e => { if (location.pathname !== href) e.currentTarget.style.color = 'var(--text)'; }}
-              onMouseLeave={e => { if (location.pathname !== href) e.currentTarget.style.color = 'var(--text3)'; }}
+              className="px-5 py-2.5 rounded-full transition-all duration-300 text-[11px] font-bold uppercase tracking-widest relative overflow-hidden group"
+              style={{ 
+                color: location.pathname === href ? 'var(--bg)' : 'var(--text)',
+                backgroundColor: location.pathname === href ? 'var(--text)' : 'transparent'
+              }}
             >
-              {label}
+              <span className="relative z-10">{label}</span>
+              {location.pathname !== href && (
+                <div className="absolute inset-0 bg-black/5 dark:bg-white/5 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out rounded-full"></div>
+              )}
             </Link>
           ))}
         </nav>
 
-        <div className="flex items-center gap-2 sm:gap-4">
+        {/* ICONES DROITE */}
+        <div className="flex items-center gap-3 sm:gap-6">
           <ThemeToggle />
           <LangSelector />
           <MobileNav />
@@ -241,7 +279,7 @@ function App() {
 
   return (
     <div
-      className="min-h-screen transition-colors duration-300 flex flex-col"
+      className="min-h-screen transition-colors duration-400 flex flex-col selection:bg-amber-500 selection:text-black"
       style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}
     >
       <Header />
@@ -266,7 +304,7 @@ export default function AppWrapper() {
   const [theme, setTheme] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('theme');
-      return saved || 'dark'; // On revient au thème "dark" par défaut
+      return saved || 'dark'; // Mode sombre par défaut pour le côté luxe.
     }
     return 'dark';
   });
