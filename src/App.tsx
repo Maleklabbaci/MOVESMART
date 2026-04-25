@@ -1,7 +1,7 @@
 import React, { useEffect, useState, createContext, useContext } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { useTranslation, I18nextProvider } from 'react-i18next';
-import { Sun, Moon, Menu, X } from 'lucide-react';
+import { Sun, Moon, Menu, X, ArrowRight } from 'lucide-react';
 import i18n from './lib/i18n'; 
 
 import Home from './pages/Home';
@@ -53,7 +53,7 @@ function LangSelector() {
     <div className="relative">
       <button
         onClick={() => setOpen(v => !v)}
-        className="flex items-center gap-1.5 text-xs font-sans tracking-[0.15em] uppercase transition-colors duration-200"
+        className="flex items-center gap-1.5 text-[10px] font-bold tracking-[0.2em] uppercase transition-colors duration-200"
         style={{ color: 'var(--text3)' }}
         onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
         onMouseLeave={e => (e.currentTarget.style.color = 'var(--text3)')}
@@ -66,22 +66,22 @@ function LangSelector() {
 
       {open && (
         <div
-          className="absolute top-full mt-2 py-1 z-50"
-          style={{ minWidth: 120, right: 0, backgroundColor: 'var(--bg)' }}
+          className="absolute top-full mt-4 py-2 z-50 card-border shadow-2xl animate-fade-in"
+          style={{ minWidth: 140, right: 0 }}
         >
           {LANGS.map(l => (
             <button
               key={l.code}
               onClick={() => change(l.code)}
-              className="w-full text-left px-4 py-2.5 text-xs font-sans flex items-center justify-between transition-colors duration-150"
+              className="w-full text-left px-5 py-3 text-[10px] font-bold uppercase tracking-widest flex items-center justify-between transition-colors duration-150"
               style={{
-                color: l.code === i18n.language ? 'var(--accent)' : 'var(--text3)',
+                color: l.code === i18n.language ? 'var(--accent)' : 'var(--text)',
+                backgroundColor: l.code === i18n.language ? 'var(--accent-bg)' : 'transparent',
               }}
-              onMouseEnter={e => { if(l.code !== i18n.language) e.currentTarget.style.color = 'var(--text)' }}
-              onMouseLeave={e => { if(l.code !== i18n.language) e.currentTarget.style.color = 'var(--text3)' }}
+              onMouseEnter={e => { if(l.code !== i18n.language) e.currentTarget.style.color = 'var(--accent)' }}
+              onMouseLeave={e => { if(l.code !== i18n.language) e.currentTarget.style.color = 'var(--text)' }}
             >
               <span>{l.name}</span>
-              <span style={{ opacity: 0.4 }}>{l.label}</span>
             </button>
           ))}
         </div>
@@ -97,13 +97,19 @@ function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="flex items-center justify-center w-8 h-8 transition-colors duration-200"
+      className="flex items-center justify-center w-10 h-10 transition-all duration-200 rounded-full border border-transparent"
       style={{ color: 'var(--text3)' }}
-      onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-      onMouseLeave={e => (e.currentTarget.style.color = 'var(--text3)')}
+      onMouseEnter={e => {
+        e.currentTarget.style.color = 'var(--accent)';
+        e.currentTarget.style.borderColor = 'var(--border)';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.color = 'var(--text3)';
+        e.currentTarget.style.borderColor = 'transparent';
+      }}
       title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
     >
-      {theme === 'dark' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+      {theme === 'dark' ? <Sun className="w-4 h-4" strokeWidth={1.5} /> : <Moon className="w-4 h-4" strokeWidth={1.5} />}
     </button>
   );
 }
@@ -116,45 +122,67 @@ function MobileNav() {
 
   useEffect(() => {
     setIsOpen(false);
-  }, [location.pathname]);
+    if (isOpen) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = 'auto';
+  }, [location.pathname, isOpen]);
 
   return (
-    <div className="md:hidden flex items-center">
+    <div className="md:hidden flex items-center ml-2">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="p-2 transition-colors duration-200"
+        className="p-2 transition-colors duration-200 relative z-50 rounded-full border border-transparent"
         style={{ color: 'var(--text)' }}
-        onMouseEnter={e => e.currentTarget.style.color = 'var(--accent)'}
-        onMouseLeave={e => e.currentTarget.style.color = 'var(--text)'}
+        onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border)'}
+        onMouseLeave={e => e.currentTarget.style.borderColor = 'transparent'}
       >
-        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" strokeWidth={1.5} />}
       </button>
 
-      {isOpen && (
-        <div 
-          className="fixed inset-0 top-20 z-40 p-6 flex flex-col gap-6" 
-          style={{ backgroundColor: 'var(--bg)' }}
-        >
-          {[
-            ['/', t('home')],
-            ['/listings', t('listings')],
-            ['/about', t('about')],
-            ['/blog', 'Blog'], 
-            ['/contact', t('contact')],
-          ].map(([href, label]) => (
-            <Link
-              key={href}
-              to={href}
-              className="text-xl font-light tracking-[0.2em] uppercase pb-4"
-              style={{ 
-                color: location.pathname === href ? 'var(--accent)' : 'var(--text)'
-              }}
-            >
-              {label}
-            </Link>
-          ))}
+      {/* Overlay Sombre */}
+      <div 
+        className={`fixed inset-0 z-30 transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        style={{ backgroundColor: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }}
+        onClick={() => setIsOpen(false)}
+      ></div>
+
+      {/* Menu Coulissant */}
+      <div 
+        className={`fixed top-0 bottom-0 right-0 w-[85%] max-w-sm z-40 p-10 pt-32 flex flex-col gap-8 shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)]`} 
+        style={{ 
+          backgroundColor: 'var(--bg)', 
+          borderLeft: '1px solid var(--border)',
+          transform: isOpen ? 'translateX(0)' : 'translateX(100%)' 
+        }}
+      >
+        {[
+          ['/', t('home')],
+          ['/listings', t('listings')],
+          ['/about', t('about')],
+          ['/blog', 'Journal'], 
+          ['/contact', t('contact')],
+        ].map(([href, label], i) => (
+          <Link
+            key={href}
+            to={href}
+            className={`text-2xl font-serif tracking-wider uppercase pb-4 flex items-center justify-between group transition-all duration-300 ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ 
+              color: location.pathname === href ? 'var(--accent)' : 'var(--text)', 
+              borderBottom: '1px solid var(--border)',
+              transitionDelay: `${i * 50}ms`
+            }}
+          >
+            {label}
+            <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--accent)' }}/>
+          </Link>
+        ))}
+
+        <div className="mt-auto pt-10 border-t" style={{ borderColor: 'var(--border)' }}>
+          <p className="text-[10px] font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--text3)' }}>Service Client</p>
+          <a href={`https://wa.me/${companyInfo.whatsapp.replace(/\D/g,'')}`} className="text-xl font-serif tracking-widest transition-colors hover:text-[var(--accent)]" style={{ color: 'var(--text)' }}>
+            {companyInfo.whatsapp}
+          </a>
         </div>
-      )}
+      </div>
     </div>
   );
 }
@@ -167,7 +195,7 @@ function Header() {
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
+    const onScroll = () => setScrolled(window.scrollY > 40);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -182,44 +210,58 @@ function Header() {
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 h-20 transition-all duration-500"
+      className="fixed top-0 left-0 right-0 z-50 h-[80px] transition-all duration-500 ease-out"
       style={{
         backgroundColor: scrolled ? 'var(--header-bg)' : 'transparent',
+        backdropFilter: scrolled ? 'blur(12px)' : 'none',
+        borderBottom: scrolled ? '1px solid var(--border)' : '1px solid transparent',
       }}
     >
-      <div className="h-full max-w-6xl mx-auto px-6 md:px-10 flex items-center justify-between">
-        <Link to="/" className="flex items-center">
+      <div className="h-full max-w-[1400px] mx-auto px-6 md:px-12 flex items-center justify-between">
+        
+        {/* LOGO */}
+        <Link to="/" className="flex items-center gap-4 group">
           <img
             src="https://i.ibb.co/60PJ8PVw/aass.png"
             alt={companyInfo?.brand || 'MoveSmart'}
-            className="h-7 md:h-9 w-auto transition-all duration-300"
+            className="h-6 md:h-7 w-auto transition-transform duration-500 group-hover:scale-105"
             style={{ filter: 'var(--img-filter)' }}
             referrerPolicy="no-referrer"
           />
+          <span className="font-serif font-bold text-2xl tracking-tighter hidden lg:block transition-colors" style={{ color: 'var(--text)' }}>
+            MoveSmart
+          </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8 text-xs font-light tracking-[0.2em] uppercase">
+        {/* NAVIGATION DESKTOP */}
+        <nav className="hidden md:flex items-center gap-10">
           {[
-            ['/', t('home', 'Home')],
-            ['/listings', t('listings', 'Opportunités')],
-            ['/about', t('about', 'À Propos')],
-            ['/blog', 'Blog'],
-            ['/contact', t('contact', 'Contact')],
+            ['/', t('home')],
+            ['/listings', t('listings')],
+            ['/about', t('about')],
+            ['/blog', 'Journal'],
+            ['/contact', t('contact')],
           ].map(([href, label]) => (
             <Link
               key={href}
               to={href}
-              className="transition-colors duration-200"
-              style={{ color: location.pathname === href ? 'var(--accent)' : 'var(--text3)' }}
-              onMouseEnter={e => { if (location.pathname !== href) e.currentTarget.style.color = 'var(--text)'; }}
-              onMouseLeave={e => { if (location.pathname !== href) e.currentTarget.style.color = 'var(--text3)'; }}
+              className="text-[11px] font-bold uppercase tracking-[0.2em] transition-colors duration-200 py-2 relative group"
+              style={{ color: location.pathname === href ? 'var(--accent)' : 'var(--text)' }}
             >
               {label}
+              <span 
+                className="absolute bottom-0 left-0 w-full h-[1px] transition-transform duration-300 origin-left"
+                style={{ 
+                  backgroundColor: 'var(--accent)', 
+                  transform: location.pathname === href ? 'scaleX(1)' : 'scaleX(0)' 
+                }}
+              ></span>
             </Link>
           ))}
         </nav>
 
-        <div className="flex items-center gap-2 sm:gap-4">
+        {/* ICONES DROITE */}
+        <div className="flex items-center gap-2 sm:gap-6">
           <ThemeToggle />
           <LangSelector />
           <MobileNav />
@@ -261,12 +303,11 @@ export default function AppWrapper() {
   const [theme, setTheme] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('theme');
-      return saved || 'dark'; 
+      return saved || 'dark'; // Mode sombre par défaut
     }
     return 'dark';
   });
 
-  // Appliquer le thème via data-attribute sur <html>
   useEffect(() => {
     const html = document.documentElement;
     if (theme === 'light') {
@@ -279,12 +320,7 @@ export default function AppWrapper() {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-  const toggle = () => {
-    setTheme(prev => {
-      const newTheme = prev === 'dark' ? 'light' : 'dark';
-      return newTheme;
-    });
-  };
+  const toggle = () => setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
 
   return (
     <I18nextProvider i18n={i18n}>
