@@ -296,7 +296,7 @@ export default function AppWrapper() {
 
   return (
     <I18nextProvider i18n={i18n}>
-      <ThemeContext.Provider value={{ theme, toggle }}>
+      <ThemeContext.Provider value={{ theme, toggle }}> 
         <BrowserRouter>
           <App />
         </BrowserRouter>
