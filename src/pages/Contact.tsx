@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { MapPin, Phone, Mail, Send, CheckCircle } from 'lucide-react';
-import { useTranslation } from 'react-i18next'; // Ajout de la traduction
+import { useTranslation } from 'react-i18next';
 
 export default function Contact() {
   const { t } = useTranslation();
@@ -30,28 +30,32 @@ export default function Contact() {
   };
 
   return (
-    <div className="min-h-screen pt-20" style={{ backgroundColor: 'var(--bg)' }}>
-      <div className="max-w-7xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-20">
+    <div className="min-h-screen pt-32 pb-32" style={{ backgroundColor: 'var(--bg)' }}>
+      <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-24 items-start">
         
         {/* Left Side - Info */}
-        <div>
-          <h1 className="text-5xl font-bold uppercase tracking-wider mb-6" style={{ color: 'var(--text)' }}>
+        <div className="animate-fade-in">
+          <span className="font-semibold uppercase tracking-[0.3em] text-[10px] mb-6 block text-gold">
             {t('contact_tag', 'Get in touch')}
+          </span>
+          <h1 className="text-5xl md:text-7xl font-serif tracking-tight mb-10" style={{ color: 'var(--text)' }}>
+            <span className="font-serif-italic text-gold">{t('contact_title_em', 'Parlons de')}</span> <br/>
+            {t('contact_title_1', 'votre projet.')}
           </h1>
-          <p className="text-lg leading-relaxed mb-12 max-w-lg" style={{ color: 'var(--text3)' }}>
+          <p className="text-base leading-relaxed mb-16 max-w-lg font-light" style={{ color: 'var(--text3)' }}>
             {t('contact_sub', 'Ready to start your journey in Dubai? Our team of experts is here to guide you through every step of your investment and relocation process.')}
           </p>
 
-          <div className="space-y-10">
-            <div className="flex items-start gap-6">
-              <div className="w-12 h-12 border rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)', filter: 'brightness(1.1)' }}>
-                <MapPin className="w-5 h-5" style={{ color: 'var(--accent)' }} />
+          <div className="space-y-12">
+            <div className="flex items-start gap-8">
+              <div className="w-14 h-14 border rounded flex items-center justify-center shrink-0 shadow-sm" style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }}>
+                <MapPin className="w-6 h-6 text-gold" strokeWidth={1.5} />
               </div>
               <div>
-                <h4 className="text-sm font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--text3)' }}>
+                <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: 'var(--text3)' }}>
                   {t('office_label', 'Our Office')}
                 </h4>
-                <p className="leading-relaxed" style={{ color: 'var(--text)' }}>
+                <p className="leading-relaxed font-serif text-lg tracking-wide" style={{ color: 'var(--text)' }}>
                   Boulevard Plaza Tower 1<br/>
                   Downtown Dubai<br/>
                   United Arab Emirates
@@ -59,29 +63,29 @@ export default function Contact() {
               </div>
             </div>
 
-            <div className="flex items-start gap-6">
-              <div className="w-12 h-12 border rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)', filter: 'brightness(1.1)' }}>
-                <Phone className="w-5 h-5" style={{ color: 'var(--accent)' }} />
+            <div className="flex items-start gap-8">
+              <div className="w-14 h-14 border rounded flex items-center justify-center shrink-0 shadow-sm" style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }}>
+                <Phone className="w-6 h-6 text-gold" strokeWidth={1.5} />
               </div>
               <div>
-                <h4 className="text-sm font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--text3)' }}>
+                <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: 'var(--text3)' }}>
                   WhatsApp
                 </h4>
-                <a href="https://wa.me/971501234567" className="text-xl font-light transition-colors" style={{ color: 'var(--text)' }}>
+                <a href="https://wa.me/971501234567" className="text-xl font-serif tracking-wide transition-colors hover:text-amber-500" style={{ color: 'var(--text)' }}>
                   +971 50 123 4567
                 </a>
               </div>
             </div>
 
-            <div className="flex items-start gap-6">
-              <div className="w-12 h-12 border rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)', filter: 'brightness(1.1)' }}>
-                <Mail className="w-5 h-5" style={{ color: 'var(--accent)' }} />
+            <div className="flex items-start gap-8">
+              <div className="w-14 h-14 border rounded flex items-center justify-center shrink-0 shadow-sm" style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }}>
+                <Mail className="w-6 h-6 text-gold" strokeWidth={1.5} />
               </div>
               <div>
-                <h4 className="text-sm font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--text3)' }}>
+                <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: 'var(--text3)' }}>
                   Email Support
                 </h4>
-                <a href="mailto:contact@movesmartinvest.com" className="transition-colors" style={{ color: 'var(--text)' }}>
+                <a href="mailto:contact@movesmartinvest.com" className="text-xl font-serif tracking-wide transition-colors hover:text-amber-500" style={{ color: 'var(--text)' }}>
                   contact@movesmartinvest.com
                 </a>
               </div>
@@ -90,22 +94,22 @@ export default function Contact() {
         </div>
 
         {/* Right Side - Form */}
-        <div className="p-10 border rounded-lg" style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)', filter: 'brightness(0.97)' }}>
-          <h3 className="text-2xl font-bold uppercase tracking-wider mb-8" style={{ color: 'var(--text)' }}>
+        <div className="p-12 border rounded shadow-2xl animate-fade-in" style={{ backgroundColor: 'var(--header-bg)', borderColor: 'var(--border)', backdropFilter: 'blur(20px)' }}>
+          <h3 className="text-3xl font-serif tracking-tight mb-10" style={{ color: 'var(--text)' }}>
             {t('form_title', 'Send us a message')}
           </h3>
           
           {success && (
-            <div className="p-4 rounded mb-8 flex items-center gap-3" style={{ backgroundColor: 'rgba(34, 197, 94, 0.1)', borderColor: 'rgba(34, 197, 94, 0.2)', border: '1px solid', color: '#22c55e' }}>
-              <CheckCircle className="w-5 h-5" />
-              <p className="text-sm font-medium">{t('success_sub', 'Message sent successfully! We\'ll get back to you soon.')}</p>
+            <div className="p-5 rounded mb-10 flex items-center gap-4" style={{ backgroundColor: 'rgba(34, 197, 94, 0.1)', borderColor: 'rgba(34, 197, 94, 0.2)', border: '1px solid', color: '#22c55e' }}>
+              <CheckCircle className="w-6 h-6" />
+              <p className="text-sm font-semibold tracking-wide uppercase">{t('success_sub', 'Message sent successfully! We\'ll get back to you soon.')}</p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
+          <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="grid md:grid-cols-2 gap-8">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--text3)' }}>
+                <label className="block text-[10px] font-bold uppercase tracking-[0.2em] mb-4" style={{ color: 'var(--text3)' }}>
                   {t('field_name', 'Name')}
                 </label>
                 <input 
@@ -115,12 +119,12 @@ export default function Contact() {
                   onChange={handleChange} 
                   required
                   placeholder={t('name_ph', 'Jean')}
-                  className="w-full border rounded px-4 py-3 focus:outline-none transition-colors"
-                  style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)', color: 'var(--text)' }}
+                  className="w-full border-b px-4 py-3 focus:outline-none transition-colors focus:border-amber-500"
+                  style={{ backgroundColor: 'transparent', borderColor: 'var(--border)', color: 'var(--text)' }}
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--text3)' }}>
+                <label className="block text-[10px] font-bold uppercase tracking-[0.2em] mb-4" style={{ color: 'var(--text3)' }}>
                   {t('field_email', 'Email')}
                 </label>
                 <input 
@@ -130,15 +134,15 @@ export default function Contact() {
                   onChange={handleChange} 
                   required
                   placeholder={t('email_ph', 'jean@email.com')}
-                  className="w-full border rounded px-4 py-3 focus:outline-none transition-colors"
-                  style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)', color: 'var(--text)' }}
+                  className="w-full border-b px-4 py-3 focus:outline-none transition-colors focus:border-amber-500"
+                  style={{ backgroundColor: 'transparent', borderColor: 'var(--border)', color: 'var(--text)' }}
                 />
               </div>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 gap-8">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--text3)' }}>
+                <label className="block text-[10px] font-bold uppercase tracking-[0.2em] mb-4" style={{ color: 'var(--text3)' }}>
                   {t('field_phone', 'Phone')}
                 </label>
                 <input 
@@ -147,12 +151,12 @@ export default function Contact() {
                   value={formData.phone} 
                   onChange={handleChange} 
                   placeholder={t('phone_ph', '+33 6 00 00 00 00')}
-                  className="w-full border rounded px-4 py-3 focus:outline-none transition-colors"
-                  style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)', color: 'var(--text)' }}
+                  className="w-full border-b px-4 py-3 focus:outline-none transition-colors focus:border-amber-500"
+                  style={{ backgroundColor: 'transparent', borderColor: 'var(--border)', color: 'var(--text)' }}
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--text3)' }}>
+                <label className="block text-[10px] font-bold uppercase tracking-[0.2em] mb-4" style={{ color: 'var(--text3)' }}>
                   {t('field_subject', 'Inquiry Type')}
                 </label>
                 <select 
@@ -160,20 +164,20 @@ export default function Contact() {
                   value={formData.type} 
                   onChange={handleChange} 
                   required
-                  className="w-full border rounded px-4 py-3 focus:outline-none transition-colors"
-                  style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)', color: 'var(--text)' }}
+                  className="w-full border-b px-4 py-3 focus:outline-none transition-colors focus:border-amber-500 cursor-pointer"
+                  style={{ backgroundColor: 'transparent', borderColor: 'var(--border)', color: 'var(--text)' }}
                 >
-                  <option value="">{t('select_inquiry', 'Select')}</option>
-                  <option value="real_estate">{t('inquiry_re', 'Rental yield')}</option>
-                  <option value="company">{t('inquiry_co', 'Off-plan buying')}</option>
-                  <option value="visa">{t('inquiry_vi', 'Golden Visa')}</option>
-                  <option value="general">{t('inquiry_ge', 'Other')}</option>
+                  <option value="" style={{ backgroundColor: 'var(--bg)' }}>{t('select_inquiry', 'Select')}</option>
+                  <option value="real_estate" style={{ backgroundColor: 'var(--bg)' }}>{t('inquiry_re', 'Rental yield')}</option>
+                  <option value="company" style={{ backgroundColor: 'var(--bg)' }}>{t('inquiry_co', 'Off-plan buying')}</option>
+                  <option value="visa" style={{ backgroundColor: 'var(--bg)' }}>{t('inquiry_vi', 'Golden Visa')}</option>
+                  <option value="general" style={{ backgroundColor: 'var(--bg)' }}>{t('inquiry_ge', 'Other')}</option>
                 </select>
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--text3)' }}>
+            <div className="pt-4">
+              <label className="block text-[10px] font-bold uppercase tracking-[0.2em] mb-4" style={{ color: 'var(--text3)' }}>
                 {t('field_message', 'Message')}
               </label>
               <textarea 
@@ -183,7 +187,7 @@ export default function Contact() {
                 required
                 rows={5}
                 placeholder={t('message_ph', 'Budget and goal...')}
-                className="w-full border rounded px-4 py-3 focus:outline-none transition-colors resize-none"
+                className="w-full border rounded px-5 py-4 focus:outline-none transition-colors resize-none focus:border-amber-500 shadow-inner"
                 style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)', color: 'var(--text)' }}
               ></textarea>
             </div>
@@ -191,7 +195,7 @@ export default function Contact() {
             <button 
               type="submit" 
               disabled={loading}
-              className="w-full py-4 font-bold uppercase tracking-widest flex items-center justify-center gap-3 transition-colors disabled:opacity-50"
+              className="w-full py-5 font-bold uppercase tracking-[0.2em] text-[11px] flex items-center justify-center gap-4 transition-all rounded shadow-xl hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100"
               style={{ backgroundColor: 'var(--accent)', color: '#000000' }}
             >
               {loading ? t('sending', 'Sending...') : (
