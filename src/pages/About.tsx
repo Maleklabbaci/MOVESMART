@@ -1,111 +1,122 @@
-import { companyInfo } from '../constants';
-import { Target, Users, ShieldCheck, TrendingUp, Building2, Globe, Briefcase } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import React from 'react';
+import { Building, MapPin, Check, Phone, ShieldCheck, TrendingUp, Users } from 'lucide-react';
+import { useTranslation } from 'react-i18next'; 
 
 export default function About() {
+  const { t } = useTranslation();
+
   return (
-    <div className="min-h-screen bg-[var(--bg)] text-white" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
-
-      {/* HERO */}
-      <section className="pt-40 pb-24 px-6 border-b border-[var(--border2)]">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center gap-3 mb-10">
-            <div className="h-px w-8 bg-[var(--accent)]" />
-            <span className="text-[var(--accent)] text-xs font-sans tracking-[0.3em] uppercase">À Propos</span>
-          </div>
-          <h1 className="text-5xl sm:text-7xl md:text-8xl font-light leading-[0.9] tracking-tight mb-10 max-w-4xl">
-            {companyInfo.brand}
+    <div className="min-h-screen pt-32 pb-40" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+      <div className="max-w-7xl mx-auto px-6">
+        
+        {/* HEADER */}
+        <div className="text-center mb-32 animate-fade-in">
+          <span className="inline-block mb-8 text-[10px] font-bold tracking-widest uppercase text-amber-500">
+            {t('about_page_tag', 'À Propos')}
+          </span>
+          <h1 className="text-5xl md:text-7xl font-bold tracking-wider uppercase leading-tight mb-10 max-w-4xl mx-auto">
+            {t('about_title_1', 'On sécurise')} <br/>
+            <span className="font-serif-italic lowercase text-amber-500">
+              {t('about_title_em', 'votre capital.')}
+            </span>
           </h1>
-          <p className="text-2xl sm:text-3xl font-light text-gray-300 mb-8 leading-tight max-w-3xl">
-            {companyInfo.baseline}
+          <p className="max-w-3xl mx-auto text-lg md:text-xl font-light leading-relaxed font-sans" style={{ color: 'var(--text3)' }}>
+            {t('about_p1', 'MoveSmart accompagne exclusivement les investisseurs internationaux sur le marché immobilier de Dubaï — off-plan, locatif, revente ou Golden Visa.')}
           </p>
-          <p className="text-[var(--text3)] font-sans font-light text-base leading-relaxed max-w-2xl">
-            {companyInfo.description}
+          <p className="max-w-3xl mx-auto mt-6 text-lg font-bold font-sans" style={{ color: 'var(--text)' }}>
+            {t('about_p2', 'Notre mission : maximiser votre ROI à chaque étape, de la sélection à la gestion.')}
           </p>
         </div>
-      </section>
 
-      {/* WHY DUBAI */}
-      <section className="py-28 px-6 bg-[var(--bg2)]">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center gap-3 mb-16">
-            <div className="h-px w-8 bg-[var(--accent)]" />
-            <span className="text-[var(--accent)] text-xs font-sans tracking-[0.3em] uppercase">Pourquoi Dubaï</span>
+        {/* IMAGE SECTION */}
+        <div className="relative aspect-[21/9] bg-black/5 mb-32 overflow-hidden shadow-sm border transition-all duration-200 animate-fade-in" style={{ borderColor: 'var(--border)' }}>
+          <img 
+            src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600&auto=format&fit=crop" 
+            alt="Dubai Skyline" 
+            className="w-full h-full object-cover transition-transform duration-[20s] hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-black/30"></div>
+        </div>
+
+        {/* WHY DUBAI */}
+        <div className="grid md:grid-cols-2 gap-20 items-start mb-40 animate-fade-in">
+          <div className="sticky top-32">
+            <span className="inline-block mb-6 text-[10px] font-bold tracking-widest uppercase text-amber-500">
+              {t('why_tag', 'Pourquoi Dubaï')}
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-wider leading-tight mb-6">
+              {t('why_dubai', 'Le marché immobilier de Dubaï')} <br/>
+              <span className="font-serif-italic lowercase text-amber-500">{t('why_dubai_em', 'surperforme.')}</span>
+            </h2>
           </div>
-          <h2 className="text-4xl sm:text-5xl font-light mb-16">Investir à Dubaï,<br /><em className="not-italic text-[var(--accent)]">c'est investir dans l'avenir.</em></h2>
-          <div className="grid md:grid-cols-3 gap-px bg-white/[0.04]">
+          
+          <div className="grid sm:grid-cols-2 gap-10">
             {[
-              { icon: Building2, title: 'Hub mondial', desc: 'Position stratégique entre Orient et Occident, carrefour des affaires internationales.' },
-              { icon: Globe, title: 'Fiscalité attractive', desc: "Pas d'impôt sur le revenu, pas de taxe foncière. Un environnement fiscal unique au monde." },
-              { icon: Briefcase, title: 'Business friendly', desc: 'Infrastructure de classe mondiale et facilité de création d\'entreprise reconnue globalement.' },
-            ].map((item, i) => (
-              <div key={i} className="bg-[var(--bg2)] p-10 group hover:bg-[var(--bg)] transition-colors duration-300">
-                <item.icon className="w-8 h-8 text-[var(--accent)]/50 mb-8 group-hover:text-[var(--accent)] transition-colors duration-300" />
-                <h4 className="text-xl font-light mb-4">{item.title}</h4>
-                <p className="text-[var(--text4)] text-sm font-sans font-light leading-relaxed">{item.desc}</p>
+              { icon: TrendingUp, title: t('hub_title', 'Hub financier mondial'), desc: t('hub_desc', 'Centre d\'affaires entre Orient et Occident.') },
+              { icon: Check, title: t('tax_title', '0% d\'impôt'), desc: t('tax_desc', 'Aucune taxe sur revenus locatifs ni plus-values.') },
+              { icon: ShieldCheck, title: t('biz_title', 'Marché réglementé'), desc: t('biz_desc', 'RERA garantit transparence et sécurité des transactions.') },
+              { icon: Users, title: t('growth_title', 'Croissance'), desc: t('growth_desc', 'Population en hausse constante, demande locative forte.') },
+            ].map((item, index) => (
+              <div key={index} className="p-8 border shadow-sm group hover:-translate-y-1 transition-transform" style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }}>
+                <item.icon className="w-8 h-8 mb-6 text-amber-500 group-hover:scale-110 transition-transform" strokeWidth={1.5} />
+                <h3 className="text-sm font-bold uppercase tracking-wider mb-4" style={{ color: 'var(--text)' }}>{item.title}</h3>
+                <p className="text-sm font-light font-sans leading-relaxed" style={{ color: 'var(--text3)' }}>{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
-      </section>
 
-      {/* FEATURES */}
-      <section className="py-28 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center gap-3 mb-16">
-            <div className="h-px w-8 bg-[var(--accent)]" />
-            <span className="text-[var(--accent)] text-xs font-sans tracking-[0.3em] uppercase">Notre approche</span>
+        {/* OUR APPROACH */}
+        <div className="mb-40">
+          <div className="text-center mb-20 animate-fade-in">
+            <span className="inline-block mb-6 text-[10px] font-bold tracking-widest uppercase text-amber-500">
+              {t('approach_tag', 'Notre approche')}
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-wider leading-tight">
+              L'investissement <br/>
+              <span className="font-serif-italic lowercase text-amber-500">clé en main.</span>
+            </h2>
           </div>
-          <div className="grid md:grid-cols-2 gap-px bg-white/[0.04]">
+
+          <div className="grid lg:grid-cols-4 gap-8">
             {[
-              { icon: Target, title: 'Vision stratégique', desc: 'Des feuilles de route claires et actionnables, adaptées à vos objectifs d\'investissement à Dubaï.' },
-              { icon: Users, title: 'Approche personnalisée', desc: 'Notre service 360° couvre chaque aspect de votre relocation et de la création de votre structure.' },
-              { icon: ShieldCheck, title: 'Expertise de confiance', desc: 'Une connaissance approfondie du marché local pour naviguer les réglementations dubaïotes.' },
-              { icon: TrendingUp, title: 'Croissance durable', desc: 'Focus sur le succès long terme pour construire et faire fructifier vos actifs efficacement.' },
-            ].map((f, i) => (
-              <div key={i} className="bg-[var(--bg)] p-10 sm:p-14 group hover:bg-[#0a0a0a] transition-colors duration-300">
-                <f.icon className="w-8 h-8 text-[var(--accent)]/40 mb-8 group-hover:text-[var(--accent)] transition-colors duration-300" />
-                <h3 className="text-2xl font-light mb-4">{f.title}</h3>
-                <p className="text-[var(--text3)] font-sans font-light leading-relaxed">{f.desc}</p>
+              { step: "01", title: t('vision_title', 'Analyse de marché'), desc: t('vision_desc', 'Sélection rigoureuse basée sur les données de rendement réel.') },
+              { step: "02", title: t('personal_title', 'Négociation exclusive'), desc: t('personal_desc', 'Accès aux meilleures offres avant ouverture publique.') },
+              { step: "03", title: t('trust_title', 'Sécurisation totale'), desc: t('trust_desc', 'Vérification juridique complète à chaque étape.') },
+              { step: "04", title: t('growth_title', 'Suivi ROI'), desc: t('growth_desc', 'Gestion locative et reporting régulier de votre investissement.') },
+            ].map((step, index) => (
+              <div key={index} className="p-10 border relative overflow-hidden group hover:shadow-lg transition-all" style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }}>
+                <div className="absolute -top-6 -right-6 text-9xl font-bold opacity-5" style={{ color: 'var(--text)' }}>
+                  {step.step}
+                </div>
+                <div className="text-[10px] font-bold tracking-widest uppercase text-amber-500 mb-8">
+                  Étape {step.step}
+                </div>
+                <h3 className="text-xl font-bold uppercase tracking-wider mb-4" style={{ color: 'var(--text)' }}>{step.title}</h3>
+                <p className="text-sm font-light font-sans leading-relaxed" style={{ color: 'var(--text3)' }}>{step.desc}</p>
               </div>
             ))}
           </div>
         </div>
-      </section>
 
-      {/* COMMITMENT */}
-      <section className="py-28 px-6 bg-[var(--bg2)]">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="flex items-center justify-center gap-3 mb-10">
-            <div className="h-px w-8 bg-[var(--accent)]" />
-            <span className="text-[var(--accent)] text-xs font-sans tracking-[0.3em] uppercase">Notre engagement</span>
-            <div className="h-px w-8 bg-[var(--accent)]" />
-          </div>
-          <h2 className="text-4xl sm:text-5xl font-light mb-10 leading-tight">
-            La confiance comme<br /><em className="not-italic text-[var(--accent)]">fondation de tout.</em>
+        {/* COMMITMENT CTA */}
+        <div className="p-12 md:p-24 border text-center animate-fade-in bg-black text-white" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+          <span className="inline-block mb-8 text-[10px] font-bold tracking-widest uppercase text-amber-500">
+            {t('commit_tag', 'Notre engagement')}
+          </span>
+          <h2 className="text-4xl md:text-6xl font-bold uppercase tracking-wider mb-10 leading-tight">
+            {t('commit_title_1', 'Votre capital,')} <br/>
+            <span className="font-serif-italic lowercase text-amber-500">{t('commit_title_em', 'notre priorité.')}</span>
           </h2>
-          <p className="text-[var(--text2)] font-sans font-light text-base sm:text-lg leading-relaxed mb-12 max-w-2xl mx-auto">
-            Chez {companyInfo.brand}, nous croyons que le succès à Dubaï repose sur la confiance, la transparence et une compréhension profonde du marché local. Nous sommes votre partenaire dédié, engagés à transformer vos ambitions en réalité.
+          <p className="max-w-2xl mx-auto text-lg font-light font-sans leading-relaxed text-gray-400 mb-12">
+            {t('commit_p', 'Chez MoveSmart, chaque décision est guidée par une seule question : est-ce que cet investissement maximise votre retour tout en minimisant les risques ?')}
           </p>
-          <Link to="/contact"
-            className="inline-flex items-center gap-3 bg-[var(--accent)] text-black px-10 py-4 text-xs font-sans font-bold tracking-[0.25em] uppercase hover:bg-amber-300 transition-all duration-300">
-            Commencer maintenant <ArrowRight className="w-4 h-4" />
-          </Link>
+          <a href="/contact" className="inline-block px-10 py-5 font-bold uppercase tracking-widest text-[11px] transition-colors bg-amber-500 text-black hover:bg-amber-600">
+            {t('commit_cta', 'Prendre rendez-vous')}
+          </a>
         </div>
-      </section>
 
-      {/* FOOTER */}
-      <footer className="bg-[var(--bg4)] border-t border-[var(--border2)] py-10 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-[var(--text5)] font-sans">© 2026 MoveSmart Invest. Tous droits réservés.</p>
-          <div className="flex gap-6 text-xs text-[var(--text5)] font-sans">
-            <Link to="/" className="hover:text-[var(--accent)] transition-colors">Accueil</Link>
-            <Link to="/listings" className="hover:text-[var(--accent)] transition-colors">Propriétés</Link>
-            <Link to="/contact" className="hover:text-[var(--accent)] transition-colors">Contact</Link>
-          </div>
-        </div>
-      </footer>
+      </div>
     </div>
   );
 }
