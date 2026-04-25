@@ -34,15 +34,15 @@ export default function FAQ() {
   ];
 
   return (
-    <div className="py-32" style={{ backgroundColor: 'var(--bg)' }}>
+    <div className="py-40" style={{ backgroundColor: 'var(--bg)' }}>
       <div className="max-w-4xl mx-auto px-6">
-        <div className="text-center mb-24 animate-fade-in">
-          <span className="inline-block mb-8 text-xs font-bold tracking-widest uppercase text-amber-500">
+        <div className="text-center mb-32 animate-fade-in-up">
+          <span className="inline-block py-2 px-5 rounded-full border mb-8 text-[11px] font-bold tracking-widest uppercase" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}>
             {t('faq_tag', 'Foire Aux Questions')}
           </span>
-          <h2 className="text-4xl md:text-6xl font-bold uppercase tracking-wider mb-8" style={{ color: 'var(--text)' }}>
+          <h2 className="text-5xl md:text-7xl font-bold tracking-tighter mb-8" style={{ color: 'var(--text)' }}>
             Vos questions.<br/>
-            <span className="text-amber-500">Nos réponses claires.</span>
+            <span className="font-serif-italic font-normal text-amber-500">Nos réponses claires.</span>
           </h2>
         </div>
 
@@ -50,32 +50,31 @@ export default function FAQ() {
           {faqs.map((faq, index) => (
             <div 
               key={index}
-              className="border transition-all duration-300 animate-fade-in"
-              style={{ borderColor: openIndex === index ? 'var(--accent)' : 'var(--border)', backgroundColor: 'var(--bg)' }}
+              className="border-b transition-all duration-400 animate-fade-in-up"
+              style={{ borderColor: openIndex === index ? 'var(--text)' : 'var(--border)', backgroundColor: 'var(--bg)', animationDelay: `${index * 100}ms` }}
             >
               <button
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full py-8 px-6 flex items-center justify-between transition-colors text-left"
-                style={{ backgroundColor: openIndex === index ? 'var(--accent-bg)' : 'transparent' }}
+                className="w-full py-8 flex items-center justify-between transition-colors text-left"
               >
-                <span className="text-xl font-bold tracking-wider uppercase pr-6" style={{ color: openIndex === index ? 'var(--text)' : 'var(--text3)' }}>
+                <span className="text-2xl md:text-3xl font-bold tracking-tight pr-6" style={{ color: openIndex === index ? 'var(--text)' : 'var(--text3)' }}>
                   {faq.question}
                 </span>
-                <span className="w-8 h-8 flex items-center justify-center flex-shrink-0 transition-transform">
+                <span className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-transform duration-300" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
                   {openIndex === index ? (
-                    <Minus className="w-5 h-5 text-amber-500" />
+                    <Minus className="w-6 h-6 text-amber-500" />
                   ) : (
-                    <Plus className="w-5 h-5" style={{ color: 'var(--text3)' }} />
+                    <Plus className="w-6 h-6" style={{ color: 'var(--text3)' }} />
                   )}
                 </span>
               </button>
               
               <div 
-                className={`overflow-hidden transition-all duration-300 ease-in-out px-6 ${
-                  openIndex === index ? 'max-h-64 pb-8 pt-4 opacity-100' : 'max-h-0 pb-0 pt-0 opacity-0'
+                className={`overflow-hidden transition-all duration-500 ease-in-out ${
+                  openIndex === index ? 'max-h-64 pb-12 opacity-100' : 'max-h-0 pb-0 opacity-0'
                 }`}
               >
-                <p className="text-base leading-relaxed font-light font-sans" style={{ color: 'var(--text3)' }}>{faq.answer}</p>
+                <p className="text-[17px] md:text-[19px] leading-[1.8] font-light max-w-3xl font-sans" style={{ color: 'var(--text3)' }}>{faq.answer}</p>
               </div>
             </div>
           ))}
