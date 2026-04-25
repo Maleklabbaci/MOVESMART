@@ -1,58 +1,96 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Phone, X } from 'lucide-react';
 import { companyInfo } from '../constants';
 
 export default function WhatsAppButton() {
-  const [hovered, setHovered] = useState(false);
-  const url = `https://wa.me/${companyInfo.whatsapp.replace(/\D/g, '')}`;
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [hasHovered, setHasHovered] = React.useState(false);
+
+  // Close when clicked outside
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.wa-container')) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, [isOpen]);
+
+  const handleWhatsAppClick = () => {
+    const message = encodeURIComponent("Bonjour, je souhaite obtenir plus d'informations sur vos services d'investissement à Dubaï.");
+    window.open(`https://wa.me/${companyInfo.whatsapp.replace(/\D/g, '')}?text=${message}`, '_blank', 'noopener,noreferrer');
+  };
 
   return (
-    <a href={url} target="_blank" rel="noopener noreferrer"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        position: 'fixed',
-        bottom: hovered ? '84px' : '80px',
-        right: '20px',
-        zIndex: 40,
-        transition: 'all 0.3s ease',
-      }}
-      className="md:bottom-8 group">
-      {/* Glow */}
-      <div style={{
-        position: 'absolute', inset: 0, borderRadius: '50%',
-        backgroundColor: '#25D366',
-        opacity: hovered ? 0.2 : 0,
-        transform: hovered ? 'scale(1.5)' : 'scale(1)',
-        transition: 'all 0.4s ease',
-        pointerEvents: 'none',
-      }} />
-      {/* Button */}
-      <div style={{
-        width: 52, height: 52,
-        background: 'linear-gradient(135deg, #25D366, #20BA5E)',
-        borderRadius: '50%',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        boxShadow: hovered ? '0 8px 30px rgba(37,211,102,0.35)' : '0 4px 15px rgba(37,211,102,0.2)',
-        transform: hovered ? 'scale(1.1)' : 'scale(1)',
-        transition: 'all 0.3s ease',
-        position: 'relative',
-      }}>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-          <path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.558 4.126 1.535 5.862L.057 23.943l6.261-1.641A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.891 0-3.659-.523-5.175-1.432l-.371-.22-3.851 1.01 1.027-3.748-.242-.386A9.937 9.937 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/>
-        </svg>
-      </div>
-      {/* Tooltip */}
-      {hovered && (
-        <div style={{
-          position: 'absolute', bottom: '100%', right: 0, marginBottom: 10,
-          backgroundColor: '#0d0d0d', border: '1px solid rgba(255,255,255,0.08)',
-          color: 'white', fontSize: 11, padding: '6px 12px', whiteSpace: 'nowrap',
-          fontFamily: 'sans-serif', letterSpacing: '0.1em',
-        }}>
-          WhatsApp
+    <div className="fixed bottom-6 right-6 z-[100] wa-container flex flex-col items-end">
+      
+      {/* Tooltip / Popup Message */}
+      <div 
+        className={`mb-4 overflow-hidden transition-all duration-300 origin-bottom-right ${
+          isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0 pointer-events-none'
+        }`}
+      >
+        <div 
+          className="p-5 rounded-2xl shadow-2xl relative max-w-[280px]"
+          style={{ backgroundColor: 'var(--header-bg)', border: '1px solid var(--border)', backdropFilter: 'blur(16px)' }}
+        >
+          <button 
+            onClick={(e) => { e.stopPropagation(); setIsOpen(false); }}
+            className="absolute top-3 right-3 p-1 rounded-full transition-colors hover:bg-black/10 dark:hover:bg-white/10"
+            style={{ color: 'var(--text3)' }}
+          >
+            <X className="w-4 h-4" />
+          </button>
+          
+          <div className="flex items-center gap-3 mb-3">
+            <div className="relative">
+              <img 
+                src="https://ui-avatars.com/api/?name=MoveSmart&background=b8860b&color=fff&rounded=true" 
+                alt="Agent" 
+                className="w-10 h-10 rounded-full"
+              />
+              <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+            </div>
+            <div>
+              <h4 className="text-sm font-bold font-serif tracking-tight" style={{ color: 'var(--text)' }}>MoveSmart</h4>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-green-500">En ligne</p>
+            </div>
+          </div>
+          
+          <p className="text-[13px] leading-relaxed mb-4 font-light" style={{ color: 'var(--text3)' }}>
+            Besoin d'aide pour votre projet d'investissement à Dubaï ? Discutez directement avec l'un de nos experts.
+          </p>
+          
+          <button 
+            onClick={handleWhatsAppClick}
+            className="w-full py-3 flex items-center justify-center gap-2 rounded-xl font-bold uppercase tracking-widest text-[10px] text-white shadow-lg transition-transform hover:-translate-y-1"
+            style={{ backgroundColor: '#25D366' }} // Vrai vert WhatsApp
+          >
+            Démarrer la discussion
+          </button>
         </div>
-      )}
-    </a>
+      </div>
+
+      {/* Main Button */}
+      <button
+        onMouseEnter={() => !hasHovered && setHasHovered(true)}
+        onClick={() => {
+          if (!isOpen) setIsOpen(true);
+          else handleWhatsAppClick();
+        }}
+        className="w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 hover:-translate-y-1 group relative"
+        style={{ backgroundColor: '#25D366', color: '#ffffff' }}
+        aria-label="Contact on WhatsApp"
+      >
+        {/* Pulse effect */}
+        <span className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-75"></span>
+        
+        <Phone className="w-6 h-6 relative z-10" />
+      </button>
+
+    </div>
   );
 }
