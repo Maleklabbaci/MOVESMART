@@ -62,54 +62,54 @@ const articles = [
 export default function Blog() {
   const { t } = useTranslation();
   return (
-    <div className="min-h-screen pt-32 pb-40" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
-      <div className="max-w-7xl mx-auto px-6">
+    <div className="min-h-screen pt-40 pb-40" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+      <div className="max-w-[1400px] mx-auto px-6">
         
         {/* HEADER */}
-        <div className="text-center mb-20 animate-fade-in">
-          <span className="inline-block mb-6 text-[10px] font-bold tracking-widest uppercase text-amber-500">
+        <div className="text-center mb-24 animate-fade-in">
+          <span className="tag-gold mb-10">
             BLOG
           </span>
-          <h1 className="text-5xl md:text-7xl font-bold tracking-wider uppercase leading-tight mb-8">
+          <h1 className="text-6xl md:text-[90px] font-serif tracking-tighter leading-[1.05] mb-12">
             Real Estate <br/>
-            <span className="font-serif-italic lowercase text-amber-500">Insights</span>
+            <span className="font-serif-italic text-accent">Insights.</span>
           </h1>
-          <p className="max-w-2xl mx-auto text-base font-light font-sans" style={{ color: 'var(--text3)' }}>
+          <p className="max-w-2xl mx-auto text-xl font-light leading-[1.8]" style={{ color: 'var(--text3)' }}>
             Expert tips, market analysis, and guides to help you make informed investment decisions in Dubai.
           </p>
         </div>
 
         {/* GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {articles.map((article) => (
-            <article key={article.id} className="group flex flex-col overflow-hidden border transition-all hover:-translate-y-1 shadow-sm hover:shadow-lg bg-black" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {articles.map((article, i) => (
+            <article key={article.id} className="group flex flex-col card-border animate-fade-in" style={{ animationDelay: `${i * 100}ms` }}>
               <div className="aspect-[4/3] relative overflow-hidden bg-black/5">
                 <img 
                   src={article.image} 
                   alt={article.title} 
-                  className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105"
                 />
-                <div className="absolute top-4 left-4 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider bg-amber-500 text-black">
+                <div className="absolute top-5 left-5 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] shadow-lg backdrop-blur-md" style={{ backgroundColor: 'rgba(0,0,0,0.6)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' }}>
                   {article.category}
                 </div>
               </div>
               
-              <div className="p-8 flex-1 flex flex-col">
-                <div className="flex items-center text-[10px] font-bold uppercase tracking-widest mb-6 gap-5 text-gray-500">
-                  <span className="flex items-center gap-2"><Calendar className="w-3 h-3 text-amber-500" /> {article.date}</span>
-                  <span className="flex items-center gap-2"><User className="w-3 h-3 text-amber-500" /> {article.author}</span>
+              <div className="p-10 flex-1 flex flex-col">
+                <div className="flex items-center text-[10px] font-bold uppercase tracking-[0.2em] mb-8 gap-6" style={{ color: 'var(--text3)' }}>
+                  <span className="flex items-center gap-2"><Calendar className="w-4 h-4 text-accent" /> {article.date}</span>
+                  <span className="flex items-center gap-2"><User className="w-4 h-4 text-accent" /> {article.author}</span>
                 </div>
                 
-                <h3 className="text-xl font-bold tracking-wider uppercase mb-4 line-clamp-2 transition-colors flex-1 text-white group-hover:text-amber-500">
+                <h3 className="text-2xl font-serif tracking-tight mb-5 line-clamp-2 transition-colors flex-1 group-hover:text-accent" style={{ color: 'var(--text)' }}>
                   {article.title}
                 </h3>
                 
-                <p className="text-sm font-light font-sans mb-8 line-clamp-3 text-gray-400">
+                <p className="text-[15px] font-light leading-[1.8] mb-10 line-clamp-3" style={{ color: 'var(--text3)' }}>
                   {article.excerpt}
                 </p>
                 
-                <button className="flex items-center text-[10px] font-bold uppercase tracking-widest text-amber-500 group-hover:translate-x-2 transition-transform w-fit">
-                  Read More <ArrowRight className="w-3 h-3 ml-3" />
+                <button className="flex items-center text-[10px] font-bold uppercase tracking-[0.2em] group-hover:translate-x-2 transition-transform w-fit" style={{ color: 'var(--accent)' }}>
+                  Read More <ArrowRight className="w-4 h-4 ml-3" />
                 </button>
               </div>
             </article>
@@ -117,19 +117,23 @@ export default function Blog() {
         </div>
 
         {/* NEWSLETTER CTA */}
-        <div className="mt-32 border p-12 md:p-20 text-center bg-black" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-          <h3 className="text-3xl md:text-4xl font-bold uppercase tracking-wider mb-6 text-white">Subscribe to Our Newsletter</h3>
-          <p className="mb-12 max-w-xl mx-auto text-sm font-light font-sans text-gray-400">
-            Get the latest Dubai real estate insights, investment tips, and market updates delivered to your inbox.
+        <div className="mt-32 p-16 md:p-24 text-center border shadow-2xl animate-fade-in delay-200" style={{ backgroundColor: 'var(--header-bg)', borderColor: 'var(--border)' }}>
+          <span className="tag-gold mb-8">
+            Stay Updated
+          </span>
+          <h3 className="text-4xl md:text-6xl font-serif tracking-tighter mb-8" style={{ color: 'var(--text)' }}>Subscribe to Our Newsletter</h3>
+          <p className="mb-14 max-w-2xl mx-auto text-xl font-light leading-[1.8]" style={{ color: 'var(--text3)' }}>
+            Get the latest Dubai real estate insights, investment tips, and market updates delivered directly to your inbox.
           </p>
-          <form className="max-w-xl mx-auto flex flex-col sm:flex-row gap-4" onSubmit={e => e.preventDefault()}>
+          <form className="max-w-2xl mx-auto flex flex-col sm:flex-row gap-6" onSubmit={e => e.preventDefault()}>
             <input 
               type="email" 
               placeholder="Your email address" 
-              className="flex-1 border-b border-gray-800 px-4 py-4 text-sm font-sans focus:outline-none transition-colors focus:border-amber-500 bg-transparent text-white"
+              className="flex-1 border-b-2 px-4 py-4 text-lg font-light focus:outline-none transition-colors focus:border-accent bg-transparent"
+              style={{ borderColor: 'var(--border)', color: 'var(--text)' }}
             />
-            <button type="submit" className="px-8 py-4 font-bold uppercase tracking-widest text-[11px] transition-colors bg-amber-500 text-black hover:bg-amber-600 sm:w-auto w-full">
-              Subscribe
+            <button type="submit" className="btn-gold sm:w-auto w-full flex items-center justify-center gap-4">
+              Subscribe <ArrowRight className="w-4 h-4" />
             </button>
           </form>
         </div>
