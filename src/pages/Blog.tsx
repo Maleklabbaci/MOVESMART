@@ -62,69 +62,78 @@ const articles = [
 export default function Blog() {
   const { t } = useTranslation();
   return (
-    <div className="max-w-6xl mx-auto px-6 py-20" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
-      <div className="text-center mb-16">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-wider uppercase">
-          Real Estate Insights
-        </h1>
-        <p className="max-w-2xl mx-auto" style={{ color: 'var(--text3)' }}>
-          Expert tips, market analysis, and guides to help you make informed investment decisions in Dubai.
-        </p>
-      </div>
+    <div className="min-h-screen pt-32 pb-40" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
+      <div className="max-w-7xl mx-auto px-6">
+        
+        {/* HEADER */}
+        <div className="text-center mb-20 animate-fade-in">
+          <span className="inline-block mb-6 text-[10px] font-bold tracking-widest uppercase text-amber-500">
+            BLOG
+          </span>
+          <h1 className="text-5xl md:text-7xl font-bold tracking-wider uppercase leading-tight mb-8">
+            Real Estate <br/>
+            <span className="font-serif-italic lowercase text-amber-500">Insights</span>
+          </h1>
+          <p className="max-w-2xl mx-auto text-base font-light font-sans" style={{ color: 'var(--text3)' }}>
+            Expert tips, market analysis, and guides to help you make informed investment decisions in Dubai.
+          </p>
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {articles.map((article) => (
-          <article key={article.id} className="border rounded-lg overflow-hidden transition-colors duration-300 group hover:border-amber-500/50" style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }}>
-            <div className="relative h-64 overflow-hidden">
-              <img 
-                src={article.image} 
-                alt={article.title} 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute top-4 left-4 px-3 py-1 text-xs font-bold uppercase rounded" style={{ backgroundColor: 'var(--accent)', color: '#000000' }}>
-                {article.category}
-              </div>
-            </div>
-            
-            <div className="p-6">
-              <div className="flex items-center text-xs mb-4 gap-4" style={{ color: 'var(--text3)' }}>
-                <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {article.date}</span>
-                <span className="flex items-center gap-1"><User className="w-3 h-3" /> {article.author}</span>
+        {/* GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {articles.map((article) => (
+            <article key={article.id} className="group flex flex-col overflow-hidden border transition-all hover:-translate-y-1 shadow-sm hover:shadow-lg bg-black" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+              <div className="aspect-[4/3] relative overflow-hidden bg-black/5">
+                <img 
+                  src={article.image} 
+                  alt={article.title} 
+                  className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                />
+                <div className="absolute top-4 left-4 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider bg-amber-500 text-black">
+                  {article.category}
+                </div>
               </div>
               
-              <h3 className="text-xl font-bold mb-3 transition-colors cursor-pointer" style={{ color: 'var(--text)' }} onMouseEnter={e => e.currentTarget.style.color = 'var(--accent)'} onMouseLeave={e => e.currentTarget.style.color = 'var(--text)'}>
-                {article.title}
-              </h3>
-              
-              <p className="text-sm mb-6 line-clamp-3" style={{ color: 'var(--text3)' }}>
-                {article.excerpt}
-              </p>
-              
-              <button className="flex items-center text-sm font-semibold uppercase tracking-wider transition-transform group-hover:translate-x-2" style={{ color: 'var(--accent)' }}>
-                Read More <ArrowRight className="w-4 h-4 ml-2" />
-              </button>
-            </div>
-          </article>
-        ))}
-      </div>
+              <div className="p-8 flex-1 flex flex-col">
+                <div className="flex items-center text-[10px] font-bold uppercase tracking-widest mb-6 gap-5 text-gray-500">
+                  <span className="flex items-center gap-2"><Calendar className="w-3 h-3 text-amber-500" /> {article.date}</span>
+                  <span className="flex items-center gap-2"><User className="w-3 h-3 text-amber-500" /> {article.author}</span>
+                </div>
+                
+                <h3 className="text-xl font-bold tracking-wider uppercase mb-4 line-clamp-2 transition-colors flex-1 text-white group-hover:text-amber-500">
+                  {article.title}
+                </h3>
+                
+                <p className="text-sm font-light font-sans mb-8 line-clamp-3 text-gray-400">
+                  {article.excerpt}
+                </p>
+                
+                <button className="flex items-center text-[10px] font-bold uppercase tracking-widest text-amber-500 group-hover:translate-x-2 transition-transform w-fit">
+                  Read More <ArrowRight className="w-3 h-3 ml-3" />
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
 
-      {/* Newsletter CTA */}
-      <div className="mt-20 border rounded-xl p-10 text-center" style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)', filter: 'brightness(0.97)' }}>
-        <h3 className="text-2xl font-bold mb-4" style={{ color: 'var(--text)' }}>Subscribe to Our Newsletter</h3>
-        <p className="mb-8 max-w-xl mx-auto" style={{ color: 'var(--text3)' }}>
-          Get the latest Dubai real estate insights, investment tips, and market updates delivered to your inbox.
-        </p>
-        <form className="max-w-md mx-auto flex gap-4" onSubmit={e => e.preventDefault()}>
-          <input 
-            type="email" 
-            placeholder="Your email address" 
-            className="flex-1 border rounded px-4 py-3 focus:outline-none transition-colors"
-            style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)', color: 'var(--text)' }}
-          />
-          <button type="submit" className="px-6 py-3 rounded font-bold uppercase tracking-wider transition-colors hover:opacity-90" style={{ backgroundColor: 'var(--accent)', color: '#000000' }}>
-            Subscribe
-          </button>
-        </form>
+        {/* NEWSLETTER CTA */}
+        <div className="mt-32 border p-12 md:p-20 text-center bg-black" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+          <h3 className="text-3xl md:text-4xl font-bold uppercase tracking-wider mb-6 text-white">Subscribe to Our Newsletter</h3>
+          <p className="mb-12 max-w-xl mx-auto text-sm font-light font-sans text-gray-400">
+            Get the latest Dubai real estate insights, investment tips, and market updates delivered to your inbox.
+          </p>
+          <form className="max-w-xl mx-auto flex flex-col sm:flex-row gap-4" onSubmit={e => e.preventDefault()}>
+            <input 
+              type="email" 
+              placeholder="Your email address" 
+              className="flex-1 border-b border-gray-800 px-4 py-4 text-sm font-sans focus:outline-none transition-colors focus:border-amber-500 bg-transparent text-white"
+            />
+            <button type="submit" className="px-8 py-4 font-bold uppercase tracking-widest text-[11px] transition-colors bg-amber-500 text-black hover:bg-amber-600 sm:w-auto w-full">
+              Subscribe
+            </button>
+          </form>
+        </div>
+
       </div>
     </div>
   );
