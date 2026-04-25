@@ -2,7 +2,7 @@ import React, { useEffect, useState, createContext, useContext } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { useTranslation, I18nextProvider } from 'react-i18next';
 import { Sun, Moon, Menu, X } from 'lucide-react';
-import i18n from './lib/i18n'; // Corrected import path: from '../lib/i18n' to './lib/i18n'
+import i18n from './lib/i18n'; 
 
 import Home from './pages/Home';
 import Listings from './pages/Listings';
@@ -66,17 +66,20 @@ function LangSelector() {
 
       {open && (
         <div
-          className="absolute top-full mt-2 py-1 z-50 bg-black/90 backdrop-blur-sm border border-white/10 rounded-sm"
-          style={{ minWidth: 110, right: 0 }}
+          className="absolute top-full mt-2 py-1 z-50 rounded-sm shadow-xl"
+          style={{ minWidth: 120, right: 0, backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}
         >
           {LANGS.map(l => (
             <button
               key={l.code}
               onClick={() => change(l.code)}
-              className="w-full text-left px-4 py-2.5 text-xs font-sans flex items-center justify-between transition-colors duration-150 hover:bg-white/10"
+              className="w-full text-left px-4 py-2.5 text-xs font-sans flex items-center justify-between transition-colors duration-150"
               style={{
                 color: l.code === i18n.language ? 'var(--accent)' : 'var(--text3)',
+                backgroundColor: l.code === i18n.language ? 'var(--accent-bg)' : 'transparent',
               }}
+              onMouseEnter={e => { if(l.code !== i18n.language) e.currentTarget.style.backgroundColor = 'var(--border)' }}
+              onMouseLeave={e => { if(l.code !== i18n.language) e.currentTarget.style.backgroundColor = 'transparent' }}
             >
               <span>{l.name}</span>
               <span style={{ opacity: 0.4 }}>{l.label}</span>
@@ -101,7 +104,7 @@ function ThemeToggle() {
       onMouseLeave={e => (e.currentTarget.style.color = 'var(--text3)')}
       title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
     >
-      {theme === 'dark' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+      {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
     </button>
   );
 }
@@ -112,34 +115,42 @@ function MobileNav() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 
-  // Close menu when route changes
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
 
   return (
-    <div className="md:hidden">
+    <div className="md:hidden flex items-center">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="p-2 text-[var(--text)] hover:text-[var(--accent)] transition-colors"
+        className="p-2 transition-colors duration-200"
+        style={{ color: 'var(--text)' }}
+        onMouseEnter={e => e.currentTarget.style.color = 'var(--accent)'}
+        onMouseLeave={e => e.currentTarget.style.color = 'var(--text)'}
       >
         {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 top-20 bg-[var(--bg)] z-40 p-6 flex flex-col gap-6" style={{ backgroundColor: 'var(--bg)' }}>
+        <div 
+          className="fixed inset-0 top-20 z-40 p-6 flex flex-col gap-6" 
+          style={{ backgroundColor: 'var(--bg)', borderTop: '1px solid var(--border)' }}
+        >
           {[
             ['/', t('home')],
             ['/listings', t('listings')],
             ['/about', t('about')],
-            ['/blog', 'BLOG'], // Added manually as it's not in translations yet
+            ['/blog', 'Blog'], 
             ['/contact', t('contact')],
           ].map(([href, label]) => (
             <Link
               key={href}
               to={href}
-              className="text-xl font-light tracking-[0.2em] uppercase border-b border-white/10 pb-4"
-              style={{ color: location.pathname === href ? 'var(--accent)' : 'var(--text)' }}
+              className="text-xl font-light tracking-[0.2em] uppercase pb-4"
+              style={{ 
+                color: location.pathname === href ? 'var(--accent)' : 'var(--text)', 
+                borderBottom: '1px solid var(--border)' 
+              }}
             >
               {label}
             </Link>
@@ -173,20 +184,20 @@ function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 h-20 transition-all duration-500`}
+      className="fixed top-0 left-0 right-0 z-50 h-20 transition-all duration-500"
       style={{
-        backgroundColor: scrolled ? 'var(--header-bg, rgba(0,0,0,0.8))' : 'transparent',
+        backgroundColor: scrolled ? 'var(--header-bg)' : 'transparent',
         backdropFilter: scrolled ? 'blur(12px)' : 'none',
-        borderBottom: scrolled ? '1px solid var(--border, rgba(255,255,255,0.1))' : 'none',
+        borderBottom: scrolled ? '1px solid var(--border)' : 'none',
       }}
     >
       <div className="h-full max-w-6xl mx-auto px-6 md:px-10 flex items-center justify-between">
-        <Link to="/">
+        <Link to="/" className="flex items-center">
           <img
             src="https://i.ibb.co/60PJ8PVw/aass.png"
             alt={companyInfo?.brand || 'MoveSmart'}
             className="h-7 md:h-9 w-auto transition-all duration-300"
-            style={{ filter: 'var(--img-filter, invert(0))' }}
+            style={{ filter: 'var(--img-filter)' }}
             referrerPolicy="no-referrer"
           />
         </Link>
@@ -196,23 +207,23 @@ function Header() {
             ['/', t('home')],
             ['/listings', t('listings')],
             ['/about', t('about')],
-            ['/blog', 'BLOG'], // Added as fallback text
+            ['/blog', 'Blog'],
             ['/contact', t('contact')],
           ].map(([href, label]) => (
             <Link
               key={href}
               to={href}
               className="transition-colors duration-200"
-              style={{ color: location.pathname === href ? 'var(--accent, #f59e0b)' : 'var(--text3, #9ca3af)' }}
-              onMouseEnter={e => { if (location.pathname !== href) e.currentTarget.style.color = 'var(--text, #ffffff)'; }}
-              onMouseLeave={e => { if (location.pathname !== href) e.currentTarget.style.color = 'var(--text3, #9ca3af)'; }}
+              style={{ color: location.pathname === href ? 'var(--accent)' : 'var(--text3)' }}
+              onMouseEnter={e => { if (location.pathname !== href) e.currentTarget.style.color = 'var(--text)'; }}
+              onMouseLeave={e => { if (location.pathname !== href) e.currentTarget.style.color = 'var(--text3)'; }}
             >
               {label}
             </Link>
           ))}
         </nav>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <ThemeToggle />
           <LangSelector />
           <MobileNav />
@@ -229,11 +240,11 @@ function App() {
 
   return (
     <div
-      className="min-h-screen transition-colors duration-300"
-      style={{ backgroundColor: 'var(--bg, #080808)', color: 'var(--text, #ffffff)' }}
+      className="min-h-screen transition-colors duration-300 flex flex-col"
+      style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}
     >
       <Header />
-      <main>
+      <main className="flex-1">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/listings" element={<Listings />} />
@@ -259,31 +270,16 @@ export default function AppWrapper() {
     return 'dark';
   });
 
-  // Appliquer le thème sur <html>
+  // Appliquer le thème sur <html> via data-attribute pour que index.css gère tout
   useEffect(() => {
     const html = document.documentElement;
     if (theme === 'light') {
       html.setAttribute('data-theme', 'light');
       html.removeAttribute('data-theme-dark');
-      html.style.setProperty('--bg', '#ffffff');
-      html.style.setProperty('--text', '#000000');
-      html.style.setProperty('--text3', '#4b5563');
-      html.style.setProperty('--border', 'rgba(0,0,0,0.1)');
-      html.style.setProperty('--header-bg', 'rgba(255,255,255,0.9)');
-      html.style.setProperty('--img-filter', 'invert(1)');
-      html.style.setProperty('--accent-bg', 'rgba(245, 158, 11, 0.1)');
     } else {
       html.removeAttribute('data-theme');
       html.setAttribute('data-theme-dark', 'true');
-      html.style.setProperty('--bg', '#080808');
-      html.style.setProperty('--text', '#ffffff');
-      html.style.setProperty('--text3', '#9ca3af');
-      html.style.setProperty('--border', 'rgba(255,255,255,0.1)');
-      html.style.setProperty('--header-bg', 'rgba(0,0,0,0.8)');
-      html.style.setProperty('--img-filter', 'invert(0)');
-      html.style.setProperty('--accent-bg', 'rgba(245, 158, 11, 0.1)');
     }
-    html.style.setProperty('--accent', '#f59e0b');
     localStorage.setItem('theme', theme);
   }, [theme]);
 
