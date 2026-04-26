@@ -24,7 +24,7 @@ export default function Home() {
         
         <div className="relative z-10 text-center px-6 max-w-5xl mx-auto mt-24">
           <span className="tag-gold animate-slide-down">
-            Immobilier Premium · Dubaï
+            Premium Real Estate · Dubaï
           </span>
           <h1 className="text-6xl md:text-[110px] mb-6 tracking-tighter leading-[0.95] text-white drop-shadow-2xl animate-fade-in delay-100 font-serif">
             {t('hero_title_1', 'Investissez à')} <br/>
