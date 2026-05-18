@@ -22,14 +22,14 @@ export default function Home() {
         name: 'David Morrison',
         role: 'Entrepreneur',
         location: 'UK',
-        text: 'I relocated my entire business to Dubai with MoveSmart's guidance. From company setup to residency visa — they handled everything seamlessly.',
+        text: 'I relocated my entire business to Dubai with MoveSmart guidance. From company setup to residency visa — they handled everything seamlessly.',
         rating: 5
       },
       {
         name: 'Sarah Chen',
         role: 'Golden Visa Holder',
         location: 'Singapore',
-        text: 'Obtained my Golden Visa through property investment. The team's expertise in Dubai regulations saved me months of research and stress.',
+        text: 'Obtained my Golden Visa through property investment. The team expertise in Dubai regulations saved me months of research and stress.',
         rating: 5
       }
     ],
@@ -38,21 +38,21 @@ export default function Home() {
         name: 'Pierre Dubois',
         role: 'Investisseur Immobilier',
         location: 'France',
-        text: 'MoveSmart m'a accompagné de A à Z dans l'acquisition d'un appartement à forte plus-value. Service irréprochable et résultats au rendez-vous.',
+        text: 'MoveSmart m\'a accompagné de A à Z dans l\'acquisition d\'un appartement à forte plus-value. Service irréprochable et résultats au rendez-vous.',
         rating: 5
       },
       {
         name: 'Sophie Martin',
         role: 'Entrepreneuse',
         location: 'Belgique',
-        text: 'Grâce à MoveSmart, j'ai pu créer ma société à Dubaï en quelques semaines. Leur connaissance des démarches administratives est précieuse.',
+        text: 'Grâce à MoveSmart, j\'ai pu créer ma société à Dubaï en quelques semaines. Leur connaissance des démarches administratives est précieuse.',
         rating: 5
       },
       {
         name: 'Marc Laurent',
         role: 'Investisseur',
         location: 'Suisse',
-        text: 'Accompagnement francophone de très haut niveau. Leur analyse financière des projets immobiliers est d'une rigueur exceptionnelle.',
+        text: 'Accompagnement francophone de très haut niveau. Leur analyse financière des projets immobiliers est d\'une rigueur exceptionnelle.',
         rating: 5
       }
     ],
