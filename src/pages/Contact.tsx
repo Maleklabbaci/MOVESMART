@@ -188,20 +188,20 @@ export default function Contact() {
           <span className="tag-gold">
             {lang === 'fr' ? 'Contact' : lang === 'ar' ? 'اتصل بنا' : 'Contact'}
           </span>
-        <h1 className="text-6xl md:text-[90px] font-serif tracking-tighter leading-[0.95] mb-8" style={{ color: 'var(--text)' }}>
-  {lang === 'fr' ? 'Parlons de votre' : lang === 'ar' ? 'لنتحدث عن' : "Let's talk about your"}<br/>
-  <span className="font-serif-italic text-accent">
-    {lang === 'fr' ? 'projet.' : lang === 'ar' ? 'مشروعك.' : 'project.'}
-  </span>
-</h1>
-<p className="text-xl font-light leading-[1.8] max-w-3xl" style={{ color: 'var(--text3)' }}>
-  {lang === 'fr'
-    ? 'Que vous cherchiez un investissement immobilier à fort rendement ou que vous souhaitiez créer votre entreprise à Dubaï, notre équipe d\'experts vous accompagne à chaque étape.'
-    : lang === 'ar'
-    ? 'سواء كنت تبحث عن استثمار عقاري عالي العائد أو ترغب في إنشاء عملك في دبي، فريق خبرائنا يرافقك في كل خطوة.'
-    : "Whether you're looking for a high-yield real estate investment or want to set up your business in Dubai, our team of experts supports you at every step."
-  }
-</p>
+          <h1 className="text-6xl md:text-[90px] font-serif tracking-tighter leading-[0.95] mb-8" style={{ color: 'var(--text)' }}>
+            {lang === 'fr' ? 'Parlons de votre' : lang === 'ar' ? 'لنتحدث عن' : 'Let's talk about your'}<br/>
+            <span className="font-serif-italic text-accent">
+              {lang === 'fr' ? 'projet.' : lang === 'ar' ? 'مشروعك.' : 'project.'}
+            </span>
+          </h1>
+          <p className="text-xl font-light leading-[1.8] max-w-3xl" style={{ color: 'var(--text3)' }}>
+            {lang === 'fr'
+              ? 'Que vous cherchiez un investissement immobilier à fort rendement ou que vous souhaitiez créer votre entreprise à Dubaï, notre équipe d\'experts vous accompagne à chaque étape.'
+              : lang === 'ar'
+              ? 'سواء كنت تبحث عن استثمار عقاري عالي العائد أو ترغب في إنشاء عملك في دبي، فريق خبرائنا يرافقك في كل خطوة.'
+              : 'Whether you're looking for a high-yield real estate investment or want to set up your business in Dubai, our team of experts supports you at every step.'
+            }
+          </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-20">
