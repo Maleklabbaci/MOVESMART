@@ -188,12 +188,12 @@ export default function Contact() {
           <span className="tag-gold">
             {lang === 'fr' ? 'Contact' : lang === 'ar' ? 'اتصل بنا' : 'Contact'}
           </span>
-          <h1 className="text-6xl md:text-[90px] font-serif tracking-tighter leading-[0.95] mb-8" style={{ color: 'var(--text)' }}>
-            {lang === 'fr' ? 'Parlons de votre' : lang === 'ar' ? 'لنتحدث عن' : 'Let's talk about your'}<br/>
-            <span className="font-serif-italic text-accent">
-              {lang === 'fr' ? 'projet.' : lang === 'ar' ? 'مشروعك.' : 'project.'}
-            </span>
-          </h1>
+        <h1 className="text-6xl md:text-[90px] font-serif tracking-tighter leading-[0.95] mb-8" style={{ color: 'var(--text)' }}>
+  {lang === 'fr' ? 'Parlons de votre' : lang === 'ar' ? 'لنتحدث عن' : "Let's talk about your"}<br/>
+  <span className="font-serif-italic text-accent">
+    {lang === 'fr' ? 'projet.' : lang === 'ar' ? 'مشروعك.' : 'project.'}
+  </span>
+</h1>
           <p className="text-xl font-light leading-[1.8] max-w-3xl" style={{ color: 'var(--text3)' }}>
             {lang === 'fr'
               ? 'Que vous cherchiez un investissement immobilier à fort rendement ou que vous souhaitiez créer votre entreprise à Dubaï, notre équipe d\'experts vous accompagne à chaque étape.'
