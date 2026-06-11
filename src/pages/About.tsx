@@ -106,24 +106,23 @@ export default function About() {
           </div>
         </div>
 
-        {/* COMMITMENT CTA */}
-        <div className="p-16 md:p-32 border text-center animate-fade-in shadow-2xl" style={{ backgroundColor: 'var(--header-bg)', borderColor: 'var(--border)' }}>
-          <span className="tag-gold mb-10">
-            {t('commit_tag', 'Notre engagement')}
-          </span>
-          <h2 className="text-5xl md:text-8xl font-serif tracking-tighter mb-14 leading-[1.05]">
-            {t('commit_title_1', 'Votre capital,')} <br/>
-            <span className="font-serif-italic text-accent">{t('commit_title_em', 'notre priorité.')}</span>
-          </h2>
-          <p className="max-w-3xl mx-auto text-xl font-light leading-[1.8] mb-16" style={{ color: 'var(--text3)' }}>
-            {t('commit_p', 'Chez MoveSmart, chaque décision est guidée par une seule question : est-ce que cet investissement maximise votre retour tout en minimisant les risques ?')}
-          </p>
-          <Link to="/contact" className="btn-gold shadow-2xl">
-            {t('commit_cta', 'Prendre rendez-vous')}
-          </Link>
-        </div>
-
-      </div>
-    </div>
+{/* COMMITMENT CTA */}
+<div className="px-6 py-16 md:p-32 border text-center animate-fade-in shadow-2xl" style={{ backgroundColor: 'var(--header-bg)', borderColor: 'var(--border)' }}>
+  <span className="tag-gold mb-10">
+    {t('commit_tag', 'Notre engagement')}
+  </span>
+  <h2 className="text-4xl md:text-8xl font-serif tracking-tighter mb-10 leading-[1.05]">
+    {t('commit_title_1', 'Votre capital,')} <br/>
+    <span className="font-serif-italic text-accent">{t('commit_title_em', 'notre priorité.')}</span>
+  </h2>
+  <p className="max-w-3xl mx-auto text-base md:text-xl font-light leading-[1.8] mb-10 px-2" style={{ color: 'var(--text3)' }}>
+    {t('commit_p', 'Chez MoveSmart, chaque décision est guidée par une seule question : est-ce que cet investissement maximise votre retour tout en minimisant les risques ?')}
+  </p>
+  <div className="flex justify-center">
+    <Link to="/contact" className="btn-gold shadow-2xl">
+      {t('commit_cta', 'Prendre rendez-vous')}
+    </Link>
+  </div>
+</div>
   );
 }
