@@ -146,7 +146,7 @@ export default function Home() {
           {[
             { v: '500+', l: lang === 'fr' ? 'Clients accompagnés' : lang === 'ar' ? 'عميل' : 'Clients served' },
             { v: '8%', l: lang === 'fr' ? 'Rendement locatif net' : lang === 'ar' ? 'عائد الإيجار الصافي' : 'Net rental yield' },
-            { v: '15%', l: lang === 'fr' ? 'Plus-value moyenne' : lang === 'ar' ? 'متوسط الربح' : 'Average capital gain' },
+            { v: '30%', l: lang === 'fr' ? 'Plus-value moyenne' : lang === 'ar' ? 'متوسط الربح' : 'Average capital gain' },
             { v: '0%', l: lang === 'fr' ? 'Impôt sur le revenu' : lang === 'ar' ? 'ضريبة الدخل' : 'Income tax' }
           ].map((s, i) => (
             <div key={i} className="text-center animate-fade-in" style={{ animationDelay: `${i * 100}ms` }}>
