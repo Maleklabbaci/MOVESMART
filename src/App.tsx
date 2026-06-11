@@ -131,48 +131,63 @@ function MobileNav() {
 
   return (
     <div className="md:hidden flex items-center ml-2">
-      {/* Bouton hamburger — z-[60] pour passer AU-DESSUS du drawer */}
+
+      {/* Bouton hamburger */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="p-2 transition-colors duration-200 relative rounded-full border border-transparent"
-        style={{ color: 'var(--text)', zIndex: 60 }}
+        onClick={() => setIsOpen(true)}
+        className="p-2 rounded-full"
+        style={{ color: 'var(--text)', position: 'relative', zIndex: 60 }}
       >
-        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" strokeWidth={1.5} />}
+        <Menu className="w-6 h-6" strokeWidth={1.5} />
       </button>
 
-      {/* Overlay — z-[55] pour couvrir le header aussi */}
+      {/* Overlay */}
       <div
         className={`fixed inset-0 transition-opacity duration-300 ${
           isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
-        style={{ backgroundColor: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(4px)', zIndex: 55 }}
+        style={{ backgroundColor: 'rgba(0,0,0,0.92)', backdropFilter: 'blur(4px)', zIndex: 9998 }}
         onClick={() => setIsOpen(false)}
       />
 
-      {/* Drawer — z-[58] entre overlay et bouton X */}
+      {/* Drawer */}
       <div
-        className={`fixed top-0 bottom-0 right-0 w-[85%] max-w-sm p-10 pt-28 flex flex-col gap-8 shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${
+        className={`fixed top-0 bottom-0 right-0 w-[85%] max-w-sm flex flex-col shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
-        style={{ backgroundColor: 'var(--bg)', borderLeft: '1px solid var(--border)', zIndex: 58 }}
+        style={{ backgroundColor: '#080808', borderLeft: '1px solid rgba(255,255,255,0.08)', zIndex: 9999 }}
       >
-        {[
-          ['/', t('home')],
-          ['/listings', t('listings')],
-          ['/about', t('about')],
-          ['/contact', t('contact')],
-          ['/blog', t('blog')],
-        ].map(([path, label]) => (
-          <Link
-            key={path}
-            to={path}
-            className="text-2xl font-serif transition-colors duration-200"
-            style={{ color: location.pathname === path ? 'var(--accent)' : 'var(--text)' }}
+        {/* Bouton X en haut du drawer */}
+        <div className="flex justify-end p-6">
+          <button
+            onClick={() => setIsOpen(false)}
+            style={{ color: 'var(--text)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '50%', padding: '8px', display: 'flex' }}
           >
-            {label}
-          </Link>
-        ))}
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Links */}
+        <div className="flex flex-col gap-8 px-10 pt-4">
+          {[
+            ['/', t('home')],
+            ['/listings', t('listings')],
+            ['/about', t('about')],
+            ['/contact', t('contact')],
+            ['/blog', t('blog')],
+          ].map(([path, label]) => (
+            <Link
+              key={path}
+              to={path}
+              className="text-2xl font-serif transition-colors duration-200"
+              style={{ color: location.pathname === path ? 'var(--accent)' : 'var(--text)' }}
+            >
+              {label}
+            </Link>
+          ))}
+        </div>
       </div>
+
     </div>
   );
 }
