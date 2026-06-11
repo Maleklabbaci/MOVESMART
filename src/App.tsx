@@ -12,6 +12,7 @@ import Contact from './pages/Contact';
 import ListingDetails from './pages/ListingDetails';
 import Admin from './pages/Admin';
 import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
 
 import WhatsAppButton from './components/WhatsAppButton';
 import { companyInfo } from './constants';
