@@ -180,15 +180,15 @@ export default function Contact() {
   }
 
   return (
-    <div className="min-h-screen pt-40 pb-40" style={{ backgroundColor: 'var(--bg)' }}>
+    <div className="min-h-screen pt-24 pb-20 md:pt-40 md:pb-40" style={{ backgroundColor: 'var(--bg)' }}>
       <div className="max-w-[1400px] mx-auto px-6">
         
      {/* HEADER */}
-<div className="mb-24 animate-fade-in">
+<div className="mb-12 md:mb-24 animate-fade-in">
   <span className="tag-gold">
     {lang === 'fr' ? 'Contact' : lang === 'ar' ? 'اتصل بنا' : 'Contact'}
   </span>
-  <h1 className="text-6xl md:text-[90px] font-serif tracking-tighter leading-[0.95] mb-8" style={{ color: 'var(--text)' }}>
+  <h1 className="text-4xl md:text-[90px] font-serif tracking-tighter leading-[0.95] mb-8" style={{ color: 'var(--text)' }}>
     {lang === 'fr' ? 'Parlons de votre' : lang === 'ar' ? 'لنتحدث عن' : "Let's talk about your"}<br/>
     <span className="font-serif-italic text-accent">
       {lang === 'fr' ? 'projet.' : lang === 'ar' ? 'مشروعك.' : 'project.'}
@@ -204,7 +204,7 @@ export default function Contact() {
   </p>
 </div>
 
-        <div className="grid lg:grid-cols-2 gap-20">
+        <div className="grid lg:grid-cols-2 gap-10 md:gap-20">
           
           {/* LEFT: CONTACT INFO */}
           <div className="space-y-12 animate-fade-in delay-100">
@@ -268,7 +268,7 @@ export default function Contact() {
 
           {/* RIGHT: DYNAMIC FORM */}
           <div className="animate-fade-in delay-200">
-            <div className="p-12 border" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}>
+            <div className="p-6 md:p-12 border" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}>
               
               {/* STEP 1: SERVICE SELECTION */}
               {step === 'service' && (
