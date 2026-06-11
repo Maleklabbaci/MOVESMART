@@ -35,30 +35,30 @@ const SERVICE_OPTIONS = {
   realEstate: {
     id: 'real-estate',
     icon: Building2,
-    labelFr: 'Real Estate & Investment',
+    labelFr: 'Immobilier & Investissement',
     labelEn: 'Real Estate & Investment',
     labelAr: 'العقارات والاستثمار',
     subOptions: [
-      { id: 'rental-income', labelFr: 'Rental Income', labelEn: 'Rental Income', labelAr: 'دخل إيجاري' },
-      { id: 'capital-appreciation', labelFr: 'Capital Appreciation', labelEn: 'Capital Appreciation', labelAr: 'ارتفاع رأس المال' },
-      { id: 'flip', labelFr: 'Buy & Resell (Flip)', labelEn: 'Buy & Resell (Flip)', labelAr: 'شراء وإعادة البيع' },
-      { id: 'primary-residence', labelFr: 'Primary Residence', labelEn: 'Primary Residence', labelAr: 'إقامة أساسية' },
-      { id: 'golden-visa', labelFr: 'Golden Visa Through Property', labelEn: 'Golden Visa Through Property', labelAr: 'التأشيرة الذهبية عبر العقار' },
-      { id: 'off-plan', labelFr: 'Off-plan Investment', labelEn: 'Off-plan Investment', labelAr: 'استثمار على الخريطة' },
+      { id: 'rental-income', labelFr: 'Revenus locatifs', labelEn: 'Rental Income', labelAr: 'دخل إيجاري' },
+      { id: 'capital-appreciation', labelFr: 'Appréciation du capital', labelEn: 'Capital Appreciation', labelAr: 'ارتفاع رأس المال' },
+      { id: 'flip', labelFr: 'Achat & Revente (Flip)', labelEn: 'Buy & Resell (Flip)', labelAr: 'شراء وإعادة البيع' },
+      { id: 'primary-residence', labelFr: 'Résidence principale', labelEn: 'Primary Residence', labelAr: 'إقامة أساسية' },
+      { id: 'golden-visa', labelFr: 'Golden Visa via l\'immobilier', labelEn: 'Golden Visa Through Property', labelAr: 'التأشيرة الذهبية عبر العقار' },
+      { id: 'off-plan', labelFr: 'Investissement sur plan', labelEn: 'Off-plan Investment', labelAr: 'استثمار على الخريطة' },
     ]
   },
   businessSetup: {
     id: 'business-setup',
     icon: Briefcase,
-    labelFr: 'Business Setup & Relocation',
+    labelFr: 'Création d\'entreprise & Relocalisation',
     labelEn: 'Business Setup & Relocation',
     labelAr: 'إنشاء الشركات والانتقال',
     subOptions: [
-      { id: 'company-formation', labelFr: 'Company Formation', labelEn: 'Company Formation', labelAr: 'تأسيس الشركة' },
-      { id: 'uae-residency', labelFr: 'UAE Residency Visa', labelEn: 'UAE Residency Visa', labelAr: 'تأشيرة إقامة الإمارات' },
-      { id: 'bank-account', labelFr: 'Bank Account Opening', labelEn: 'Bank Account Opening', labelAr: 'فتح حساب بنكي' },
-      { id: 'tax-optimization', labelFr: 'Tax Optimization / Structuring', labelEn: 'Tax Optimization / Structuring', labelAr: 'تحسين الضرائب' },
-      { id: 'full-setup', labelFr: 'Full UAE Setup', labelEn: 'Full UAE Setup', labelAr: 'إعداد كامل للإمارات' },
+      { id: 'company-formation', labelFr: 'Création d\'entreprise', labelEn: 'Company Formation', labelAr: 'تأسيس الشركة' },
+      { id: 'uae-residency', labelFr: 'Visa de résidence EAU', labelEn: 'UAE Residency Visa', labelAr: 'تأشيرة إقامة الإمارات' },
+      { id: 'bank-account', labelFr: 'Ouverture de compte bancaire', labelEn: 'Bank Account Opening', labelAr: 'فتح حساب بنكي' },
+      { id: 'tax-optimization', labelFr: 'Optimisation fiscale', labelEn: 'Tax Optimization / Structuring', labelAr: 'تحسين الضرائب' },
+      { id: 'full-setup', labelFr: 'Installation complète aux EAU', labelEn: 'Full UAE Setup', labelAr: 'إعداد كامل للإمارات' },
     ]
   }
 };
