@@ -32,7 +32,7 @@ export default function About() {
         {/* IMAGE SECTION */}
         <div className="relative aspect-[21/9] bg-black/5 mb-40 overflow-hidden shadow-2xl border transition-all duration-500 animate-fade-in delay-100" style={{ borderColor: 'var(--border)' }}>
           <img 
-            src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1600&auto=format&fit=crop" 
+            src="https://images.pexels.com/photos/29470806/pexels-photo-29470806.jpeg?_gl=1*k4j38l*_ga*MTU1NDgxNDM3MS4xNzgwOTQ5NzY4*_ga_8JE65Q40S6*czE3ODExOTgwODEkbzMkZzEkdDE3ODExOTg1NDUkajMxJGwwJGgw" 
             alt="Dubai Skyline" 
             className="w-full h-full object-cover transition-transform duration-[30s] hover:scale-105"
           />
