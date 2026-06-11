@@ -291,13 +291,19 @@ export default function Contact() {
 
                       return (
                         <div key={key}>
-                          <button
-                            onClick={() => handleServiceSelect(key as any)}
-                            className="w-full p-6 border transition-all duration-200 flex items-center gap-4 group text-left"
-                            style={{
-                              backgroundColor: isSelected ? 'var(--accent-bg)' : 'transparent',
-                              borderColor: isSelected ? 'var(--accent)' : 'var(--border)',
-                            }}
+                       // APRÈS
+<button
+  type="button"
+  onClick={() => handleServiceSelect(key as any)}
+  className="w-full p-6 border transition-all duration-200 flex items-center gap-4 group text-left relative z-10"
+  style={{
+    backgroundColor: isSelected ? 'var(--accent-bg)' : 'transparent',
+    borderColor: isSelected ? 'var(--accent)' : 'var(--border)',
+    cursor: 'pointer',
+    WebkitTapHighlightColor: 'transparent',
+    touchAction: 'manipulation',
+  }}
+>
                           >
                             <div
                               className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all"
@@ -321,14 +327,16 @@ export default function Contact() {
                                 const subLabel = lang === 'fr' ? sub.labelFr : lang === 'ar' ? sub.labelAr : sub.labelEn;
                                 
                                 return (
-                                  <button
-                                    key={sub.id}
-                                    onClick={() => toggleSubOption(sub.id)}
-                                    className="w-full p-4 border transition-all duration-200 flex items-center gap-3 text-left"
-                                    style={{
-                                      backgroundColor: subSelected ? 'var(--accent-bg)' : 'transparent',
-                                      borderColor: subSelected ? 'var(--accent)' : 'var(--border)',
-                                    }}
+<button
+  type="button"
+  key={sub.id}
+  onClick={() => toggleSubOption(sub.id)}
+  className="w-full p-4 border transition-all duration-200 flex items-center gap-3 text-left relative z-10"
+  style={{
+    cursor: 'pointer',
+    WebkitTapHighlightColor: 'transparent',
+    touchAction: 'manipulation',
+  }}
                                   >
                                     <div
                                       className="w-5 h-5 rounded border flex items-center justify-center flex-shrink-0"
