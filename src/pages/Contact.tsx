@@ -291,7 +291,6 @@ export default function Contact() {
 
                       return (
                         <div key={key}>
-                       // APRÈS
 <button
   type="button"
   onClick={() => handleServiceSelect(key as any)}
