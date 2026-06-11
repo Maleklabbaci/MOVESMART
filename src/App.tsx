@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-do
 import { useTranslation, I18nextProvider } from 'react-i18next';
 import { Sun, Moon, Menu, X, ArrowRight } from 'lucide-react';
 import i18n from './lib/i18n'; 
+import ReactDOM from 'react-dom';
 
 import Home from './pages/Home';
 import Listings from './pages/Listings';
@@ -130,67 +131,86 @@ function MobileNav() {
   }, [isOpen]);
 
   return (
-    <div className="md:hidden flex items-center ml-2">
-
-      {/* Bouton hamburger */}
+    <>
+      {/* Bouton hamburger — dans le header normalement */}
       <button
         onClick={() => setIsOpen(true)}
-        className="p-2 rounded-full"
-        style={{ color: 'var(--text)', position: 'relative', zIndex: 60 }}
+        className="md:hidden p-2 rounded-full"
+        style={{ color: 'var(--text)' }}
       >
         <Menu className="w-6 h-6" strokeWidth={1.5} />
       </button>
 
-      {/* Overlay */}
-      <div
-        className={`fixed inset-0 transition-opacity duration-300 ${
-          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
-        style={{ backgroundColor: 'rgba(0,0,0,0.92)', backdropFilter: 'blur(4px)', zIndex: 9998 }}
-        onClick={() => setIsOpen(false)}
-      />
-
-      {/* Drawer */}
-      <div
-        className={`fixed top-0 bottom-0 right-0 w-[85%] max-w-sm flex flex-col shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-        style={{ backgroundColor: '#080808', borderLeft: '1px solid rgba(255,255,255,0.08)', zIndex: 9999 }}
-      >
-        {/* Bouton X en haut du drawer */}
-        <div className="flex justify-end p-6">
-          <button
+      {/* Portal — monté directement sur document.body */}
+      {typeof window !== 'undefined' && isOpen && ReactDOM.createPortal(
+        <>
+          {/* Overlay */}
+          <div
             onClick={() => setIsOpen(false)}
-            style={{ color: 'var(--text)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '50%', padding: '8px', display: 'flex' }}
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+            style={{
+              position: 'fixed', inset: 0,
+              backgroundColor: 'rgba(0,0,0,0.92)',
+              backdropFilter: 'blur(4px)',
+              zIndex: 9998,
+            }}
+          />
 
-        {/* Links */}
-        <div className="flex flex-col gap-8 px-10 pt-4">
-          {[
-            ['/', t('home')],
-            ['/listings', t('listings')],
-            ['/about', t('about')],
-            ['/contact', t('contact')],
-            ['/blog', t('blog')],
-          ].map(([path, label]) => (
-            <Link
-              key={path}
-              to={path}
-              className="text-2xl font-serif transition-colors duration-200"
-              style={{ color: location.pathname === path ? 'var(--accent)' : 'var(--text)' }}
-            >
-              {label}
-            </Link>
-          ))}
-        </div>
-      </div>
+          {/* Drawer */}
+          <div style={{
+            position: 'fixed', top: 0, right: 0, bottom: 0,
+            width: '85%', maxWidth: '380px',
+            backgroundColor: '#080808',
+            borderLeft: '1px solid rgba(255,255,255,0.08)',
+            zIndex: 9999,
+            display: 'flex', flexDirection: 'column',
+            boxShadow: '-20px 0 60px rgba(0,0,0,0.8)',
+          }}>
+            {/* Bouton X */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '24px' }}>
+              <button
+                onClick={() => setIsOpen(false)}
+                style={{
+                  color: '#ffffff', border: '1px solid rgba(255,255,255,0.15)',
+                  borderRadius: '50%', padding: '8px', display: 'flex',
+                  cursor: 'pointer', background: 'none',
+                }}
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
-    </div>
+            {/* Links */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', padding: '16px 40px' }}>
+              {[
+                ['/', t('home')],
+                ['/listings', t('listings')],
+                ['/about', t('about')],
+                ['/contact', t('contact')],
+                ['/blog', t('blog')],
+              ].map(([path, label]) => (
+                <Link
+                  key={path}
+                  to={path}
+                  style={{
+                    fontSize: '1.5rem',
+                    fontFamily: 'Cormorant Garamond, serif',
+                    color: location.pathname === path ? '#d97706' : '#ffffff',
+                    textDecoration: 'none',
+                    transition: 'color 0.2s',
+                  }}
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </>,
+        document.body
+      )}
+    </>
   );
 }
+
 // ─── HEADER ───
 function Header() {
   const location = useLocation();
