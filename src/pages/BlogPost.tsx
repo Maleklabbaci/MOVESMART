@@ -15,7 +15,7 @@ const getArticles = (lang: string) => [
     author: "Sarah Al Mansoori",
     date: lang === 'fr' ? "15 Avril 2025" : lang === 'ar' ? "15 أبريل 2025" : "April 15, 2025",
     category: lang === 'fr' ? "Visa" : lang === 'ar' ? "تأشيرة" : "Visa",
-    image: "https://images.unsplash.com/photo-1495521821757-a1efb6729352?q=80&w=1200&auto=format&fit=crop"
+    image: "https://ellingtonproperties.ae/wp-content/uploads/WhatsApp-Image-2025-09-11-at-10.27.02_5e015923-1.jpg"
   },
   {
     id: 2,
