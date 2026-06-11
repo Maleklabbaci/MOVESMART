@@ -154,7 +154,7 @@ function MobileNav() {
         className={`fixed top-0 bottom-0 right-0 w-[85%] max-w-sm p-10 pt-28 flex flex-col gap-8 shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
-        style={{ backgroundColor: 'var(--surface)', borderLeft: '1px solid var(--border)', zIndex: 58 }}
+        style={{ backgroundColor: 'var(--bg)', borderLeft: '1px solid var(--border)', zIndex: 58 }}
       >
         {[
           ['/', t('home')],
