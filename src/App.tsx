@@ -315,6 +315,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/blog/:id" element={<BlogPost />} />
         </Routes>
       </main>
       {!isAdmin && <WhatsAppButton />}
