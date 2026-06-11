@@ -180,8 +180,8 @@ export default function Contact() {
   }
 
   return (
-    <div className="min-h-screen pt-24 pb-20 md:pt-40 md:pb-40" style={{ backgroundColor: 'var(--bg)' }}>
-      <div className="max-w-[1400px] mx-auto px-6">
+<div className="min-h-screen pt-28 pb-20 md:pt-40 md:pb-40 overflow-x-hidden" style={{ backgroundColor: 'var(--bg)' }}>
+  <div className="max-w-[1400px] mx-auto px-4 md:px-6">
         
      {/* HEADER */}
 <div className="mb-12 md:mb-24 animate-fade-in">
@@ -214,13 +214,13 @@ export default function Contact() {
               href={`https://wa.me/${companyInfo.whatsapp.replace(/\s/g, '')}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-start gap-6 p-8 border transition-all duration-300 group hover:border-accent"
+              className="flex items-start gap-4 p-5 md:p-8 border overflow-hiddentransition-all duration-300 group hover:border-accent"
               style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}
             >
               <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 transition-all" style={{ backgroundColor: 'var(--accent-bg)' }}>
                 <Phone className="w-6 h-6" style={{ color: 'var(--accent)' }} strokeWidth={1.5} />
               </div>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: 'var(--text3)' }}>WhatsApp</p>
                 <p className="text-2xl font-serif mb-2" style={{ color: 'var(--text)' }}>{companyInfo.whatsapp}</p>
                 <p className="text-sm" style={{ color: 'var(--text3)' }}>
@@ -239,9 +239,9 @@ export default function Contact() {
               <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 transition-all" style={{ backgroundColor: 'var(--accent-bg)' }}>
                 <Mail className="w-6 h-6" style={{ color: 'var(--accent)' }} strokeWidth={1.5} />
               </div>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: 'var(--text3)' }}>Email</p>
-                <p className="text-2xl font-serif mb-2" style={{ color: 'var(--text)' }}>{companyInfo.email}</p>
+                <p className="text-base md:text-2xl font-serif mb-2 break-all min-w-0" style={{ color: 'var(--text)' }}>{companyInfo.email}</p>
                 <p className="text-sm" style={{ color: 'var(--text3)' }}>
                   {lang === 'fr' ? 'Réponse sous 24h' : lang === 'ar' ? 'رد خلال 24 ساعة' : 'Response within 24h'}
                 </p>
@@ -254,7 +254,7 @@ export default function Contact() {
               <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'var(--accent-bg)' }}>
                 <MapPin className="w-6 h-6" style={{ color: 'var(--accent)' }} strokeWidth={1.5} />
               </div>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: 'var(--text3)' }}>
                   {lang === 'fr' ? 'Bureau' : lang === 'ar' ? 'المكتب' : 'Office'}
                 </p>
@@ -268,7 +268,7 @@ export default function Contact() {
 
           {/* RIGHT: DYNAMIC FORM */}
           <div className="animate-fade-in delay-200">
-            <div className="p-6 md:p-12 border" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}>
+            <div className="p-4 md:p-12 border" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}>
               
               {/* STEP 1: SERVICE SELECTION */}
               {step === 'service' && (
