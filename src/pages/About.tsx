@@ -41,7 +41,7 @@ export default function About() {
 
         {/* WHY DUBAI */}
         <div className="grid md:grid-cols-2 gap-24 items-start mb-40 animate-fade-in delay-200">
-          <div className="sticky top-32">
+          <div className="md:sticky md:top-32">
             <span className="tag-gold mb-8">
               {t('why_tag', 'Pourquoi Dubaï')}
             </span>
