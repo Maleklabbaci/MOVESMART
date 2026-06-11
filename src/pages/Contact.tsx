@@ -299,25 +299,23 @@ export default function Contact() {
     backgroundColor: isSelected ? 'var(--accent-bg)' : 'transparent',
     borderColor: isSelected ? 'var(--accent)' : 'var(--border)',
     cursor: 'pointer',
-    WebkitTapHighlightColor: 'transparent',
+    WebkitTapHighlightColor: 'transparent' as any,
     touchAction: 'manipulation',
   }}
 >
-                          >
-                            <div
-                              className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all"
-                              style={{
-                                backgroundColor: isSelected ? 'var(--accent)' : 'var(--accent-bg)',
-                                color: isSelected ? 'black' : 'var(--accent)',
-                              }}
-                            >
-                              <Icon className="w-6 h-6" strokeWidth={1.5} />
-                            </div>
-                            <span className="text-lg font-semibold" style={{ color: isSelected ? 'var(--accent)' : 'var(--text)' }}>
-                              {label}
-                            </span>
-                          </button>
-
+  <div
+    className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all"
+    style={{
+      backgroundColor: isSelected ? 'var(--accent)' : 'var(--accent-bg)',
+      color: isSelected ? 'black' : 'var(--accent)',
+    }}
+  >
+    <Icon className="w-6 h-6" strokeWidth={1.5} />
+  </div>
+  <span className="text-lg font-semibold" style={{ color: isSelected ? 'var(--accent)' : 'var(--text)' }}>
+    {label}
+  </span>
+</button>
                           {/* Sub-options */}
                           {isSelected && (
                             <div className="mt-4 ml-6 space-y-2 animate-fade-in">
@@ -332,25 +330,26 @@ export default function Contact() {
   onClick={() => toggleSubOption(sub.id)}
   className="w-full p-4 border transition-all duration-200 flex items-center gap-3 text-left relative z-10"
   style={{
+    backgroundColor: subSelected ? 'var(--accent-bg)' : 'transparent',
+    borderColor: subSelected ? 'var(--accent)' : 'var(--border)',
     cursor: 'pointer',
-    WebkitTapHighlightColor: 'transparent',
+    WebkitTapHighlightColor: 'transparent' as any,
     touchAction: 'manipulation',
   }}
-                                  >
-                                    <div
-                                      className="w-5 h-5 rounded border flex items-center justify-center flex-shrink-0"
-                                      style={{
-                                        borderColor: subSelected ? 'var(--accent)' : 'var(--border)',
-                                        backgroundColor: subSelected ? 'var(--accent)' : 'transparent',
-                                      }}
-                                    >
-                                      {subSelected && <Check className="w-3 h-3 text-black" strokeWidth={3} />}
-                                    </div>
-                                    <span className="text-sm" style={{ color: subSelected ? 'var(--accent)' : 'var(--text)' }}>
-                                      {subLabel}
-                                    </span>
-                                  </button>
-                                );
+>
+  <div
+    className="w-5 h-5 rounded border flex items-center justify-center flex-shrink-0"
+    style={{
+      borderColor: subSelected ? 'var(--accent)' : 'var(--border)',
+      backgroundColor: subSelected ? 'var(--accent)' : 'transparent',
+    }}
+  >
+    {subSelected && <Check className="w-3 h-3 text-black" strokeWidth={3} />}
+  </div>
+  <span className="text-sm" style={{ color: subSelected ? 'var(--accent)' : 'var(--text)' }}>
+    {subLabel}
+  </span>
+</button>                                );
                               })}
                             </div>
                           )}
