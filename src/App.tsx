@@ -120,53 +120,58 @@ function MobileNav() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 
-  // 1. Fermer le menu uniquement quand on change de page (URL)
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
 
-  // 2. Gérer le scroll du body quand le menu est ouvert
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-    // Nettoyage si le composant est démonté
-    return () => { document.body.style.overflow = 'auto'; };
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
   return (
     <div className="md:hidden flex items-center ml-2">
+      {/* Bouton hamburger — z-[60] pour passer AU-DESSUS du drawer */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="p-2 transition-colors duration-200 relative z-50 rounded-full border border-transparent"
-        style={{ color: 'var(--text)' }}
+        className="p-2 transition-colors duration-200 relative rounded-full border border-transparent"
+        style={{ color: 'var(--text)', zIndex: 60 }}
       >
         {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" strokeWidth={1.5} />}
       </button>
 
-      {/* Overlay Sombre */}
+      {/* Overlay — z-[55] pour couvrir le header aussi */}
       <div
-        className={`fixed inset-0 z-30 transition-opacity duration-300 ${
+        className={`fixed inset-0 transition-opacity duration-300 ${
           isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
-        style={{ backgroundColor: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }}
+        style={{ backgroundColor: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(4px)', zIndex: 55 }}
         onClick={() => setIsOpen(false)}
-      ></div>
+      />
 
-      {/* Menu Coulissant */}
+      {/* Drawer — z-[58] entre overlay et bouton X */}
       <div
-        className={`fixed top-0 bottom-0 right-0 w-[85%] max-w-sm z-40 p-10 pt-32 flex flex-col gap-8 shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${
+        className={`fixed top-0 bottom-0 right-0 w-[85%] max-w-sm p-10 pt-28 flex flex-col gap-8 shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
-        style={{ backgroundColor: 'var(--surface)', borderLeft: '1px solid var(--border)' }}
+        style={{ backgroundColor: 'var(--surface)', borderLeft: '1px solid var(--border)', zIndex: 58 }}
       >
-        <Link to="/" className="text-2xl font-serif">{t('home')}</Link>
-        <Link to="/listings" className="text-2xl font-serif">{t('listings')}</Link>
-        <Link to="/about" className="text-2xl font-serif">{t('about')}</Link>
-        <Link to="/contact" className="text-2xl font-serif">{t('contact')}</Link>
-        <Link to="/blog" className="text-2xl font-serif">{t('blog')}</Link>
+        {[
+          ['/', t('home')],
+          ['/listings', t('listings')],
+          ['/about', t('about')],
+          ['/contact', t('contact')],
+          ['/blog', t('blog')],
+        ].map(([path, label]) => (
+          <Link
+            key={path}
+            to={path}
+            className="text-2xl font-serif transition-colors duration-200"
+            style={{ color: location.pathname === path ? 'var(--accent)' : 'var(--text)' }}
+          >
+            {label}
+          </Link>
+        ))}
       </div>
     </div>
   );
