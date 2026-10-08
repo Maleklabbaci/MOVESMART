@@ -1,462 +1,520 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { LogOut, Plus, Edit2, Trash2, Eye, EyeOff, X, Save, Upload, ImageIcon, CheckCircle } from 'lucide-react';
-import { supabase } from '../lib/supabase';
-
-const EMPTY_FORM = { title: '', type: 'Apartment', location: '', price: '', beds: '', baths: '', area: '', description: '' };
-const TYPES = ['Apartment', 'Villa', 'Penthouse', 'House', 'Townhouse', 'Studio', 'Office', 'Land'];
-
-const inputClass = "w-full px-4 py-2.5 bg-[#111] border border-white/10 focus:border-amber-400 outline-none text-white text-sm placeholder-gray-600 transition-colors duration-200 rounded-lg";
-const labelClass = "block text-xs font-sans text-gray-500 tracking-[0.2em] uppercase mb-2";
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import type { User } from "@supabase/supabase-js";
+import {
+  LayoutDashboard,
+  Building2,
+  MessageSquare,
+  Mail,
+  Images,
+  LogOut,
+  ExternalLink,
+  Eye,
+  EyeOff,
+  LockKeyhole,
+  ArrowRight,
+  LoaderCircle,
+  Check,
+  Copy,
+  ShieldCheck,
+} from "lucide-react";
+import { supabase } from "../lib/supabase";
+import { useSiteContent } from "../content/SiteContentProvider";
+import { adminError } from "../content/api";
+import setupSql from "../../supabase/migrations/202610080001_admin_cms.sql?raw";
+const ContentEditor = lazy(() => import("../components/admin/ContentEditor"));
+const AdminListings = lazy(() => import("../components/admin/AdminListings"));
+const AdminMessages = lazy(() => import("../components/admin/AdminMessages"));
+const MediaLibrary = lazy(() => import("../components/admin/MediaLibrary"));
+type Tab = "content" | "listings" | "requests" | "subscribers" | "media";
+const tabs = [
+  { id: "content" as const, label: "Contenus du site", icon: LayoutDashboard },
+  { id: "listings" as const, label: "Biens immobiliers", icon: Building2 },
+  { id: "media" as const, label: "Médiathèque", icon: Images },
+  { id: "requests" as const, label: "Demandes clients", icon: MessageSquare },
+  { id: "subscribers" as const, label: "Newsletter", icon: Mail },
+];
 
 export default function Admin() {
-  const navigate = useNavigate();
-  const [user, setUser] = useState<any>(null);
-  const [authLoading, setAuthLoading] = useState(true);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { content } = useSiteContent();
+  const [user, setUser] = useState<User | null>(null);
+  const [phase, setPhase] = useState<
+    "checking" | "allowed" | "denied" | "setup" | "error" | "login"
+  >("checking");
+  const [error, setError] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [loginLoading, setLoginLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [listings, setListings] = useState<any[]>([]);
-  const [showForm, setShowForm] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState(EMPTY_FORM);
-  const [images, setImages] = useState<string[]>([]);
-  const [uploadingImages, setUploadingImages] = useState(false);
-  const [saveLoading, setSaveLoading] = useState(false);
-  const [successMsg, setSuccessMsg] = useState('');
-  const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setAuthLoading(false);
-      if (session?.user) fetchListings();
-    });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
-      setUser(session?.user ?? null);
-      if (session?.user) fetchListings();
-    });
-    return () => subscription.unsubscribe();
+  const [busy, setBusy] = useState(false);
+  const [tab, setTab] = useState<Tab>("content");
+  const [visited, setVisited] = useState<Set<Tab>>(() => new Set(["content"]));
+  const [contentDirty, setContentDirty] = useState(false);
+  const [listingDirty, setListingDirty] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const checkVersion = useRef(0);
+  const allowedId = useRef<string | null>(null);
+  const mounted = useRef(true);
+  const onContentDirty = useCallback(
+    (value: boolean) => setContentDirty(value),
+    [],
+  );
+  const onListingDirty = useCallback(
+    (value: boolean) => setListingDirty(value),
+    [],
+  );
+  const authorize = useCallback(async (next: User | null, force = false) => {
+    const version = ++checkVersion.current;
+    if (!mounted.current) return;
+    setUser(next);
+    if (!next) {
+      allowedId.current = null;
+      setPhase("login");
+      return;
+    }
+    if (!force && allowedId.current === next.id) return;
+    setPhase("checking");
+    setError("");
+    try {
+      const { data, error: failure } = await supabase.rpc("is_cms_admin");
+      if (version !== checkVersion.current || !mounted.current) return;
+      if (failure) {
+        allowedId.current = null;
+        setError(adminError(failure));
+        setPhase(
+          ["PGRST202", "PGRST205", "42883", "42P01"].includes(failure.code)
+            ? "setup"
+            : "error",
+        );
+        return;
+      }
+      allowedId.current = data === true ? next.id : null;
+      setPhase(data === true ? "allowed" : "denied");
+    } catch (failure) {
+      if (mounted.current && version === checkVersion.current) {
+        setError(adminError(failure));
+        setPhase("error");
+      }
+    }
   }, []);
-
-  const fetchListings = async () => {
-    const { data } = await supabase.from('listings').select('*').order('created_at', { ascending: false });
-    setListings(data || []);
-  };
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoginLoading(true);
-    setError('');
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) setError('Email ou mot de passe incorrect.');
-    setLoginLoading(false);
-  };
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate('/');
-  };
-
-  const openAdd = () => {
-    setForm(EMPTY_FORM);
-    setImages([]);
-    setEditingId(null);
-    setShowForm(true);
-  };
-
-  const openEdit = (l: any) => {
-    setForm({
-      title: l.title || '', type: l.type || 'Apartment',
-      location: l.location || '', price: l.price?.toString() || '',
-      beds: l.beds?.toString() || '', baths: l.baths?.toString() || '',
-      area: l.area?.toString() || '', description: l.description || '',
+  useEffect(() => {
+    mounted.current = true;
+    void supabase.auth
+      .getSession()
+      .then(({ data, error: failure }) => {
+        if (failure) throw failure;
+        return authorize(data.session?.user ?? null);
+      })
+      .catch((failure) => {
+        if (mounted.current) {
+          setPhase("error");
+          setError(adminError(failure));
+        }
+      });
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      void authorize(session?.user ?? null);
     });
-    setImages(Array.isArray(l.images) ? l.images : []);
-    setEditingId(l.id);
-    setShowForm(true);
-  };
-
-  const handleDelete = async (id: string) => {
-    if (!window.confirm('Supprimer ce bien ?')) return;
-    setDeleteLoading(id);
-    await supabase.from('listings').delete().eq('id', id);
-    setListings(prev => prev.filter(l => l.id !== id));
-    setDeleteLoading(null);
-  };
-
-  const handleUploadPhotos = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    if (!files.length) return;
-    setUploadingImages(true);
-    const uploaded: string[] = [];
-    for (const file of files) {
-      // Vérifier la taille (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert(`${file.name} est trop lourd (max 5MB)`);
-        continue;
-      }
-      const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
-      const path = `listings/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-      const { error: uploadError } = await supabase.storage
-        .from('photos')
-        .upload(path, file, { upsert: true, contentType: file.type });
-      if (uploadError) {
-        console.error('Upload error:', uploadError.message);
-        alert(`Erreur upload: ${uploadError.message}\n\nVérifiez que le bucket "photos" existe et est public sur Supabase.`);
-        continue;
-      }
-      const { data } = supabase.storage.from('photos').getPublicUrl(path);
-      uploaded.push(data.publicUrl);
-    }
-    setImages(prev => [...prev, ...uploaded]);
-    setUploadingImages(false);
-    if (fileInputRef.current) fileInputRef.current.value = '';
-  };
-
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaveLoading(true);
-    const payload = {
-      title: form.title, type: form.type, location: form.location,
-      price: parseInt(form.price), beds: parseInt(form.beds),
-      baths: parseInt(form.baths), area: parseInt(form.area),
-      description: form.description, images,
+    return () => {
+      mounted.current = false;
+      checkVersion.current++;
+      subscription.unsubscribe();
     };
-    let err;
-    if (editingId) ({ error: err } = await supabase.from('listings').update(payload).eq('id', editingId));
-    else ({ error: err } = await supabase.from('listings').insert(payload));
-    setSaveLoading(false);
-    if (!err) {
-      setSuccessMsg(editingId ? 'Bien modifié ✓' : 'Bien ajouté ✓');
-      setTimeout(() => setSuccessMsg(''), 3000);
-      setShowForm(false);
-      fetchListings();
+  }, [authorize]);
+  useEffect(() => {
+    const warn = (event: BeforeUnloadEvent) => {
+      if (contentDirty || listingDirty) {
+        event.preventDefault();
+        event.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [contentDirty, listingDirty]);
+  async function login(event: React.FormEvent) {
+    event.preventDefault();
+    if (busy) return;
+    setBusy(true);
+    setError("");
+    try {
+      const { error: failure } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+      if (failure) throw failure;
+      setPassword("");
+    } catch {
+      setError(
+        "Connexion impossible. Vérifiez vos identifiants et votre connexion, puis réessayez.",
+      );
+    } finally {
+      setBusy(false);
     }
-  };
-
-  // ── LOADING ──
-  if (authLoading) return (
-    <div className="min-h-screen bg-[#080808] flex items-center justify-center">
-      <div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
-    </div>
+  }
+  async function logout() {
+    if (
+      busy ||
+      ((contentDirty || listingDirty) &&
+        !window.confirm(
+          "Des changements ne sont pas enregistrés. Quitter tout de même ?",
+        ))
+    )
+      return;
+    setBusy(true);
+    setError("");
+    try {
+      const { error: failure } = await supabase.auth.signOut({
+        scope: "local",
+      });
+      if (failure) throw failure;
+      allowedId.current = null;
+      setUser(null);
+      setPhase("login");
+      setContentDirty(false);
+      setListingDirty(false);
+    } catch (failure) {
+      setError(adminError(failure));
+    } finally {
+      setBusy(false);
+    }
+  }
+  const logo = (
+    <img
+      src={content.images.logo.url}
+      alt={content.settings.brand}
+      className="h-7 max-w-[110px] object-contain"
+    />
   );
-
-  // ── LOGIN ──
-  if (!user) return (
-    <div className="min-h-screen bg-[#080808] flex items-center justify-center px-4"
-      style={{ fontFamily: 'sans-serif' }}>
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-10">
-          <img src="https://i.ibb.co/60PJ8PVw/aass.png" alt="MoveSmart"
-            className="h-10 w-auto brightness-0 invert mx-auto mb-4" referrerPolicy="no-referrer" />
-          <h1 className="text-2xl font-light text-white tracking-wide" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-            Admin Dashboard
-          </h1>
-          <p className="text-gray-600 text-xs tracking-[0.2em] uppercase mt-2">MoveSmart Invest</p>
-        </div>
-
-        {/* Card */}
-        <div className="bg-[#0d0d0d] border border-white/[0.06] p-8">
-          {error && (
-            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-sans">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div>
-              <label className={labelClass}>Email</label>
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-                className={inputClass} placeholder="votre@email.com" required />
-            </div>
-
-            <div>
-              <label className={labelClass}>Mot de passe</label>
-              <div className="relative">
-                <input type={showPassword ? 'text' : 'password'} value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  className={`${inputClass} pr-12`} placeholder="••••••••" required />
-                <button type="button" onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 hover:text-amber-400 transition-colors">
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
-            </div>
-
-            <button type="submit" disabled={loginLoading}
-              style={{ backgroundColor: '#FBBF24', color: '#000000' }}
-              className="w-full py-3 text-xs font-sans font-bold tracking-[0.25em] uppercase hover:opacity-90 transition-opacity disabled:opacity-50">
-              {loginLoading ? 'Connexion...' : 'Se connecter'}
-            </button>
-          </form>
-        </div>
-
-        <p className="text-center text-xs text-gray-700 font-sans mt-6 tracking-widest uppercase">
-          Accès restreint · MoveSmart
-        </p>
-      </div>
-    </div>
-  );
-
-  // ── DASHBOARD ──
-  return (
-    <div className="min-h-screen bg-[#080808] text-white" style={{ fontFamily: 'sans-serif' }}>
-
-      {/* TOP BAR */}
-      <div className="sticky top-0 z-40 bg-[#080808]/95 backdrop-blur-md border-b border-white/[0.04]">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <img src="https://i.ibb.co/60PJ8PVw/aass.png" alt="MoveSmart"
-              className="h-6 w-auto brightness-0 invert" referrerPolicy="no-referrer" />
-            <div className="hidden sm:block h-4 w-px bg-white/10" />
-            <span className="hidden sm:block text-xs text-gray-500 tracking-[0.2em] uppercase">Admin</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="hidden sm:block text-xs text-gray-600 font-sans">{user.email}</span>
-            <button onClick={openAdd}
-              className="flex items-center gap-2 bg-amber-400 text-black px-4 py-2 text-xs font-bold tracking-[0.15em] uppercase hover:bg-amber-300 transition-all duration-200">
-              <Plus className="w-3.5 h-3.5" /> Ajouter
-            </button>
-            <button onClick={handleLogout}
-              className="flex items-center gap-2 border border-white/10 text-gray-400 px-4 py-2 text-xs tracking-[0.15em] uppercase hover:border-red-500/40 hover:text-red-400 transition-all duration-200">
-              <LogOut className="w-3.5 h-3.5" />
-              <span className="hidden sm:block">Déconnexion</span>
-            </button>
-          </div>
+  if (phase === "checking")
+    return (
+      <div
+        lang="fr"
+        className="admin-shell min-h-screen grid place-items-center"
+        dir="ltr"
+      >
+        <div
+          className="flex items-center gap-3 text-sm text-zinc-500"
+          role="status"
+        >
+          <LoaderCircle size={20} className="animate-spin text-[#d4af37]" />
+          Vérification de votre accès…
         </div>
       </div>
-
-      {/* CONTENT */}
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-10">
-
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
-          <div>
-            <h1 className="text-3xl font-light mb-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-              Mes propriétés
-            </h1>
-            <p className="text-xs text-gray-600 tracking-[0.2em] uppercase">
-              {listings.length} bien{listings.length > 1 ? 's' : ''} enregistré{listings.length > 1 ? 's' : ''}
+    );
+  if (phase === "login")
+    return (
+      <div
+        lang="fr"
+        className="admin-shell min-h-screen flex items-center justify-center p-6"
+        dir="ltr"
+      >
+        <div className="w-full max-w-md">
+          <a href="/" className="inline-block mb-10">
+            {logo}
+          </a>
+          <div className="admin-card p-7 sm:p-9">
+            <div className="w-10 h-10 rounded-xl bg-[#d4af3712] text-[#d4af37] flex items-center justify-center mb-6">
+              <LockKeyhole size={20} />
+            </div>
+            <h1 className="text-2xl font-semibold mb-3">Votre espace admin</h1>
+            <p className="text-sm text-zinc-500 leading-relaxed mb-8">
+              Les contenus, images et demandes clients. Un seul endroit pour
+              gérer votre site.
             </p>
-          </div>
-          <button onClick={openAdd}
-            style={{ backgroundColor: '#FBBF24', color: '#000000' }}
-            className="flex items-center gap-3 px-8 py-4 text-xs font-sans font-bold tracking-[0.25em] uppercase hover:opacity-90 transition-opacity whitespace-nowrap">
-            <Plus className="w-4 h-4" /> Ajouter un bien
-          </button>
-        </div>
-
-        {listings.length === 0 && (
-          <button onClick={openAdd} className="w-full mb-8 py-20 flex flex-col items-center gap-4 transition-all duration-300"
-            style={{ border: '2px dashed rgba(251,191,36,0.2)' }}>
-            <div style={{ width: 60, height: 60, backgroundColor: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Plus className="w-6 h-6 text-amber-400" />
-            </div>
-            <div className="text-center">
-              <p className="text-white font-light text-xl mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Ajouter votre premier bien</p>
-              <p className="text-xs font-sans text-gray-600 tracking-[0.2em] uppercase">Cliquer pour commencer</p>
-            </div>
-          </button>
-        )}
-
-        {/* Success */}
-        {successMsg && (
-          <div className="mb-6 flex items-center gap-3 p-4 bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-sans">
-            <CheckCircle className="w-4 h-4 flex-shrink-0" /> {successMsg}
-          </div>
-        )}
-
-        {/* TABLE */}
-        <div className="border border-white/[0.06] overflow-x-auto">
-          <table className="w-full min-w-[640px]">
-            <thead className="border-b border-white/[0.06] bg-[#0d0d0d]">
-              <tr>
-                <th className="px-6 py-4 text-left text-xs text-gray-600 tracking-[0.2em] uppercase w-20">Photo</th>
-                <th className="px-6 py-4 text-left text-xs text-gray-600 tracking-[0.2em] uppercase">Titre</th>
-                <th className="px-6 py-4 text-left text-xs text-gray-600 tracking-[0.2em] uppercase hidden md:table-cell">Type</th>
-                <th className="px-6 py-4 text-left text-xs text-gray-600 tracking-[0.2em] uppercase">Prix</th>
-                <th className="px-6 py-4 text-right text-xs text-gray-600 tracking-[0.2em] uppercase">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {listings.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-6 py-20 text-center text-gray-600 text-sm font-sans">
-                    Aucun bien. Cliquez sur <span className="text-amber-400">"Ajouter"</span> pour commencer.
-                  </td>
-                </tr>
-              ) : listings.map((l: any) => (
-                <tr key={l.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
-                  <td className="px-6 py-4">
-                    {l.images?.[0]
-                      ? <img src={l.images[0]} alt={l.title} className="w-14 h-14 object-cover" />
-                      : <div className="w-14 h-14 bg-white/[0.03] border border-white/[0.06] flex items-center justify-center">
-                          <ImageIcon className="w-5 h-5 text-gray-700" />
-                        </div>
+            {error && (
+              <p className="admin-notice admin-error mb-5" role="alert">
+                {error}
+              </p>
+            )}
+            <form onSubmit={(event) => void login(event)} className="space-y-5">
+              <div>
+                <label htmlFor="admin-email" className="admin-label">
+                  Email
+                </label>
+                <input
+                  id="admin-email"
+                  className="admin-input"
+                  type="email"
+                  autoComplete="username"
+                  required
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder="votre@email.com"
+                />
+              </div>
+              <div>
+                <label htmlFor="admin-password" className="admin-label">
+                  Mot de passe
+                </label>
+                <div className="relative">
+                  <input
+                    id="admin-password"
+                    className="admin-input pe-12"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="current-password"
+                    required
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                  />
+                  <button
+                    type="button"
+                    className="absolute end-3 top-3 text-zinc-500"
+                    aria-label={
+                      showPassword
+                        ? "Masquer le mot de passe"
+                        : "Afficher le mot de passe"
                     }
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm text-white font-medium" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{l.title}</div>
-                    <div className="text-xs text-gray-600 mt-0.5">{l.location}</div>
-                  </td>
-                  <td className="px-6 py-4 hidden md:table-cell">
-                    <span className="text-xs text-amber-400 border border-amber-400/20 px-2 py-1 tracking-widest uppercase">{l.type}</span>
-                  </td>
-                  <td className="px-6 py-4 text-sm font-sans text-white">AED {l.price?.toLocaleString()}</td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <button onClick={() => openEdit(l)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-gray-400 hover:text-amber-400 border border-white/[0.06] hover:border-amber-400/30 transition-all duration-200">
-                        <Edit2 className="w-3.5 h-3.5" /> Modifier
-                      </button>
-                      <button onClick={() => handleDelete(l.id)} disabled={deleteLoading === l.id}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-gray-400 hover:text-red-400 border border-white/[0.06] hover:border-red-500/30 transition-all duration-200 disabled:opacity-40">
-                        <Trash2 className="w-3.5 h-3.5" />
-                        {deleteLoading === l.id ? '...' : 'Supprimer'}
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* ── MODAL ── */}
-      {showForm && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm px-0 sm:px-4">
-          <div className="bg-[#0d0d0d] border border-white/[0.06] w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto flex flex-col">
-
-            {/* Modal header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06] sticky top-0 bg-[#0d0d0d] z-10">
-              <h2 className="text-lg font-light" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                {editingId ? 'Modifier le bien' : 'Ajouter un bien'}
-              </h2>
-              <button onClick={() => setShowForm(false)}
-                className="text-gray-600 hover:text-white transition-colors p-1">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleSave} className="p-6 space-y-5 flex-1">
-
-              {/* Titre */}
-              <div>
-                <label className={labelClass}>Titre *</label>
-                <input type="text" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })}
-                  className={inputClass} placeholder="Ex: Luxury Villa Downtown" required />
-              </div>
-
-              {/* Type + Localisation */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className={labelClass}>Type *</label>
-                  <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}
-                    className={`${inputClass} cursor-pointer`} style={{ background: '#111' }}>
-                    {TYPES.map(t => <option key={t} className="bg-[#111]">{t}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className={labelClass}>Localisation *</label>
-                  <input type="text" value={form.location} onChange={e => setForm({ ...form, location: e.target.value })}
-                    className={inputClass} placeholder="Ex: Dubai Marina" required />
+                    onClick={() => setShowPassword((value) => !value)}
+                  >
+                    {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+                  </button>
                 </div>
               </div>
-
-              {/* Prix + Surface */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className={labelClass}>Prix (AED) *</label>
-                  <input type="number" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })}
-                    className={inputClass} placeholder="2500000" required />
-                </div>
-                <div>
-                  <label className={labelClass}>Surface (sqft) *</label>
-                  <input type="number" value={form.area} onChange={e => setForm({ ...form, area: e.target.value })}
-                    className={inputClass} placeholder="1500" required />
-                </div>
-              </div>
-
-              {/* Chambres + SDB */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className={labelClass}>Chambres *</label>
-                  <input type="number" value={form.beds} onChange={e => setForm({ ...form, beds: e.target.value })}
-                    className={inputClass} placeholder="3" required />
-                </div>
-                <div>
-                  <label className={labelClass}>Salles de bain *</label>
-                  <input type="number" value={form.baths} onChange={e => setForm({ ...form, baths: e.target.value })}
-                    className={inputClass} placeholder="2" required />
-                </div>
-              </div>
-
-              {/* Description */}
-              <div>
-                <label className={labelClass}>Description</label>
-                <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
-                  className={`${inputClass} resize-none`} rows={3} placeholder="Description du bien..." />
-              </div>
-
-              {/* Upload photos */}
-              <div>
-                <label className={labelClass}>Photos</label>
-                <div onClick={() => fileInputRef.current?.click()}
-                  className="border border-dashed border-white/10 hover:border-amber-400/40 p-8 text-center cursor-pointer transition-colors duration-200 group">
-                  <Upload className="w-6 h-6 text-gray-600 group-hover:text-amber-400 mx-auto mb-3 transition-colors" />
-                  <p className="text-sm text-gray-500 font-sans">
-                    {uploadingImages ? (
-                      <span className="text-amber-400">Upload en cours...</span>
-                    ) : (
-                      <>Cliquer pour ajouter des photos<br /><span className="text-xs text-gray-700">JPG, PNG, WEBP · Plusieurs fichiers acceptés</span></>
-                    )}
-                  </p>
-                </div>
-                <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handleUploadPhotos} className="hidden" />
-
-                {images.length > 0 && (
-                  <div className="grid grid-cols-4 gap-2 mt-3">
-                    {images.map((url, i) => (
-                      <div key={i} className="relative group aspect-square">
-                        <img src={url} alt="" className="w-full h-full object-cover" />
-                        <button type="button" onClick={() => setImages(prev => prev.filter((_, j) => j !== i))}
-                          className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                          <X className="w-4 h-4 text-white" />
-                        </button>
-                        {i === 0 && (
-                          <div className="absolute bottom-0 left-0 right-0 bg-amber-400 text-black text-[9px] text-center py-0.5 font-sans font-bold tracking-widest uppercase">
-                            Principale
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+              <button
+                type="submit"
+                className="admin-button admin-button-primary w-full py-3"
+                disabled={busy}
+              >
+                {busy ? (
+                  <LoaderCircle size={16} className="animate-spin" />
+                ) : (
+                  <ArrowRight size={16} />
                 )}
-              </div>
-
-              {/* Boutons */}
-              <div className="flex gap-3 pt-2 border-t border-white/[0.06]">
-                <button type="button" onClick={() => setShowForm(false)}
-                  className="flex-1 py-3 border border-white/10 text-gray-400 text-xs tracking-[0.2em] uppercase hover:border-white/20 hover:text-white transition-all duration-200">
-                  Annuler
-                </button>
-                <button type="submit" disabled={saveLoading || uploadingImages}
-                  style={{ backgroundColor: '#FBBF24', color: '#000000' }}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 text-xs font-bold tracking-[0.2em] uppercase hover:opacity-90 transition-opacity disabled:opacity-40">
-                  <Save className="w-3.5 h-3.5" />
-                  {saveLoading ? 'Enregistrement...' : 'Enregistrer'}
-                </button>
-              </div>
+                Se connecter
+              </button>
             </form>
           </div>
+          <p className="text-xs text-zinc-600 mt-6 flex items-center justify-center gap-2">
+            <ShieldCheck size={13} />
+            Accès réservé aux comptes autorisés
+          </p>
         </div>
-      )}
+      </div>
+    );
+  if (phase !== "allowed")
+    return (
+      <div
+        lang="fr"
+        className="admin-shell min-h-screen flex justify-center p-6 pt-20"
+        dir="ltr"
+      >
+        <div className="w-full max-w-2xl space-y-6">
+          <a href="/" className="inline-block mb-6">
+            {logo}
+          </a>
+          <div className="admin-card space-y-5">
+            <h1 className="text-2xl font-semibold">
+              {phase === "setup"
+                ? "Une dernière étape de configuration"
+                : phase === "denied"
+                  ? "Accès non autorisé"
+                  : "Connexion au CMS indisponible"}
+            </h1>
+            <p className="text-sm text-zinc-400 leading-relaxed">
+              {phase === "denied"
+                ? "Ce compte est connecté, mais il n’est pas administrateur. Le propriétaire du projet doit l’autoriser dans la table cms_administrators."
+                : error}
+            </p>
+            {phase === "setup" && (
+              <>
+                <ol className="text-sm text-zinc-400 list-decimal ps-5 space-y-3">
+                  <li>
+                    Le propriétaire ouvre le SQL Editor du projet Supabase.
+                  </li>
+                  <li>Il exécute la migration et autorise votre compte.</li>
+                  <li>Revenez ici et cliquez sur « Vérifier mon accès ».</li>
+                </ol>
+                <p className="text-xs text-zinc-500">
+                  Le bouton copie le schéma SQL et l’autorisation du compte
+                  actuellement connecté. Il n’exécute rien sur le serveur. Guide
+                  complet : docs/ADMIN_CMS.md.
+                </p>
+                <button
+                  className="admin-button"
+                  onClick={() => {
+                    const grant =
+                      user && /^[a-f0-9-]{36}$/i.test(user.id)
+                        ? `\n-- Authorise the currently signed-in account after reviewing its identity.\ninsert into public.cms_administrators (user_id) values ('${user.id}') on conflict do nothing;\n`
+                        : "";
+                    void navigator.clipboard
+                      .writeText(setupSql + grant)
+                      .then(() => setCopied(true))
+                      .catch(() =>
+                        setError(
+                          "Copie indisponible. Ouvrez supabase/migrations/202610080001_admin_cms.sql dans le dépôt.",
+                        ),
+                      );
+                  }}
+                >
+                  {copied ? <Check size={15} /> : <Copy size={15} />}
+                  {copied ? "SQL copié" : "Copier le SQL de configuration"}
+                </button>
+              </>
+            )}
+            <p className="text-xs text-zinc-500 break-all">
+              Compte : {user?.email || "non connecté"}
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <button
+                className="admin-button admin-button-primary"
+                onClick={() => {
+                  if (user) void authorize(user, true);
+                  else
+                    void supabase.auth
+                      .getSession()
+                      .then(({ data }) =>
+                        authorize(data.session?.user ?? null, true),
+                      );
+                }}
+              >
+                Vérifier mon accès
+              </button>
+              <button
+                className="admin-button"
+                disabled={busy}
+                onClick={() => void logout()}
+              >
+                Déconnexion
+              </button>
+              <a className="admin-button" href="/">
+                Retour au site
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  return (
+    <div
+      lang="fr"
+      className="admin-shell min-h-screen flex flex-col lg:flex-row"
+      dir="ltr"
+    >
+      <aside className="lg:w-64 lg:fixed lg:inset-y-0 border-b lg:border-b-0 lg:border-r border-white/5 bg-[#0d0e11] flex flex-col z-20">
+        <div className="px-6 py-7 flex items-center gap-3">
+          {logo}
+          <span className="text-[9px] uppercase tracking-widest px-2 py-1 border border-[#d4af3730] text-[#d4af37] rounded">
+            Admin
+          </span>
+        </div>
+        <div className="hidden lg:block px-7 text-[9px] uppercase tracking-[.18em] text-zinc-600 mb-4">
+          Votre espace de gestion
+        </div>
+        <nav className="flex lg:flex-col overflow-x-auto px-3 lg:px-4 gap-1 pb-4 lg:pb-0">
+          {tabs.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => {
+                setTab(item.id);
+                setVisited((current) => new Set([...current, item.id]));
+              }}
+              className={`flex items-center gap-3 text-start shrink-0 px-4 py-3 rounded-lg text-xs transition-colors ${tab === item.id ? "bg-[#d4af3710] text-[#e4cd84]" : "text-zinc-500 hover:bg-white/[.03] hover:text-zinc-200"}`}
+              aria-current={tab === item.id ? "page" : undefined}
+            >
+              <item.icon size={17} />
+              {item.label}
+            </button>
+          ))}
+        </nav>
+        <div className="hidden lg:block mt-auto px-6 py-6 border-t border-white/5">
+          <a
+            className="flex items-center gap-2 text-xs text-zinc-500 hover:text-white"
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <ExternalLink size={14} />
+            Voir le site public
+          </a>
+          <p className="mt-5 text-[10px] text-zinc-600">
+            {content.settings.name}
+          </p>
+        </div>
+      </aside>
+      <div className="lg:ms-64 flex-1 min-w-0">
+        <header className="h-20 border-b border-white/5 px-5 sm:px-8 flex items-center justify-between gap-3">
+          <div>
+            <span className="text-[10px] uppercase tracking-[.16em] text-zinc-500">
+              Administration
+            </span>
+            <p className="text-xs text-zinc-400 mt-1">
+              {content.settings.brand}
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            <a
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="lg:hidden text-zinc-500"
+              aria-label="Voir le site"
+            >
+              <ExternalLink size={16} />
+            </a>
+            <span className="text-[11px] text-zinc-500 hidden sm:inline break-all">
+              {user?.email}
+            </span>
+            <button
+              className="admin-button"
+              disabled={busy}
+              onClick={() => void logout()}
+            >
+              <LogOut size={14} />
+              <span className="hidden sm:inline">Déconnexion</span>
+            </button>
+          </div>
+        </header>
+        <div className="p-4 sm:p-8 max-w-[1440px] mx-auto">
+          {error && (
+            <p className="admin-notice admin-error mb-6" role="alert">
+              {error}
+            </p>
+          )}
+          <Suspense
+            fallback={
+              <p className="text-sm text-zinc-500 py-12" role="status">
+                Chargement de l’espace…
+              </p>
+            }
+          >
+            <section hidden={tab !== "content"}>
+              <ContentEditor
+                active={tab === "content"}
+                onUnsavedChange={onContentDirty}
+              />
+            </section>
+            {visited.has("listings") && (
+              <section hidden={tab !== "listings"}>
+                <AdminListings
+                  active={tab === "listings"}
+                  onUnsavedChange={onListingDirty}
+                />
+              </section>
+            )}
+            {visited.has("requests") && (
+              <section hidden={tab !== "requests"}>
+                <AdminMessages mode="requests" />
+              </section>
+            )}
+            {visited.has("subscribers") && (
+              <section hidden={tab !== "subscribers"}>
+                <AdminMessages mode="subscribers" />
+              </section>
+            )}
+            {visited.has("media") && (
+              <section hidden={tab !== "media"}>
+                <MediaLibrary />
+              </section>
+            )}
+          </Suspense>
+        </div>
+      </div>
     </div>
   );
 }
