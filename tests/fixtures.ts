@@ -1,6 +1,10 @@
 import type { BrowserContext, Page } from "@playwright/test";
 import { defaultContent } from "../src/content/defaults";
 import type { SiteContent } from "../src/content/types";
+import {
+  applyPostgrestOrder,
+  matchesPostgrestRow,
+} from "../src/lib/postgrestFilter";
 
 export async function mockBackend(context: BrowserContext) {
   const state = {
@@ -28,6 +32,14 @@ export async function mockBackend(context: BrowserContext) {
     requests: [] as Record<string, unknown>[],
     subscribers: [] as Record<string, unknown>[],
     uploads: [] as string[],
+    /** Pageviews the site asked to record, with the consent gate already applied. */
+    pageviews: [] as {
+      session_id: string;
+      path: string;
+      browser: string;
+      created_at: string;
+    }[],
+    pageviewAttempts: 0,
     listings: [
       {
         id: "33333333-3333-4333-8333-333333333333",
@@ -178,6 +190,9 @@ export async function mockBackend(context: BrowserContext) {
         details: body.p_details,
         message: body.p_message,
         status: "new",
+        notes: "",
+        reminder_at: null,
+        updated_at: new Date().toISOString(),
         consent_at: new Date().toISOString(),
         created_at: new Date().toISOString(),
       });
@@ -194,6 +209,199 @@ export async function mockBackend(context: BrowserContext) {
           created_at: new Date().toISOString(),
         });
       return json(true);
+    }
+    if (rpc === "update_contact_follow_up") {
+      if (!state.admin) return denied();
+      const row = state.requests.find((item) => item.id === body.p_id);
+      if (!row)
+        return json({ code: "P0002", message: "Request not found" }, 404);
+      const notes = String(body.p_notes ?? "");
+      if (notes.length > 4000)
+        return json({ code: "22023", message: "Invalid notes" }, 400);
+      if (body.p_status) row.status = body.p_status;
+      if (body.p_notes !== null && body.p_notes !== undefined)
+        row.notes = notes;
+      if (body.p_clear_reminder) row.reminder_at = null;
+      else if (body.p_reminder_at) row.reminder_at = body.p_reminder_at;
+      row.updated_at = new Date().toISOString();
+      return json({
+        id: row.id,
+        status: row.status,
+        notes: row.notes,
+        reminder_at: row.reminder_at,
+        updated_at: row.updated_at,
+      });
+    }
+    if (rpc === "contact_requests_dashboard") {
+      if (!state.admin) return denied();
+      const day = 24 * 60 * 60 * 1000;
+      const now = Date.now();
+      const rows = state.requests;
+      const status = (value: string) =>
+        rows.filter((item) => item.status === value).length;
+      const reminderAt = (item: Record<string, unknown>) =>
+        item.reminder_at ? Date.parse(String(item.reminder_at)) : Number.NaN;
+      const open = rows.filter((item) => item.status !== "archived");
+      const recent = [...rows]
+        .sort(
+          (left, right) =>
+            Date.parse(String(right.created_at)) -
+            Date.parse(String(left.created_at)),
+        )
+        .slice(0, Math.min(Math.max(Number(body.p_recent ?? 5), 1), 20))
+        .map((item) => ({
+          id: item.id,
+          name: item.name,
+          service: item.service,
+          status: item.status,
+          created_at: item.created_at,
+          reminder_at: item.reminder_at ?? null,
+          has_notes: Boolean(item.notes),
+        }));
+      const createdAt = (item: Record<string, unknown>) =>
+        Date.parse(String(item.created_at));
+      return json({
+        generated_at: new Date().toISOString(),
+        total: rows.length,
+        subscribers_total: state.subscribers.length,
+        subscribers_active: state.subscribers.filter((item) => item.active)
+          .length,
+        by_status: {
+          new: status("new"),
+          contacted: status("contacted"),
+          archived: status("archived"),
+        },
+        overdue: open.filter((item) => reminderAt(item) <= now).length,
+        due_soon: open.filter(
+          (item) => reminderAt(item) > now && reminderAt(item) <= now + 7 * day,
+        ).length,
+        untouched_new: rows.filter(
+          (item) => item.status === "new" && createdAt(item) <= now - 7 * day,
+        ).length,
+        last_request_at: rows.length
+          ? new Date(
+              Math.max(...rows.map((item) => createdAt(item))),
+            ).toISOString()
+          : null,
+        oldest_new_at: rows.some((item) => item.status === "new")
+          ? new Date(
+              Math.min(
+                ...rows
+                  .filter((item) => item.status === "new")
+                  .map((item) => createdAt(item)),
+              ),
+            ).toISOString()
+          : null,
+        recent,
+      });
+    }
+    if (rpc === "record_pageview") {
+      state.pageviewAttempts++;
+      const sessionId = String(body.p_session_id ?? "");
+      const path = String(body.p_path ?? "");
+      const browser = String(body.p_browser ?? "Autre");
+      if (!/^[a-f0-9-]{36}$/i.test(sessionId) || !path.startsWith("/"))
+        return json({ code: "22023", message: "Invalid event" }, 400);
+      state.pageviews.push({
+        session_id: sessionId,
+        path,
+        browser,
+        created_at: new Date().toISOString(),
+      });
+      return route.fulfill({ status: 204, headers });
+    }
+    if (rpc === "analytics_summary") {
+      if (!state.admin) return denied();
+      const days = Math.min(Math.max(Number(body.p_days ?? 30), 1), 90);
+      const since = Date.now() - days * 24 * 60 * 60 * 1000;
+      const rows = state.pageviews.filter(
+        (item) => Date.parse(item.created_at) >= since,
+      );
+      const byBrowser = new Map<
+        string,
+        { pageviews: number; sessions: Set<string> }
+      >();
+      const byPath = new Map<
+        string,
+        { pageviews: number; sessions: Set<string> }
+      >();
+      const byDay = new Map<
+        string,
+        { pageviews: number; sessions: Set<string> }
+      >();
+      for (const row of rows) {
+        const browser = byBrowser.get(row.browser) ?? {
+          pageviews: 0,
+          sessions: new Set<string>(),
+        };
+        browser.pageviews++;
+        browser.sessions.add(row.session_id);
+        byBrowser.set(row.browser, browser);
+        const page = byPath.get(row.path) ?? {
+          pageviews: 0,
+          sessions: new Set<string>(),
+        };
+        page.pageviews++;
+        page.sessions.add(row.session_id);
+        byPath.set(row.path, page);
+        const key = row.created_at.slice(0, 10);
+        const bucket = byDay.get(key) ?? {
+          pageviews: 0,
+          sessions: new Set<string>(),
+        };
+        bucket.pageviews++;
+        bucket.sessions.add(row.session_id);
+        byDay.set(key, bucket);
+      }
+      const ranked = (
+        values: Map<string, { pageviews: number; sessions: Set<string> }>,
+      ) =>
+        [...values.entries()]
+          .sort(
+            (left, right) =>
+              right[1].pageviews - left[1].pageviews ||
+              left[0].localeCompare(right[0]),
+          )
+          .map(([key, value]) => ({
+            key,
+            pageviews: value.pageviews,
+            sessions: value.sessions.size,
+          }));
+      return json({
+        generated_at: new Date().toISOString(),
+        days,
+        retention_days: 90,
+        totals: {
+          pageviews: rows.length,
+          sessions: new Set(rows.map((item) => item.session_id)).size,
+          pages: new Set(rows.map((item) => item.path)).size,
+        },
+        browsers: ranked(byBrowser).map((item) => ({
+          browser: item.key,
+          pageviews: item.pageviews,
+          sessions: item.sessions,
+        })),
+        top_pages: ranked(byPath)
+          .slice(0, 10)
+          .map((item) => ({
+            path: item.key,
+            pageviews: item.pageviews,
+            sessions: item.sessions,
+          })),
+        daily: [...byDay.entries()]
+          .sort((left, right) => left[0].localeCompare(right[0]))
+          .map(([key, value]) => ({
+            day: key,
+            pageviews: value.pageviews,
+            sessions: value.sessions.size,
+          })),
+        first_recorded_at: state.pageviews.length
+          ? state.pageviews[0].created_at
+          : null,
+        last_recorded_at: state.pageviews.length
+          ? state.pageviews[state.pageviews.length - 1].created_at
+          : null,
+      });
     }
     if (url.pathname.includes("/storage/v1/object/public/"))
       return route.fulfill({
@@ -289,7 +497,8 @@ export async function mockBackend(context: BrowserContext) {
           if (item.id === requestedId) Object.assign(item, body);
       rows = requestedId
         ? dataset.filter((item) => item.id === requestedId)
-        : dataset;
+        : dataset.filter((item) => matchesPostgrestRow(item, url.searchParams));
+      rows = applyPostgrestOrder(rows, url.searchParams);
       if (method === "DELETE") {
         if (table === "contact_requests")
           state.requests = dataset.filter((item) => item.id !== requestedId);

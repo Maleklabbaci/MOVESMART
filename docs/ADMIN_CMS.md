@@ -52,6 +52,33 @@ Le script crée/configure :
 
 La version publique initiale `{}` utilise les valeurs du site déjà présentes dans le dépôt. La première sauvegarde depuis l’éditeur crée le brouillon complet. Réexécuter la migration n’écrase pas une publication ou un brouillon existants.
 
+### Appliquer la deuxième migration (tableau de bord, relances, statistiques)
+
+Exécuter ensuite, toujours dans le SQL Editor, le contenu complet de :
+
+```text
+supabase/migrations/202610080002_admin_dashboard_analytics.sql
+```
+
+Elle **ajoute** (sans rien remplacer) :
+
+| Objet                                               | Utilité                                                                     |
+| --------------------------------------------------- | --------------------------------------------------------------------------- |
+| `contact_requests.reminder_at / notes / updated_at` | Date de relance, notes internes privées, horodatage de suivi                |
+| `contact_requests_dashboard()`                      | Compteurs exacts, statuts, relances échues, demandes récentes, fraîcheur    |
+| `update_contact_follow_up()`                        | Écriture validée du statut, des notes et de la date de relance              |
+| `analytics_pageviews` + `record_pageview()`         | Mesure de fréquentation avec consentement, sans IP ni empreinte numérique   |
+| `analytics_summary()`                               | Agrégats uniquement (pages vues, sessions et pages distinctes, navigateurs) |
+
+Elle est additive et réexécutable : contenus, annonces, demandes et images existants sont
+conservés. Cette migration est **livrée dans le dépôt mais n’a pas été appliquée au projet
+distant** depuis l’environnement de développement : le propriétaire l’applique après
+sauvegarde, puis recharge le cache de l’API (`notify pgrst, 'reload schema';`).
+
+Sans elle, l’administration reste utilisable : le tableau de bord affiche les totaux exacts
+et les demandes récentes, et signale que les relances, notes internes et statistiques sont
+indisponibles. Aucun chiffre n’est inventé.
+
 ### Créer et autoriser le compte client
 
 1. Dans **Authentication → Users**, créer ou retrouver le compte du client et confirmer son email. L’authentification email/mot de passe doit être activée.
@@ -70,7 +97,7 @@ Vérifier que le compte existe et que son ID a bien été ajouté. Un `INSERT �
 
 4. Se connecter avec ce compte sur `/admin`. Si le compte était déjà connecté, cliquer sur la vérification des accès ou se reconnecter.
 
-L’application peut afficher une aide SQL quand le schéma n’est pas installé ; **le navigateur ne peut pas exécuter lui-même la migration ni s’attribuer les droits**.
+L’application peut afficher une aide SQL quand le schéma n’est pas installé ; le bouton de copie fournit **les deux migrations** (CMS puis tableau de bord, relances et statistiques) suivies de l’autorisation du compte connecté. **Le navigateur ne peut pas exécuter lui-même les migrations ni s’attribuer les droits**.
 
 Ne pas tester `is_cms_admin()` depuis une session SQL Editor sans JWT puis conclure à un échec : `auth.uid()` y est normalement vide. Tester avec une vraie session Auth dans l’application.
 
@@ -153,9 +180,11 @@ Les formulaires publics valident leurs champs et attendent une confirmation serv
 
 Dans l’admin :
 
-- **Demandes clients** : détails, options/message, statuts nouveau/contacté/archivé, suppression explicite, export CSV.
+- **Demandes clients** : recherche (nom, email, téléphone, message), filtres statut/service/relance, détails, options/message, statuts nouveau/contacté/archivé, suppression explicite, export CSV.
+- **Date de relance et notes internes** : une relance planifiée apparaît sur le tableau de bord, et devient « échue » une fois la date dépassée (sauf demande archivée). Les notes internes ne sont **jamais** exposées au site public, à un autre compte, ni à un export destiné au visiteur.
 - **Newsletter** : adresses enregistrées, désinscription, suppression et export. Une adresse désinscrite doit passer par une nouvelle inscription consentie sur le formulaire public ; l’interface ne la réactive pas silencieusement.
-- Les lectures se font par pages de 50. **Le CSV contient seulement les lignes chargées**, pas toute la base par défaut. Cliquer sur « Charger plus » avant un export complet.
+- Les lectures se font par pages de 50, mais le **compteur affiché est exact** (comptage serveur).
+- **Export CSV des demandes** : il couvre **toute la sélection filtrée** (pas seulement la page visible), par lots de 500 lignes, avec un plafond de 5 000 lignes par export ; au-delà, affiner les filtres. Le CSV de la newsletter exporte les lignes chargées.
 - Les cellules susceptibles d’être interprétées comme formules Excel sont neutralisées ; protéger les exports contenant des données personnelles.
 
 Le consentement est **déclaré via la case du formulaire**, avec horodatage serveur. Il ne prouve pas à lui seul l’identité ou la propriété de l’adresse email.
@@ -223,3 +252,22 @@ npm run test:e2e
 - La configuration Supabase distante, l’attribution du compte client et le déploiement doivent être effectués et validés séparément.
 
 Avant livraison publique, faire valider les coordonnées, autorisations d’images/avis, chiffres commerciaux, articles datés, fiscalité, conditions de résidence/Golden Visa et politique de confidentialité. Les rendements sont indicatifs ; le développement du CMS ne constitue ni une vérification financière ni une validation juridique.
+
+## 10. Tableau de bord et mesure d’audience
+
+**Tableau de bord** est désormais l’écran d’accueil de `/admin` :
+
+- Total **exact** des demandes, répartition par statut, relances échues et à venir, abonnés newsletter.
+- **Demandes récentes** (5 dernières, avec badges relance/note) et **fraîcheur** : heure du comptage serveur, dernière demande reçue, plus ancienne demande nouvelle, dernière actualisation.
+- **Raccourcis** vers les contenus, les annonces, la médiathèque, la newsletter, le site public et la liste filtrée des relances échues.
+- **Fréquentation** : pages vues, **sessions distinctes**, **pages distinctes**, navigateurs, pages les plus consultées, série par jour, période réglable (7/30/90 jours).
+
+La mesure de fréquentation fonctionne **uniquement après consentement explicite** du
+visiteur, sans IP ni empreinte numérique, avec une conservation de 90 jours. Le détail du
+fonctionnement, les vérifications SQL, la désactivation et l’explication du sous-comptage
+se trouvent dans **[docs/ANALYTICS.md](ANALYTICS.md)**.
+
+Ne pas présenter ces chiffres comme un décompte contractuel : le consentement, les
+bloqueurs et l’absence de « visiteurs uniques » rendent tout chiffre inférieur au trafic
+réel. Les textes de la bannière et de la page de confidentialité sont modifiables dans le
+CMS (section **Confidentialité**, FR/EN/AR).

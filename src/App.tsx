@@ -21,6 +21,8 @@ import { Sun, Moon, Menu, X, ArrowUpRight } from "lucide-react";
 import i18n from "./lib/i18n";
 import Home from "./pages/Home";
 import WhatsAppButton from "./components/WhatsAppButton";
+import AnalyticsConsent from "./components/AnalyticsConsent";
+import AnalyticsTracker from "./components/AnalyticsTracker";
 import Footer from "./components/Footer";
 import RouteMetadata from "./components/RouteMetadata";
 import { SiteLink as Link } from "./components/SiteLink";
@@ -340,6 +342,8 @@ function SiteFrame({ children }: { children: ReactNode }) {
       <main className="flex-1">{children}</main>
       <Footer />
       <WhatsAppButton />
+      <AnalyticsTracker />
+      <AnalyticsConsent />
     </>
   );
 }

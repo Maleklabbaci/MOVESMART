@@ -9,6 +9,7 @@ import {
 import type { User } from "@supabase/supabase-js";
 import {
   LayoutDashboard,
+  Gauge,
   Building2,
   MessageSquare,
   Mail,
@@ -27,13 +28,17 @@ import {
 import { supabase } from "../lib/supabase";
 import { useSiteContent } from "../content/SiteContentProvider";
 import { adminError } from "../content/api";
+import type { ContactFilters } from "../lib/adminMessages";
+import type { AdminTab as Tab } from "../components/admin/tabs";
 import setupSql from "../../supabase/migrations/202610080001_admin_cms.sql?raw";
+import dashboardSql from "../../supabase/migrations/202610080002_admin_dashboard_analytics.sql?raw";
+const AdminDashboard = lazy(() => import("../components/admin/AdminDashboard"));
 const ContentEditor = lazy(() => import("../components/admin/ContentEditor"));
 const AdminListings = lazy(() => import("../components/admin/AdminListings"));
 const AdminMessages = lazy(() => import("../components/admin/AdminMessages"));
 const MediaLibrary = lazy(() => import("../components/admin/MediaLibrary"));
-type Tab = "content" | "listings" | "requests" | "subscribers" | "media";
 const tabs = [
+  { id: "dashboard" as const, label: "Tableau de bord", icon: Gauge },
   { id: "content" as const, label: "Contenus du site", icon: LayoutDashboard },
   { id: "listings" as const, label: "Biens immobiliers", icon: Building2 },
   { id: "media" as const, label: "Médiathèque", icon: Images },
@@ -52,8 +57,14 @@ export default function Admin() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [tab, setTab] = useState<Tab>("content");
-  const [visited, setVisited] = useState<Set<Tab>>(() => new Set(["content"]));
+  const [tab, setTab] = useState<Tab>("dashboard");
+  const [visited, setVisited] = useState<Set<Tab>>(
+    () => new Set<Tab>(["dashboard"]),
+  );
+  const [requestPreset, setRequestPreset] = useState<{
+    filters: ContactFilters;
+    nonce: number;
+  } | null>(null);
   const [contentDirty, setContentDirty] = useState(false);
   const [listingDirty, setListingDirty] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -68,6 +79,11 @@ export default function Admin() {
     (value: boolean) => setListingDirty(value),
     [],
   );
+  const openRequests = useCallback((filters: ContactFilters) => {
+    setRequestPreset({ filters, nonce: Date.now() });
+    setTab("requests");
+    setVisited((current) => new Set([...current, "requests"]));
+  }, []);
   const authorize = useCallback(async (next: User | null, force = false) => {
     const version = ++checkVersion.current;
     if (!mounted.current) return;
@@ -331,7 +347,8 @@ export default function Admin() {
                   <li>Revenez ici et cliquez sur « Vérifier mon accès ».</li>
                 </ol>
                 <p className="text-xs text-zinc-500">
-                  Le bouton copie le schéma SQL et l’autorisation du compte
+                  Le bouton copie les deux schémas SQL (CMS puis tableau de
+                  bord, relances et statistiques) et l’autorisation du compte
                   actuellement connecté. Il n’exécute rien sur le serveur. Guide
                   complet : docs/ADMIN_CMS.md.
                 </p>
@@ -342,12 +359,14 @@ export default function Admin() {
                       user && /^[a-f0-9-]{36}$/i.test(user.id)
                         ? `\n-- Authorise the currently signed-in account after reviewing its identity.\ninsert into public.cms_administrators (user_id) values ('${user.id}') on conflict do nothing;\n`
                         : "";
+                    // Both migrations: the second one adds the dashboard, private
+                    // follow-up fields and consent-based audience measurement.
                     void navigator.clipboard
-                      .writeText(setupSql + grant)
+                      .writeText(setupSql + "\n\n" + dashboardSql + grant)
                       .then(() => setCopied(true))
                       .catch(() =>
                         setError(
-                          "Copie indisponible. Ouvrez supabase/migrations/202610080001_admin_cms.sql dans le dépôt.",
+                          "Copie indisponible. Ouvrez les fichiers supabase/migrations/202610080001_admin_cms.sql puis 202610080002_admin_dashboard_analytics.sql dans le dépôt.",
                         ),
                       );
                   }}
@@ -483,12 +502,26 @@ export default function Admin() {
               </p>
             }
           >
-            <section hidden={tab !== "content"}>
-              <ContentEditor
-                active={tab === "content"}
-                onUnsavedChange={onContentDirty}
-              />
-            </section>
+            {visited.has("dashboard") && (
+              <section hidden={tab !== "dashboard"}>
+                <AdminDashboard
+                  active={tab === "dashboard"}
+                  onNavigate={(next) => {
+                    setTab(next);
+                    setVisited((current) => new Set([...current, next]));
+                  }}
+                  onOpenRequests={openRequests}
+                />
+              </section>
+            )}
+            {visited.has("content") && (
+              <section hidden={tab !== "content"}>
+                <ContentEditor
+                  active={tab === "content"}
+                  onUnsavedChange={onContentDirty}
+                />
+              </section>
+            )}
             {visited.has("listings") && (
               <section hidden={tab !== "listings"}>
                 <AdminListings
@@ -499,7 +532,7 @@ export default function Admin() {
             )}
             {visited.has("requests") && (
               <section hidden={tab !== "requests"}>
-                <AdminMessages mode="requests" />
+                <AdminMessages mode="requests" preset={requestPreset} />
               </section>
             )}
             {visited.has("subscribers") && (
