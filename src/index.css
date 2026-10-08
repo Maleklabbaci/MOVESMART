@@ -1,9 +1,14 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 
-html { 
-  scroll-behavior: smooth; 
+@theme inline {
+  --color-accent: var(--accent);
+  --font-serif:
+    "Playfair Display Variable", "Noto Naskh Arabic Variable", serif;
+  --font-sans: "Montserrat Variable", "Noto Sans Arabic Variable", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
   background-color: #080808; /* Fallback direct pour éviter le flash blanc */
 }
 
@@ -13,7 +18,7 @@ html[data-theme="light"] {
   --bg: #ffffff;
   --surface: #fafafa;
   --text: #1a1a1a;
-  --text3: #6b7280; 
+  --text3: #6b7280;
   --border: rgba(0, 0, 0, 0.08);
   --header-bg: rgba(255, 255, 255, 0.95);
   --accent: #b8860b; /* Un doré plus chaud, "old money" */
@@ -24,10 +29,10 @@ html[data-theme="light"] {
 
 /* DARK THEME */
 html[data-theme-dark="true"] {
-  --bg: #080808; 
+  --bg: #080808;
   --surface: #121212;
   --text: #ffffff;
-  --text3: #9ca3af; 
+  --text3: #9ca3af;
   --border: rgba(255, 255, 255, 0.08);
   --header-bg: rgba(8, 8, 8, 0.95);
   --accent: #d4af37; /* Goldenrod classique */
@@ -43,45 +48,84 @@ body {
   background-color: var(--bg);
   color: var(--text);
   overflow-x: hidden;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  font-family: 'Montserrat', sans-serif; 
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+  font-family: var(--font-sans);
 }
 
 /* --- TYPOGRAPHIE LUXE --- */
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Playfair Display', serif;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-serif);
   letter-spacing: -0.01em;
 }
 
 .font-serif-italic {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-serif);
   font-style: italic;
 }
 
 /* --- SCROLLBAR --- */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
 
-/* --- UTILITAIRES --- */
-img { max-width: 100%; display: block; }
-a { color: inherit; text-decoration: none; transition: color 0.2s ease; }
-button { border: none; background: none; cursor: pointer; font-family: inherit; }
-::selection { background: var(--accent); color: #000; }
-*:focus-visible { outline: 1px solid var(--accent); outline-offset: 3px; }
+/* Keep resets in Tailwind's base layer so utilities can actually override them. */
+@layer base {
+  img {
+    max-width: 100%;
+    display: block;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  button {
+    cursor: pointer;
+    font-family: inherit;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+  ::selection {
+    background: var(--accent);
+    color: #000;
+  }
+  *:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+}
 
 /* --- COMPOSANTS REUTILISABLES (Pour garder la cohérence partout) --- */
 .btn-gold {
   background-color: var(--accent);
   color: #000000;
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-sans);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   font-size: 0.75rem;
   padding: 1rem 2rem;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
 }
 .btn-gold:hover {
   background-color: var(--accent-hover);
@@ -92,7 +136,7 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
   background-color: transparent;
   border: 1px solid var(--border);
   color: var(--text);
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-sans);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.15em;
@@ -108,7 +152,7 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 .tag-gold {
   display: inline-block;
   color: var(--accent);
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-sans);
   font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -119,7 +163,9 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 .card-border {
   border: 1px solid var(--border);
   background-color: var(--surface);
-  transition: border-color 0.3s ease, transform 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    transform 0.3s ease;
 }
 .card-border:hover {
   border-color: var(--accent);
@@ -127,18 +173,221 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 
 /* FIX POUR MOBILE */
 @media (max-width: 768px) {
-  input, select, textarea { font-size: 16px; }
-  body { overscroll-behavior: none; }
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+  body {
+    overscroll-behavior: none;
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-.animate-fade-in { animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
-.delay-100 { animation-delay: 100ms; opacity: 0; }
-.delay-200 { animation-delay: 200ms; opacity: 0; }
+.animate-fade-in {
+  animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+.delay-100 {
+  animation-delay: 100ms;
+  opacity: 0;
+}
+.delay-200 {
+  animation-delay: 200ms;
+  opacity: 0;
+}
+.delay-300 {
+  animation-delay: 300ms;
+  opacity: 0;
+}
+.delay-400 {
+  animation-delay: 400ms;
+  opacity: 0;
+}
 
 @media print {
-  * { background: transparent !important; color: #000 !important; }
+  * {
+    background: transparent !important;
+    color: #000 !important;
+  }
+}
+
+.btn-gold:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+.btn-outline.hero-outline {
+  color: #fff;
+  border-color: #ffffff50;
+}
+.btn-outline.hero-outline:hover {
+  background: #ffffff15;
+  border-color: #fff;
+}
+.honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.scrollbar-hide {
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* The editing workspace stays legible regardless of the public site's theme. */
+.admin-shell {
+  --accent: #d4af37;
+  color: #f4f4f5;
+  background: #0a0b0d;
+  font-family: var(--font-sans);
+}
+.admin-shell h1,
+.admin-shell h2,
+.admin-shell h3 {
+  font-family: var(--font-sans);
+}
+.admin-input {
+  width: 100%;
+  background: #111317;
+  border: 1px solid #ffffff15;
+  border-radius: 8px;
+  padding: 11px 13px;
+  font-size: 14px;
+  color: #f4f4f5;
+}
+.admin-input:focus {
+  border-color: #d4af37;
+  outline: none;
+  box-shadow: 0 0 0 2px #d4af3715;
+}
+.admin-input::placeholder {
+  color: #71717a;
+}
+.admin-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: #b4b4bf;
+  margin-bottom: 8px;
+}
+.admin-card {
+  background: #111317;
+  border: 1px solid #ffffff0d;
+  border-radius: 14px;
+  padding: 24px;
+}
+.admin-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #ffffff20;
+  border-radius: 8px;
+  padding: 10px 15px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #ffffff05;
+  color: #e4e4e7;
+  transition: background 0.2s;
+}
+.admin-button:hover:not(:disabled) {
+  background: #ffffff10;
+}
+.admin-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.admin-button-primary {
+  background: #d4af37;
+  color: #16120a;
+  border-color: #d4af37;
+}
+.admin-button-primary:hover:not(:disabled) {
+  background: #e2c45e;
+}
+.admin-notice {
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid #d4af3730;
+  background: #d4af3708;
+  color: #e4cd84;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.admin-error {
+  border-color: #f8717130;
+  background: #f8717108;
+  color: #fca5a5;
+}
+.admin-success {
+  border-color: #4ade8030;
+  background: #4ade8008;
+  color: #86efac;
+}
+@media (max-width: 640px) {
+  .admin-card {
+    padding: 18px;
+  }
+  .admin-input {
+    font-size: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Arabic uses locally hosted shaping fonts, without Latin tracking or synthetic italics. */
+html[lang="ar"]
+  :is(h1, h2, h3, h4, p, span, a, button, label):not(.admin-shell *) {
+  letter-spacing: normal;
+}
+html[lang="ar"] main :is(h1, h2) {
+  line-height: 1.25;
+}
+html[lang="ar"] .font-serif-italic {
+  font-style: normal;
+}
+.admin-card {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Edited copy can contain long words/URLs without widening the public page. */
+main :is(h1, h2, h3, p) {
+  overflow-wrap: anywhere;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -1,289 +1,89 @@
-# 📦 MOVESMART-COMPLETE.zip - GUIDE VISUEL
+# MoveSmart
 
-## 🎯 DANS LE ZIP, TU AS:
+Site immobilier React + TypeScript + Vite, avec un CMS intégré à `/admin`. La direction visuelle existante (noir/or, typographie, sections) est conservée : ce n’est pas un constructeur de pages libre.
 
-```
-MOVESMART-COMPLETE/
-│
-├── INSTALL_SIMPLE.md  ← LIRE EN PREMIER! 📖
-│
-└── src/
-    ├── App.tsx
-    ├── index.css
-    │
-    ├── pages/
-    │   ├── Contact.tsx
-    │   ├── Contact_ENHANCED.tsx
-    │   ├── Listings.tsx
-    │   ├── ListingDetails.tsx
-    │   ├── Home_ENHANCED.tsx
-    │   └── Blog.tsx
-    │
-    └── components/
-        ├── FAQ.tsx
-        └── Testimonials.tsx
-```
+## Fonctionnalités
 
----
+- **Contenus du site** : textes FR/EN/AR, images et textes alternatifs, marque, coordonnées, réseaux sociaux, métadonnées SEO, FAQ, témoignages et articles.
+- **Accueil** : ordre réel des sections et visibilité, sans modifier le code.
+- **Brouillon → aperçu → publication** : révisions, protection contre les modifications concurrentes, restauration vers un brouillon et import/export JSON.
+- **Annonces** : création, modification, galerie et suppression. Les changements d’annonces sont immédiatement publics, indépendamment du CMS des pages.
+- **Demandes clients et newsletter** : enregistrement confirmé en base, consentement déclaré, gestion privée dans l’admin et export CSV des lignes chargées. Aucun email automatique ni double opt-in n’est configuré.
+- **FR/EN/AR** : détection des variantes régionales, RTL, polices hébergées localement et interface d’administration en français.
 
-## 🔧 COMMENT UTILISER LE ZIP
+## Démarrer
 
-### ÉTAPE 1: Télécharge et dézip
-```
-MOVESMART-COMPLETE.zip
-↓
-Dézip avec clic droit → "Extraire"
-```
+Prérequis : Node.js 22 et npm.
 
-### ÉTAPE 2: Ouvre INSTALL_SIMPLE.md
-```
-C'est le guide complet en français
-Il t'explique EXACTEMENT quoi faire
-```
-
-### ÉTAPE 3: Copie les fichiers dans TON PROJET
-
-#### Option A: Copie simple (pour FIXES seulement)
-```
-Copie ces 5 fichiers dans TON src/:
-├── App.tsx
-├── index.css
-└── pages/
-    ├── Contact.tsx
-    ├── Listings.tsx
-    └── ListingDetails.tsx
-```
-
-#### Option B: Copie TOUT (recommandé)
-```
-Copie TOUS les fichiers:
-├── src/App.tsx
-├── src/index.css
-├── src/pages/
-│   ├── Contact.tsx (ou Contact_ENHANCED.tsx)
-│   ├── Contact_ENHANCED.tsx
-│   ├── Listings.tsx
-│   ├── ListingDetails.tsx
-│   ├── Home_ENHANCED.tsx (remplace Home.tsx)
-│   └── Blog.tsx (NOUVEAU)
-└── src/components/
-    ├── FAQ.tsx (NOUVEAU)
-    └── Testimonials.tsx (NOUVEAU)
-```
-
-### ÉTAPE 4: Ajoute la route Blog
-
-Dans `src/App.tsx`, ajoute:
-```tsx
-import Blog from './pages/Blog';
-
-// Dans <Routes>:
-<Route path="/blog" element={<Blog />} />
-```
-
-### ÉTAPE 5: Test et push
-```bash
+```sh
+npm ci
 npm run dev
+```
+
+Le serveur écoute sur `0.0.0.0:3000`. Les hôtes de prévisualisation Arena `*.e2b.app` sont autorisés.
+
+### Configuration Supabase
+
+La configuration publique du projet historique est conservée si les variables ne sont pas définies. Pour choisir un autre projet, créer `.env.local` avec les **vraies valeurs publiques** décrites dans `.env.example` :
+
+```dotenv
+VITE_SUPABASE_URL="https://votre-projet.supabase.co"
+VITE_SUPABASE_ANON_KEY="votre-cle-publique-anon-ou-publishable"
+```
+
+Ne pas laisser les valeurs d’exemple. Ne jamais mettre de clé `service_role`, de clé secrète ou de mot de passe de base dans une variable `VITE_*` : ces variables sont intégrées au JavaScript public. Redémarrer Vite après une modification de configuration et reconstruire le site pour un déploiement.
+
+## Activer le CMS
+
+**Le code ne crée pas automatiquement les tables sur le projet distant.** Le propriétaire du projet doit :
+
+1. Sauvegarder et vérifier le projet Supabase ciblé.
+2. Appliquer `supabase/migrations/202610080001_admin_cms.sql` dans son SQL Editor.
+3. Créer/confirmer le compte du client dans Supabase Auth, puis l’ajouter à `cms_administrators`.
+4. Tester `/admin`, les règles d’accès, un brouillon, une publication et les formulaires sur le vrai projet.
+
+Le guide détaillé, les commandes d’attribution/retrait des droits et la recette de validation se trouvent dans **[docs/ADMIN_CMS.md](docs/ADMIN_CMS.md)**.
+
+> Les photos importées dans le bucket `photos` sont publiques dès l’import, même si la page ou l’article reste en brouillon. Ne pas y stocker de documents confidentiels. Si un bucket `photos` existant est privé, la migration s’arrête sans le rendre public.
+
+Sans CMS installé, les pages éditoriales continuent à afficher le contenu initial du dépôt. Les formulaires ne simulent pas un succès lorsque leurs RPC sont indisponibles.
+
+## Vérifications
+
+```sh
+npm run lint          # TypeScript strict (tsc --noEmit)
+npm test              # Helpers, validation et SQL/RLS dans PGlite
+npm run build         # Vérification TypeScript + build de production
+npm audit
+npm run format:check
+
+# Installation du navigateur sur une machine disposant de l’accès nécessaire
+npx playwright install chromium
+npm run test:e2e
+```
+
+Les E2E interceptent les API Auth/REST/Storage et n’écrivent jamais dans la base de production. Les tests SQL utilisent une base PostgreSQL embarquée avec les schémas/rôles Supabase simulés ; ils ne remplacent pas une recette sur Supabase Auth et Storage réels. Un Chromium existant peut être utilisé via `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`; `PLAYWRIGHT_BASE_URL` permet de sélectionner l’URL du site testé.
+
+## Déploiement
+
+```sh
 npm run build
-git push
 ```
 
----
+Publier le dossier `dist/` avec un hébergement SPA. `vercel.json` prévoit le repli vers `index.html` pour les routes comme `/admin`, `/blog/:id` et `/listings/:id`. Sur un autre hébergeur, configurer le même repli. Les variables publiques Supabase doivent être présentes **au moment du build**.
 
-## 📋 FICHIERS EXPLIQUÉS
+Les métadonnées sont mises à jour côté client ; ce projet n’ajoute pas de SSR/prérendu. La page 404 est une page du routeur client. Prévoir du prérendu/SSR et des réponses HTTP adaptées si cela devient une exigence de référencement.
 
-### MUST HAVE (à remplacer):
-```
-✅ src/App.tsx → REMPLACER
-✅ src/index.css → REMPLACER
-✅ src/pages/Contact.tsx → REMPLACER
-✅ src/pages/Listings.tsx → REMPLACER
-✅ src/pages/ListingDetails.tsx → REMPLACER
-```
+## Repères du code
 
-### OPTIONAL MAIS MEILLEUR:
-```
-⭐ src/pages/Contact_ENHANCED.tsx → REMPLACE Contact.tsx
-⭐ src/pages/Home_ENHANCED.tsx → REMPLACE Home.tsx
-```
+| Emplacement             | Rôle                                                                                                 |
+| ----------------------- | ---------------------------------------------------------------------------------------------------- |
+| `src/content/`          | Schéma versionné, contenu initial, catalogue des champs, localisation, API et provider publié/aperçu |
+| `src/components/admin/` | Éditeurs, annonces, médiathèque, demandes et abonnés                                                 |
+| `src/pages/Admin.tsx`   | Authentification, vérification de l’appartenance admin et navigation                                 |
+| `src/lib/`              | Validation, images, formulaires, catalogue, CSV et partage                                           |
+| `supabase/migrations/`  | Tables, RPC, privilèges et politiques RLS                                                            |
+| `src/tests/`, `tests/`  | Tests unitaires/SQL et parcours navigateur                                                           |
+| `public/licenses/`      | Licences SIL OFL des polices distribuées                                                             |
 
-### NOUVEAUX (à ajouter):
-```
-🆕 src/components/FAQ.tsx → COPIE
-🆕 src/components/Testimonials.tsx → COPIE
-🆕 src/pages/Blog.tsx → COPIE
-```
-
----
-
-## 🎨 AVANT APRÈS
-
-### STRUCTURE AVANT:
-```
-src/
-├── App.tsx (ancien)
-├── index.css (ancien)
-├── pages/
-│   ├── Home.tsx
-│   ├── Contact.tsx (simple)
-│   ├── Listings.tsx (bugué)
-│   ├── ListingDetails.tsx (bugué)
-│   ├── About.tsx
-│   ├── Admin.tsx
-│   └── etc...
-└── components/
-    ├── WhatsAppButton.tsx
-    └── MobileNav.tsx
-```
-
-### STRUCTURE APRÈS:
-```
-src/
-├── App.tsx ✅ FIXÉ
-├── index.css ✅ FIXÉ
-├── pages/
-│   ├── Home.tsx ✅ AMÉLIORÉ (avec FAQ + Testimonials)
-│   ├── Contact.tsx ✅ FIXÉ (avec formulaire)
-│   ├── Listings.tsx ✅ FIXÉ
-│   ├── ListingDetails.tsx ✅ FIXÉ
-│   ├── Blog.tsx 🆕 NOUVEAU
-│   ├── About.tsx (gardé)
-│   ├── Admin.tsx (gardé)
-│   └── etc...
-└── components/
-    ├── FAQ.tsx 🆕 NOUVEAU
-    ├── Testimonials.tsx 🆕 NOUVEAU
-    ├── WhatsAppButton.tsx (gardé)
-    └── MobileNav.tsx (gardé)
-```
-
----
-
-## 🚀 QUICK PATH (5 MIN)
-
-**Si tu veux juste les FIXES:**
-
-1. Dézip MOVESMART-COMPLETE.zip
-2. Copie ces 5 fichiers dans ton src/:
-   - App.tsx
-   - index.css
-   - pages/Contact.tsx
-   - pages/Listings.tsx
-   - pages/ListingDetails.tsx
-3. `npm run dev`
-4. `git push`
-
-**DONE! ✅**
-
----
-
-## 🎁 FULL PATH (15 MIN)
-
-**Si tu veux TOUT:**
-
-1. Dézip MOVESMART-COMPLETE.zip
-2. Copie TOUS les fichiers dans ton src/
-3. Renomme Home_ENHANCED.tsx → Home.tsx
-4. Renomme Contact_ENHANCED.tsx → Contact.tsx
-5. Ajoute route Blog dans App.tsx
-6. `npm run dev`
-7. Test tout
-8. `git push`
-
-**DONE! ✅**
-
----
-
-## ✅ CHECKLIST FINALE
-
-### Fichiers copiés:
-- [ ] src/App.tsx
-- [ ] src/index.css
-- [ ] src/pages/Contact.tsx
-- [ ] src/pages/Listings.tsx
-- [ ] src/pages/ListingDetails.tsx
-- [ ] src/pages/Home.tsx (enhanced)
-- [ ] src/pages/Blog.tsx
-- [ ] src/components/FAQ.tsx
-- [ ] src/components/Testimonials.tsx
-
-### Configuration:
-- [ ] Route Blog ajoutée dans App.tsx
-- [ ] Imports corrects dans Home.tsx
-
-### Test:
-- [ ] `npm run dev` fonctionne
-- [ ] Home affiche FAQ + Testimonials
-- [ ] /blog fonctionne
-- [ ] /contact formulaire fonctionne
-- [ ] /listings responsive
-- [ ] Pas d'erreurs console
-
-### Deploy:
-- [ ] `npm run build` OK
-- [ ] `git push` OK
-- [ ] Vercel redéployé
-
----
-
-## 📱 CONTENU NOUVEAU
-
-### FAQ Section
-- 8 questions/réponses
-- Accordion expandable
-- Thème Dubai/Investment
-
-### Testimonials Section
-- 6 avis clients
-- Avec photos
-- Ratings 5/5
-
-### Blog Page
-- 6 articles d'exemple
-- Catégories
-- Newsletter signup
-- Auteurs et dates
-
-### Contact Form
-- Validation
-- Success message
-- Loading state
-- WhatsApp/Email links
-
----
-
-## 🆘 BESOIN D'AIDE?
-
-### "Je comprends pas où copier"
-→ Ouvre INSTALL_SIMPLE.md dans le ZIP
-→ C'est expliqué super simplement
-
-### "Erreur après copie"
-→ Regarde la section "SI ERREURS" dans INSTALL_SIMPLE.md
-→ Ou hard refresh: Ctrl+Shift+R
-
-### "Ça marche pas"
-→ `npm install`
-→ `npm run dev`
-→ Check console (F12)
-
----
-
-## 🎉 RÉSULTAT FINAL
-
-Un site **COMPLET**, **RESPONSIVE**, **PROFESSIONAL** avec:
-
-✅ Responsive design (mobile + tablet + desktop)
-✅ Images avec fallback
-✅ FAQ section
-✅ Testimonials section
-✅ Blog avec articles
-✅ Contact form avec validation
-✅ Animations smooth
-✅ Performance optimisée
-✅ Accessible
-✅ Prêt pour production
-
----
-
-**ENJOY! 🚀**
+Les contenus commerciaux, chiffres, avis clients, articles historiques et textes juridiques repris du site doivent être validés par le propriétaire avant publication. Le CMS ne certifie ni leur exactitude ni la conformité juridique du site.
