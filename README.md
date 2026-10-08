@@ -8,7 +8,9 @@ Site immobilier React + TypeScript + Vite, avec un CMS intégré à `/admin`. La
 - **Accueil** : ordre réel des sections et visibilité, sans modifier le code.
 - **Brouillon → aperçu → publication** : révisions, protection contre les modifications concurrentes, restauration vers un brouillon et import/export JSON.
 - **Annonces** : création, modification, galerie et suppression. Les changements d’annonces sont immédiatement publics, indépendamment du CMS des pages.
-- **Demandes clients et newsletter** : enregistrement confirmé en base, consentement déclaré, gestion privée dans l’admin et export CSV des lignes chargées. Aucun email automatique ni double opt-in n’est configuré.
+- **Tableau de bord admin** : écran d’accueil de `/admin` avec nombre exact de demandes, statuts, relances échues et à venir, demandes récentes, fraîcheur des données et raccourcis vers chaque section.
+- **Demandes clients et newsletter** : enregistrement confirmé en base, consentement déclaré, filtres (recherche, statut, service, relance), **date de rappel**, **notes internes privées**, gestion privée dans l’admin et export CSV de la sélection filtrée. Aucun email automatique ni double opt-in n’est configuré.
+- **Mesure d’audience consentie** (optionnelle) : pages vues, sessions et pages distinctes, navigateurs — sans IP, sans cookie de suivi et sans empreinte numérique, conservation 90 jours, désactivable par `VITE_ANALYTICS_ENABLED=false`. Voir **[docs/ANALYTICS.md](docs/ANALYTICS.md)**.
 - **FR/EN/AR** : détection des variantes régionales, RTL, polices hébergées localement et interface d’administration en français.
 
 ## Démarrer
@@ -39,8 +41,11 @@ Ne pas laisser les valeurs d’exemple. Ne jamais mettre de clé `service_role`,
 
 1. Sauvegarder et vérifier le projet Supabase ciblé.
 2. Appliquer `supabase/migrations/202610080001_admin_cms.sql` dans son SQL Editor.
-3. Créer/confirmer le compte du client dans Supabase Auth, puis l’ajouter à `cms_administrators`.
-4. Tester `/admin`, les règles d’accès, un brouillon, une publication et les formulaires sur le vrai projet.
+3. Appliquer `supabase/migrations/202610080002_admin_dashboard_analytics.sql` (tableau de bord, relances, notes internes et statistiques de fréquentation). Elle est additive : contenus, annonces, demandes et images sont conservés.
+4. Créer/confirmer le compte du client dans Supabase Auth, puis l’ajouter à `cms_administrators`.
+5. Tester `/admin`, les règles d’accès, un brouillon, une publication et les formulaires sur le vrai projet, puis `notify pgrst, 'reload schema';`.
+
+> Ces migrations sont versionnées dans le dépôt et **n’ont pas été appliquées au projet Supabase distant** depuis l’environnement de développement. Sans la deuxième, `/admin` fonctionne en mode dégradé (totaux exacts et demandes récentes, relances/notes/statistiques annoncées comme indisponibles).
 
 Le guide détaillé, les commandes d’attribution/retrait des droits et la recette de validation se trouvent dans **[docs/ADMIN_CMS.md](docs/ADMIN_CMS.md)**.
 
@@ -52,7 +57,7 @@ Sans CMS installé, les pages éditoriales continuent à afficher le contenu ini
 
 ```sh
 npm run lint          # TypeScript strict (tsc --noEmit)
-npm test              # Helpers, validation et SQL/RLS dans PGlite
+npm test              # Helpers, validation, consentement, filtres et SQL/RLS dans PGlite
 npm run build         # Vérification TypeScript + build de production
 npm audit
 npm run format:check
@@ -79,9 +84,9 @@ Les métadonnées sont mises à jour côté client ; ce projet n’ajoute pas de
 | Emplacement             | Rôle                                                                                                 |
 | ----------------------- | ---------------------------------------------------------------------------------------------------- |
 | `src/content/`          | Schéma versionné, contenu initial, catalogue des champs, localisation, API et provider publié/aperçu |
-| `src/components/admin/` | Éditeurs, annonces, médiathèque, demandes et abonnés                                                 |
+| `src/components/admin/` | Tableau de bord, éditeurs, annonces, médiathèque, demandes, relances et abonnés                      |
 | `src/pages/Admin.tsx`   | Authentification, vérification de l’appartenance admin et navigation                                 |
-| `src/lib/`              | Validation, images, formulaires, catalogue, CSV et partage                                           |
+| `src/lib/`              | Validation, images, formulaires, catalogue, CSV, consentement/mesure d’audience et partage           |
 | `supabase/migrations/`  | Tables, RPC, privilèges et politiques RLS                                                            |
 | `src/tests/`, `tests/`  | Tests unitaires/SQL et parcours navigateur                                                           |
 | `public/licenses/`      | Licences SIL OFL des polices distribuées                                                             |

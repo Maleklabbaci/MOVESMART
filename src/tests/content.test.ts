@@ -281,3 +281,55 @@ test("country names follow the content language rather than an English-only drop
     "Fallback",
   );
 });
+
+test("image URLs stay optional: imported photos and empty addresses are both valid", () => {
+  // The CMS fills the address automatically after "Importer une image", and leaving it
+  // empty must never block a save (the design keeps the URL field facultative).
+  const content = structuredClone(defaultContent);
+  content.images.homeHero.url = "";
+  content.images.aboutHero.url = "";
+  content.articles[0].image = "";
+  content.testimonials[0].image = "";
+  assert.equal(siteContentSchema.safeParse(content).success, true);
+  assert.equal(isSafeUrl(""), true);
+
+  // A listing can be saved with photos from the device and no external URL at all.
+  const payload = listingPayloadSchema.parse({
+    title: "Bien sans photo",
+    type: "Apartment",
+    location: "Dubai Marina",
+    price: "1000",
+    beds: "2",
+    baths: "2",
+    area: "100",
+    description: "",
+    images: [],
+  });
+  assert.deepEqual(payload.images, []);
+  const imported = listingPayloadSchema.parse({
+    title: "Bien avec photo importée",
+    type: "Apartment",
+    location: "Dubai Marina",
+    price: "1000",
+    beds: "2",
+    baths: "2",
+    area: "100",
+    description: "",
+    images: ["https://cdn.example.com/photos/cms/photo.webp"],
+  });
+  assert.equal(imported.images.length, 1);
+  assert.equal(
+    listingPayloadSchema.safeParse({
+      title: "Bien invalide",
+      type: "Apartment",
+      location: "Dubai Marina",
+      price: "1000",
+      beds: "2",
+      baths: "2",
+      area: "100",
+      description: "",
+      images: ["javascript:alert(1)"],
+    }).success,
+    false,
+  );
+});

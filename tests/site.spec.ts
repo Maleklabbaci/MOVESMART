@@ -41,6 +41,13 @@ test("texts and pictures follow draft → preview → publish without changing t
 }) => {
   const backend = await mockBackend(context);
   await login(page);
+  // The administration now opens on its dashboard: editors are one click away.
+  await expect(
+    page.getByRole("heading", { name: "Vue d’ensemble" }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Contenus du site", exact: true })
+    .click();
   await expect(
     page.getByRole("heading", { name: "Contenus du site" }),
   ).toBeVisible();

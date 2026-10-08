@@ -395,6 +395,25 @@ export const defaultTranslations: Record<Language, Record<string, string>> = {
     privacy_title: "Politique de confidentialité",
     privacy_content:
       "Vos coordonnées sont utilisées pour répondre à votre demande. Les demandes sont conservées dans notre espace Supabase et accessibles uniquement aux personnes autorisées. Pour demander l’accès, la rectification ou la suppression de vos données, contactez-nous par email.\n\nLa newsletter est facultative et nécessite votre accord. Vous pouvez demander votre désinscription par email.\n\nLe site mémorise localement votre thème et votre langue. Les liens WhatsApp et les contenus hébergés par des tiers sont soumis aux politiques de ces services.",
+    analytics_consent_title: "Mesure d’audience",
+    analytics_consent_text:
+      "Nous mesurons la fréquentation du site uniquement si vous l’acceptez : aucune adresse IP, aucun cookie publicitaire, aucune empreinte numérique. Vous pouvez refuser et continuer à naviguer normalement.",
+    analytics_consent_accept: "J’accepte la mesure",
+    analytics_consent_decline: "Refuser",
+    analytics_consent_details: "En savoir plus",
+    analytics_settings_title: "Votre choix sur la mesure d’audience",
+    analytics_settings_granted:
+      "Mesure acceptée. Vous pouvez retirer votre accord à tout moment.",
+    analytics_settings_denied:
+      "Mesure refusée. Aucune statistique n’est enregistrée pour votre visite.",
+    analytics_settings_none:
+      "Aucun choix enregistré : rien n’est mesuré tant que vous n’acceptez pas.",
+    analytics_settings_allow: "Accepter la mesure",
+    analytics_settings_deny: "Retirer mon accord",
+    analytics_settings_reset: "Effacer mon choix",
+    analytics_privacy_title: "Mesure d’audience",
+    analytics_privacy_content:
+      "La fréquentation du site n’est mesurée que si vous l’acceptez explicitement. Aucune adresse IP, aucun identifiant publicitaire, aucun cookie de suivi et aucune empreinte numérique ne sont enregistrés : nous conservons seulement le chemin de la page, la famille de navigateur (Chrome, Safari, Firefox, Edge, Opera, Samsung Internet ou Autre), un identifiant de session aléatoire créé par votre navigateur et l’horodatage. Ces données restent dans notre base Supabase, ne sont transmises à aucun tiers et sont supprimées automatiquement après 90 jours. Un signal « Do Not Track » ou « Global Privacy Control » désactive toujours la mesure, même après un accord.\n\nVous pouvez modifier votre choix à tout moment ci-dessous. Retirer votre accord supprime également l’identifiant de session conservé dans votre navigateur.\n\nCe comptage sous-estime volontairement le trafic réel : les visiteurs qui refusent, les bloqueurs de scripts, un JavaScript désactivé, les requêtes en échec et la page affichée avant votre choix ne sont jamais comptés. Un « visiteur unique » ne peut pas être calculé sans IP ni empreinte ; nous affichons donc des sessions distinctes, une approximation qui surestime parfois le nombre de visites lorsque le stockage du navigateur est effacé ou en navigation privée.",
     contact_consent:
       "J’accepte que mes coordonnées soient utilisées pour répondre à ma demande.",
     contact_submit_error:
@@ -854,6 +873,25 @@ export const defaultTranslations: Record<Language, Record<string, string>> = {
     privacy_title: "Privacy policy",
     privacy_content:
       "Your contact details are used to respond to your request. Requests are stored in our Supabase workspace and are accessible only to authorised people. To request access, correction or deletion of your data, contact us by email.\n\nNewsletter subscription is optional and requires your consent. You can request unsubscription by email.\n\nThe site stores your theme and language locally. WhatsApp links and third-party content are subject to those services’ policies.",
+    analytics_consent_title: "Audience measurement",
+    analytics_consent_text:
+      "We measure site traffic only if you accept: no IP address, no advertising cookie, no device fingerprint. You can decline and keep browsing normally.",
+    analytics_consent_accept: "I accept measurement",
+    analytics_consent_decline: "Decline",
+    analytics_consent_details: "Learn more",
+    analytics_settings_title: "Your audience measurement choice",
+    analytics_settings_granted:
+      "Measurement accepted. You can withdraw your consent at any time.",
+    analytics_settings_denied:
+      "Measurement declined. No statistics are recorded for your visit.",
+    analytics_settings_none:
+      "No choice recorded: nothing is measured until you accept.",
+    analytics_settings_allow: "Accept measurement",
+    analytics_settings_deny: "Withdraw my consent",
+    analytics_settings_reset: "Clear my choice",
+    analytics_privacy_title: "Audience measurement",
+    analytics_privacy_content:
+      "Site traffic is measured only if you explicitly accept. No IP address, no advertising identifier, no tracking cookie and no device fingerprint are stored: we keep only the page path, the browser family (Chrome, Safari, Firefox, Edge, Opera, Samsung Internet or Other), a random session id created by your browser and the timestamp. This data stays in our Supabase database, is shared with no third party and is deleted automatically after 90 days. A Do Not Track or Global Privacy Control signal always disables measurement, even after consent.\n\nYou can change your choice at any time below. Withdrawing your consent also deletes the session id kept in your browser.\n\nThis counting deliberately under-reports real traffic: visitors who decline, script blockers, disabled JavaScript, failed requests and the page displayed before your choice are never counted. A “unique visitor” cannot be computed without an IP address or a fingerprint, so we show distinct sessions instead — an approximation that sometimes over-counts visits when browser storage is cleared or in private browsing.",
     contact_consent:
       "I agree to my contact details being used to respond to my request.",
     contact_submit_error:
@@ -1305,6 +1343,22 @@ export const defaultTranslations: Record<Language, Record<string, string>> = {
     privacy_title: "سياسة الخصوصية",
     privacy_content:
       "تُستخدم بيانات الاتصال للرد على طلبك. تُحفظ الطلبات في مساحة Supabase ولا يمكن الوصول إليها إلا للأشخاص المخولين. لطلب الوصول إلى بياناتك أو تصحيحها أو حذفها، تواصل عبر البريد الإلكتروني.\n\nالاشتراك في النشرة اختياري ويتطلب موافقتك. يمكنك طلب إلغاء الاشتراك عبر البريد الإلكتروني.\n\nيحفظ الموقع اللغة والمظهر محليًا. تخضع روابط واتساب والمحتويات الخارجية لسياسات تلك الخدمات.",
+    analytics_consent_title: "قياس الزيارات",
+    analytics_consent_text:
+      "نقيس زيارات الموقع فقط إذا وافقت: بدون عنوان IP، وبدون ملف تعريف إعلاني، وبدون بصمة رقمية. يمكنك الرفض ومتابعة التصفح بشكل طبيعي.",
+    analytics_consent_accept: "أوافق على القياس",
+    analytics_consent_decline: "أرفض",
+    analytics_consent_details: "اعرف المزيد",
+    analytics_settings_title: "اختيارك بشأن قياس الزيارات",
+    analytics_settings_granted: "تم قبول القياس. يمكنك سحب موافقتك في أي وقت.",
+    analytics_settings_denied: "تم رفض القياس. لا تُسجل أي إحصاءات لزيارتك.",
+    analytics_settings_none: "لا يوجد اختيار محفوظ: لا شيء يُقاس حتى توافق.",
+    analytics_settings_allow: "قبول القياس",
+    analytics_settings_deny: "سحب موافقتي",
+    analytics_settings_reset: "مسح اختياري",
+    analytics_privacy_title: "قياس الزيارات",
+    analytics_privacy_content:
+      "لا تُقاس زيارات الموقع إلا بموافقتك الصريحة. لا يُحفظ عنوان IP ولا معرّف إعلاني ولا ملف تعريف تتبعي ولا بصمة رقمية: نحفظ فقط مسار الصفحة، ونوع المتصفح (Chrome أو Safari أو Firefox أو Edge أو Opera أو Samsung Internet أو آخر)، ومعرّف جلسة عشوائي ينشئه متصفحك، والوقت. تبقى هذه البيانات في قاعدة Supabase ولا تُشارك مع أي طرف ثالث، وتُحذف تلقائيًا بعد 90 يومًا. إشارة «Do Not Track» أو «Global Privacy Control» تُعطّل القياس دائمًا حتى بعد الموافقة.\n\nيمكنك تغيير اختيارك في أي وقت أدناه. سحب موافقتك يحذف أيضًا معرّف الجلسة المحفوظ في متصفحك.\n\nهذا القياس يقلّل الأرقام عن الزيارات الحقيقية بشكل مقصود: الزوار الذين يرفضون، ومانعو النصوص البرمجية، وجافاسكريبت المعطّل، والطلبات الفاشلة، والصفحة المعروضة قبل اختيارك لا تُحتسب أبدًا. لا يمكن حساب «زائر فريد» بدون عنوان IP أو بصمة، لذلك نعرض الجلسات المميزة فقط، وهي تقدير قد يبالغ في عدد الزيارات عند مسح تخزين المتصفح أو في التصفح الخاص.",
     contact_consent: "أوافق على استخدام بيانات الاتصال للرد على طلبي.",
     contact_submit_error:
       "لم يُرسل طلبك. حاول مجدداً أو تواصل عبر واتساب أو البريد الإلكتروني.",

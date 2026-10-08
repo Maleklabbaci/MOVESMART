@@ -33,6 +33,10 @@ test("temporary public or authorization failures preserve published copy and nev
   backend.draft.translations.fr.home_hero_title = "Texte privé";
   backend.draftRevision = 1;
   await login(page);
+  // The dashboard is the administration home: reach the editor through its tab.
+  await page
+    .getByRole("button", { name: "Contenus du site", exact: true })
+    .click();
   await expect(
     page.getByRole("heading", { name: "Contenus du site" }),
   ).toBeVisible();
@@ -106,6 +110,10 @@ test("signing out in the admin tab removes private copy from an already open dra
     "Texte confidentiel du brouillon";
   backend.draftRevision = 1;
   await login(page);
+  // The dashboard is the administration home: reach the editor through its tab.
+  await page
+    .getByRole("button", { name: "Contenus du site", exact: true })
+    .click();
   await expect(
     page.getByRole("heading", { name: "Contenus du site" }),
   ).toBeVisible();
@@ -161,6 +169,10 @@ test("home ordering and visibility use the real preview DOM; restoring history o
     created_at: "2026-10-08T10:00:00Z",
   });
   await login(page);
+  // The dashboard is the administration home: reach the editor through its tab.
+  await page
+    .getByRole("button", { name: "Contenus du site", exact: true })
+    .click();
   await expect(
     page.getByRole("heading", { name: "Contenus du site" }),
   ).toBeVisible();
@@ -336,10 +348,11 @@ test("private leads and subscribers can be managed without automatic emails or s
   ).toBeVisible();
   await page.getByRole("button", { name: "Détails de Client Test" }).click();
   await expect(page.getByText("2000000 AED", { exact: false })).toBeVisible();
+  // Status changes go through the validated follow-up function, not a raw PATCH.
   const updated = page.waitForResponse(
     (response) =>
-      response.url().includes("/contact_requests") &&
-      response.request().method() === "PATCH",
+      response.url().includes("/rpc/update_contact_follow_up") &&
+      response.request().method() === "POST",
   );
   await page.getByLabel("Statut de Client Test").selectOption("contacted");
   await (await updated).finished();
@@ -365,4 +378,320 @@ test("private leads and subscribers can be managed without automatic emails or s
     page.getByRole("button", { name: "Désinscrit", exact: true }),
   ).toBeDisabled();
   expect(backend.subscribers[0].active).toBe(false);
+});
+
+const day = 86_400_000;
+const iso = (offsetDays: number) =>
+  new Date(Date.now() + offsetDays * day).toISOString();
+
+const requestRow = (
+  overrides: Record<string, unknown> = {},
+): Record<string, unknown> => ({
+  id: crypto.randomUUID(),
+  name: "Client Test",
+  email: "client@example.com",
+  phone: "+33612345678",
+  service: "realEstate",
+  options: ["rental-income"],
+  details: { budget: "2000000 AED" },
+  message: "Un vrai message de test.",
+  status: "new",
+  notes: "",
+  reminder_at: null,
+  updated_at: iso(-1),
+  consent_at: iso(-1),
+  created_at: iso(-1),
+  ...overrides,
+});
+
+test("the dashboard counts exactly, surfaces overdue follow-ups and drives the shortcuts", async ({
+  context,
+  page,
+}) => {
+  const backend = await mockBackend(context);
+  backend.requests.push(
+    requestRow({
+      name: "Client à relancer",
+      email: "relance@example.com",
+      reminder_at: iso(-2),
+      notes: "Rappelé une fois",
+      created_at: iso(-2),
+    }),
+    requestRow({
+      name: "Client suivi",
+      email: "suivi@example.com",
+      status: "contacted",
+      reminder_at: iso(3),
+      created_at: iso(-1),
+    }),
+    requestRow({
+      name: "Client archivé",
+      email: "archive@example.com",
+      status: "archived",
+      created_at: iso(-3),
+    }),
+  );
+  backend.subscribers.push({
+    id: crypto.randomUUID(),
+    email: "newsletter@example.com",
+    active: true,
+    consent_at: iso(-2),
+    created_at: iso(-2),
+  });
+  await login(page);
+  await expect(
+    page.getByRole("heading", { name: "Vue d’ensemble" }),
+  ).toBeVisible();
+  const value = (label: string) =>
+    page
+      .locator(".admin-card", { hasText: label })
+      .first()
+      .locator("p.font-semibold")
+      .first();
+  // Exact counters come from the server, not from the 50-row page.
+  await expect(value("Demandes enregistrées")).toHaveText("3");
+  await expect(value("Nouvelles")).toHaveText("1");
+  await expect(value("Contactées")).toHaveText("1");
+  await expect(value("Archivées")).toHaveText("1");
+  await expect(value("Relances échues")).toHaveText("1");
+  await expect(value("Relances à venir")).toHaveText("1");
+  await expect(value("Abonnés newsletter")).toHaveText("1");
+  await expect(page.getByText("Compteurs serveur")).toBeVisible();
+  await expect(page.getByText("Dernière actualisation")).toBeVisible();
+  await expect(
+    page.getByText("Client à relancer", { exact: true }),
+  ).toBeVisible();
+  await expect(page.getByText("Relance échue", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Note interne", { exact: false }).first(),
+  ).toBeVisible();
+
+  // The overdue shortcut opens the requests list already filtered.
+  await page
+    .getByRole("button", { name: "Traiter 1 relance(s) échue(s)", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Demandes clients" }),
+  ).toBeVisible();
+  await expect(page.getByLabel("Relance")).toHaveValue("overdue");
+  await expect(
+    page.getByText("relance@example.com", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByText("suivi@example.com", { exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByText("archive@example.com", { exact: true }),
+  ).toHaveCount(0);
+
+  // Other shortcuts switch panels without a page reload.
+  await page
+    .getByRole("button", { name: "Tableau de bord", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Ouvrir la médiathèque", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Médiathèque" }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Tableau de bord", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Ouvrir les contenus du site", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Contenus du site" }),
+  ).toBeVisible();
+});
+
+test("requests can be filtered, annotated privately and exported as CSV", async ({
+  context,
+  page,
+}) => {
+  const backend = await mockBackend(context);
+  backend.requests.push(
+    requestRow({
+      name: "Client à relancer",
+      email: "relance@example.com",
+      reminder_at: iso(-2),
+      created_at: iso(-2),
+    }),
+    requestRow({
+      name: "Client suivi",
+      email: "suivi@example.com",
+      status: "contacted",
+      created_at: iso(-1),
+    }),
+  );
+  await login(page);
+  await page
+    .getByRole("button", { name: "Demandes clients", exact: true })
+    .click();
+  await expect(
+    page.getByText("relance@example.com", { exact: true }),
+  ).toBeVisible();
+
+  // Text search narrows the list and the exported selection.
+  await page.getByLabel("Rechercher", { exact: true }).fill("suivi@");
+  await expect(
+    page.getByText("suivi@example.com", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByText("relance@example.com", { exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByText("Aucune demande ne correspond", { exact: false }),
+  ).toHaveCount(0);
+
+  // Status filter adds to the search instead of replacing it.
+  await page.getByLabel("Statut", { exact: true }).selectOption("contacted");
+  await expect(
+    page.getByText("suivi@example.com", { exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Réinitialiser", exact: true })
+    .click();
+  await expect(
+    page.getByText("relance@example.com", { exact: true }),
+  ).toBeVisible();
+
+  // Private internal notes are saved through the validated function.
+  await page
+    .getByRole("button", { name: "Détails de Client à relancer", exact: true })
+    .click();
+  await page
+    .getByLabel("Notes internes (privées)", { exact: true })
+    .fill("Rappelé par WhatsApp, attend une réponse");
+  const noteSaved = page.waitForResponse((response) =>
+    response.url().includes("/rpc/update_contact_follow_up"),
+  );
+  await page
+    .getByRole("button", { name: "Enregistrer la note", exact: true })
+    .click();
+  await noteSaved;
+  await expect(
+    page.getByText("Note interne enregistrée. Elle reste privée."),
+  ).toBeVisible();
+  expect(
+    backend.requests.find((item) => item.email === "relance@example.com")
+      ?.notes,
+  ).toBe("Rappelé par WhatsApp, attend une réponse");
+
+  // A reminder date can be scheduled and then removed.
+  await page
+    .getByLabel("Date de relance", { exact: true })
+    .fill("2026-12-01T09:30");
+  const reminderSaved = page.waitForResponse((response) =>
+    response.url().includes("/rpc/update_contact_follow_up"),
+  );
+  await page
+    .getByRole("button", { name: "Planifier la relance", exact: true })
+    .click();
+  await reminderSaved;
+  await expect(
+    page.getByText(
+      "Relance planifiée. Elle apparaîtra sur le tableau de bord.",
+    ),
+  ).toBeVisible();
+  expect(
+    backend.requests.find((item) => item.email === "relance@example.com")
+      ?.reminder_at,
+  ).toBe(new Date("2026-12-01T09:30").toISOString());
+  const reminderCleared = page.waitForResponse((response) =>
+    response.url().includes("/rpc/update_contact_follow_up"),
+  );
+  await page.getByRole("button", { name: "Retirer", exact: true }).click();
+  await reminderCleared;
+  expect(
+    backend.requests.find((item) => item.email === "relance@example.com")
+      ?.reminder_at,
+  ).toBe(null);
+
+  // CSV export covers the filtered selection.
+  const download = page.waitForEvent("download");
+  await page.getByRole("button", { name: /^Exporter \(/ }).click();
+  expect((await download).suggestedFilename()).toBe("movesmart-requests.csv");
+});
+
+test("traffic is measured only after an explicit opt-in, and can be withdrawn", async ({
+  context,
+  page,
+}) => {
+  const backend = await mockBackend(context);
+  await page.goto("/");
+  const banner = page.getByRole("region", { name: "Mesure d’audience" });
+  await expect(banner).toBeVisible();
+  await expect(
+    banner.getByText(/aucune adresse IP, aucun cookie publicitaire/),
+  ).toBeVisible();
+  // No measurement request is sent while the visitor has not chosen.
+  await page.waitForTimeout(400);
+  expect(backend.pageviews.length).toBe(0);
+  expect(backend.pageviewAttempts).toBe(0);
+
+  const firstPageview = page.waitForResponse((response) =>
+    response.url().includes("/rpc/record_pageview"),
+  );
+  await page
+    .getByRole("button", { name: "J’accepte la mesure", exact: true })
+    .click();
+  await firstPageview;
+  await expect(banner).toHaveCount(0);
+  expect(backend.pageviews.length).toBe(1);
+  expect(backend.pageviews[0].path).toBe("/");
+  expect(backend.pageviews[0].browser).not.toBe("");
+
+  const contactPageview = page.waitForResponse((response) =>
+    response.url().includes("/rpc/record_pageview"),
+  );
+  await page.getByRole("link", { name: "Contact", exact: true }).click();
+  await contactPageview;
+  expect(backend.pageviews.map((item) => item.path)).toEqual(["/", "/contact"]);
+  // Query strings and preview parameters are never part of a stored path.
+  expect(backend.pageviews.every((item) => !item.path.includes("?"))).toBe(
+    true,
+  );
+
+  // Consent is revocable from the privacy page, and the choice persists.
+  await page.goto("/privacy");
+  await expect(
+    page.getByText("Votre choix sur la mesure d’audience"),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Retirer mon accord", exact: true })
+    .click();
+  await expect(
+    page.getByText("Mesure refusée.", { exact: false }),
+  ).toBeVisible();
+  const before = backend.pageviews.length;
+  await page.goto("/listings");
+  await page.waitForTimeout(400);
+  expect(backend.pageviews.length).toBe(before);
+  await expect(
+    page.getByRole("region", { name: "Mesure d’audience" }),
+  ).toHaveCount(0);
+});
+
+test("a Do Not Track signal disables measurement without asking the visitor", async ({
+  context,
+  page,
+}) => {
+  const backend = await mockBackend(context);
+  await context.addInitScript(() => {
+    Object.defineProperty(navigator, "doNotTrack", {
+      configurable: true,
+      get: () => "1",
+    });
+  });
+  await page.goto("/");
+  await expect(
+    page.getByRole("region", { name: "Mesure d’audience" }),
+  ).toHaveCount(0);
+  await page.goto("/listings");
+  await page.waitForTimeout(400);
+  expect(backend.pageviews.length).toBe(0);
+  expect(backend.pageviewAttempts).toBe(0);
+  // The site keeps working normally for that visitor.
+  await expect(page.locator("h1")).toBeVisible();
 });
